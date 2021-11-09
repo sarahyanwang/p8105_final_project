@@ -10,4 +10,4 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-This is the proposal. 
+This is the proposal. Welcome to our group project!
