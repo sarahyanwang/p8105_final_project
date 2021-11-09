@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+<<<<<<< HEAD
 This is the proposal. 
 
 #### Group members: 
@@ -31,3 +32,6 @@ Our data source is from the NYC open data, data provided by the Department of Fi
 #### planned analyses / visualizations / coding challenges
 
 #### Planned timeline
+=======
+This is the proposal. Welcome to our group project!
+>>>>>>> ef0e9b540ad77bbf22c65b8b995bacf5cb9edc41
