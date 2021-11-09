@@ -11,3 +11,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 This is the proposal. 
+
+#### Group members: 
+* Yuanyuan Zeng (yz4181)
+* Haotian Wu (hw2849)
+* Dantong Zhu (dz2451)
+* Yan Wang (yw3773)
+* Waveley Qiu (wq2162)
+
+#### Project Title
+NYC parking violations
+
+#### Motivation
+Our project focus on the NYC parking violations. We want to see which region is most likely to get violations, and which violation costs the most.
+
+#### Data Sources
+Our data source is from the NYC open data, data provided by the Department of Finance. 
+
+#### planned analyses / visualizations / coding challenges
+
+#### Planned timeline
