@@ -21,8 +21,8 @@ near by a fire hydrant in Minnesota, we come up with the idea about
 doing something related with parking violation.
 
 Our project focuses on the NYC parking violations, we want to
-investigate the association between parking violation, location and
-penalty cost.
+investigate the association between parking violation, time, location
+and fine and penalty cost in 2020 and 2021.
 
 ## Intended final product
 
@@ -41,8 +41,24 @@ We found two data sets related to our topic from the NYC open data.
 
 -   Parking Violations Issued - Fiscal Year 2021
 
+<https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves>
+
+-   Parking Violations Issued - Fiscal Year 2022
+
 <https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2022/pvqr-7yc4>
 
 ## planned analyses / visualizations / coding challenges
+
+-   histogram showing number of parking violation from each state in NYC
+
+-   plot showing number of parking and camera violation over the day
+
+-   analyze frequency of each type of violation
+
+-   analyze total fine amount and average fine amount for type of
+    violation
+
+-   make a map showing the location of violation and number of violation
+    in each county
 
 ## Planned timeline
