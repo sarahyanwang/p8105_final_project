@@ -63,9 +63,22 @@ We found two data sets related to our topic from the NYC open data.
 
 ## Planned timeline
 
-11/13/2021 Proposal 11/13/2021-11/16/2021 Revise Proposal
+11/13/2021 Proposal
+
+11/13/2021-11/16/2021 Revise Proposal
+
 11/16/2021-11/18/2021 Cleaning the data set and assign individual work
+
 11/18/2021-11/23/2021 Code for graphing (first draft)
-11/23/2021-11/28/2021 Finish coding part 11/29/2021-12/03/2021 Making
-webpage & Video 12/04/2021-12/10/2021 Report (first draft) 12/13/2021
-Finish report 12/15/2021 Put everything together 12/16/2021 Submission
+
+11/23/2021-11/28/2021 Finish coding part
+
+11/29/2021-12/03/2021 Making webpage & Video
+
+12/04/2021-12/10/2021 Report (first draft)
+
+12/13/2021 Finish report
+
+12/15/2021 Put everything together
+
+12/16/2021 Submission
