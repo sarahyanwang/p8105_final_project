@@ -1,0 +1,9 @@
+Meeting Notes
+
+First meeting with Linh | 2021-11-19 
+
+- Websites mentioned:
+--> Improved plot.ly graphics: https://kepler.gl/
+--> Latitude and longitude from street address: https://www.latlong.net/
+--> Options to automate lat and long: https://www.adventuresincre.com/auto-populate-latitude-longitude-excel/
+
