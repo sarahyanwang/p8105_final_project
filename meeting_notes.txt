@@ -7,3 +7,19 @@ First meeting with Linh | 2021-11-19
 --> Latitude and longitude from street address: https://www.latlong.net/
 --> Options to automate lat and long: https://www.adventuresincre.com/auto-populate-latitude-longitude-excel/
 
+Compare our results with the results in the news 
+A. Number
+   1) frequency of tickets in each county
+   2) frequency of each violation type in each county
+   
+B. Timeline
+   1)distribution of ticket quantities over month
+   2)distribution of ticket quantities over time
+   
+C. Fine amount
+   1）total fine amount and average fine amount in each county (table)
+   2) 
+
+D. Map showing the location of violation and number of violation in each county (plotly)
+
+
