@@ -2,7 +2,7 @@ Final project proposal
 ================
 2021-11-13
 
-## Group members
+## Group Members
 
 -   Yuanyuan Zeng (yz4181)
 -   Haotian Wu (hw2849)
@@ -10,30 +10,30 @@ Final project proposal
 -   Yan Wang (yw3773)
 -   Waveley Qiu (wq2162)
 
-## Tentative Project Title
-
-NYC parking violations
+## Tentative Project Title: NYC Parking Violations
 
 ## Motivation
 
-As one of our group member’s car was towed last year because of parking
-near by a fire hydrant in Minnesota, we come up with the idea about
-doing something related with parking violation.
+One of our group members’ had the unfortunate experience of getting her
+car towed last year, due to parking near by a fire hydrant in Minnesota.
+As a result, when we discovered that NYC has made datasets cataloging
+individual parking violations available, we were intrigued by the
+potential of investigating this topic on a city-wide level.
 
-Our project focuses on the NYC parking violations, we want to
-investigate the association between parking violation, time, location
-and fine and penalty cost in 2020 and 2021.
+We are interested in seeing if any conclusions can be made about the
+frequency at which specific parking violations are given out and if
+there are any factors that may be associated to receiving one.
 
-## Intended final product
+## Intended Final Product
 
-In the end, we want to make a webpage for our project. The website will
-include all of our data analysis, statistical models and along with a
-final report. We will also make a video to explain the whole process of
-our project.
+We intend to create a webpage for our project that will include all of
+our data analysis, statistical models, and our final report. We will
+also upload a screencast presentation that will explain the process
+behind our project.
 
 ## Anticipated Data Sources
 
-We found two data sets related to our topic from the NYC open data.
+We anticipate using three datasets from NYC OpenData in our project:
 
 -   Open Parking and Camera Violations
 
@@ -47,35 +47,49 @@ We found two data sets related to our topic from the NYC open data.
 
 <https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2022/pvqr-7yc4>
 
-## planned analyses / visualizations / coding challenges
+## Planned Analyses / Visualizations / Coding Challenges
 
--   histogram showing number of parking violation from each state in NYC
+We plan on conducting the following analyses:
 
--   plot showing number of parking and camera violation over the day
+-   Frequency of each type of violation
 
--   analyze frequency of each type of violation
+-   Total fine amount and average fine amount for type of violation
 
--   analyze total fine amount and average fine amount for type of
-    violation
+We plan on constructing the following visualizations:
 
--   make a map showing the location of violation and number of violation
-    in each county
+-   Histogram showing number of parking violation from each state in NYC
 
-## Planned timeline
+-   Plot showing number of parking and camera violation over the day
+
+-   Map showing the location of violation and number of violation in
+    each county
+
+We expect the data cleaning portion of this project to be significantly
+challenging, as we are working with a rather large dataset (about 72
+million observations). To help mitigate some of the difficulty of
+working with a larger dataset, we plan on restricting the scope of our
+analysis to just the fiscal years of 2021 and 2022 and possibly sampling
+from the resulting dataset if there is still need to.
+
+Additionally, in our initial investigation of the datasets, we noticed
+that a significant number of observations had missing values for a
+number of variables. We will need to discuss as a group how to handle
+these situations.
+
+## Planned Timeline
 
 11/13/2021 Proposal
 
 11/13/2021-11/16/2021 Revise Proposal
 
-11/16/2021-11/18/2021 Cleaning the data set and assign individual work
+11/16/2021-11/23/2021 Cleaning the data set, EDA
 
-11/18/2021-11/23/2021 Code for graphing (first draft)
+11/23/2021-11/28/2021 Narrow down analysis, start coding for report
 
-11/23/2021-11/28/2021 Finish coding part
+11/29/2021-12/03/2021 Start on webpage & Video
 
-11/29/2021-12/03/2021 Making webpage & Video
-
-12/04/2021-12/10/2021 Report (first draft)
+12/04/2021-12/10/2021 Report (first draft), update programming as
+necessary
 
 12/13/2021 Finish report
 
