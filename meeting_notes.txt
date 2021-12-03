@@ -7,6 +7,7 @@ First meeting with Linh | 2021-11-19
 --> Latitude and longitude from street address: https://www.latlong.net/
 --> Options to automate lat and long: https://www.adventuresincre.com/auto-populate-latitude-longitude-excel/
 
+data in 2021
 Compare our results with the results in the news 
 A. Number (Hailey, Freya)
    1) frequency of tickets in each county
