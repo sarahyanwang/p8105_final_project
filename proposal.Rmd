@@ -17,7 +17,7 @@ output: github_document
 
 One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. As a result, when we discovered that NYC has made datasets cataloging individual parking violations available, we were intrigued by the potential of investigating this topic on a city-wide level. 
 
-We are interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one. 
+We are interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one in 2021. 
 
 ## Intended Final Product
 
