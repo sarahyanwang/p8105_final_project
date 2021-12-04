@@ -1,0 +1,33 @@
+---
+title: "parking and broadway"
+author: "Waveley Qiu (wq2162)"
+date: "2021-12-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rvest)
+library(httr)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+```
+
+## Broadway Opening and Closing Dates (2018-2019 season)
+
+IBDB is an internet database containing a vast collection of information about Broadway shows, theaters, and seasons. We will first investigate the 2018-2019 season, as this season was the most recent season before the COVID-19 pandemic (which massively affected Broadway)
+
+Let's scrape some data (from https://www.ibdb.com/season/1288). First, we will scrape the opening dates:
+
+```{r}
+url = "https://www.ibdb.com/season/1288"
+broadway_html = read_html(url)
+
+show_names <-
+  broadway_html %>%
+  html_elements(".s12:nth-child(2) .s6") %>%
+  html_text()
+```
+

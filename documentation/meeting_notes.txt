@@ -7,7 +7,8 @@ First meeting with Linh | 2021-11-19
 --> Latitude and longitude from street address: https://www.latlong.net/
 --> Options to automate lat and long: https://www.adventuresincre.com/auto-populate-latitude-longitude-excel/
 
-data in 2021
+Second Group Meeting | 2021-11-21
+Data in 2021
 Compare our results with the results in the news 
 A. Number (Hailey, Freya)
    1) frequency of tickets in each county
@@ -19,8 +20,10 @@ B. Timeline (sarah)
    
 C. Fine amount (waveley)
    1）total fine amount and average fine amount in each county (table)
-   2) 
 
 D. Map showing the location of violation and number of violation in each county (plotly) (dantong/waveley)
 
-
+E. Proposed Analysis -- Broadway's influence on Parking Violations Analysis
+- Is there an association between Broadway show opening/closing dates and number of parking violations given out?
+- Are parking violations more likely to be given out on a show's opening date or a show's closing date?
+- Potentially restricting dataset to location around a theater?

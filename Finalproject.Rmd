@@ -12,8 +12,10 @@ library(httr)
 library(lubridate)
 library(plotly)
 ```
+
 A. Number
-1）frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
+
+1）Frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
 ```{r}
 violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
@@ -29,7 +31,7 @@ violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>%
     weekday = weekdays(issue_date),
     )  %>%  # make the borough the same 
   filter(borough != "A",                  # get rid of "A"
-         weekday !="NA") %>%   # remove data that cannot trun into weekday
+         weekday !="NA") %>%   # remove data that cannot turn into weekday
   separate(issue_date, into = c("year", "month", "day"), sep = "-")  # separate date into year, month, day
 
 # another potential cleaning 1)select the variables we needed 2)convert the mon into character ?
