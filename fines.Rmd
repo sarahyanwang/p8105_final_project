@@ -1,7 +1,7 @@
 ---
 title: "fines"
 author: "Waveley Qiu (wq2162)"
-date: "12/3/2021"
+date: "2021-12-03"
 output: html_document
 ---
 
@@ -23,7 +23,7 @@ violation %>%
   )
 ```
 
-We obwerve that the average fine amount is highest in Manhattan and lowest in Staten Island.
+We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.
 
 ```{r}
 violation %>% group_by(borough) %>% 
@@ -75,7 +75,12 @@ violation %>%
   filter(excess_amount !=  0) %>%
   
   ggplot(aes(x = excess_amount, fill = borough)) +
-  geom_boxplot(alpha = 0.3)
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = "Fine Adjustment Amount",
+    fill = "Borough",
+    title = "Fine Adjustments by Borough"
+  )
 ```
 
 
