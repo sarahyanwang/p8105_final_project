@@ -19,6 +19,14 @@ source("code/formatting.R")
 
 IBDB is an internet database containing a vast collection of information about Broadway shows, theaters, and seasons. We will first investigate the 2018-2019 season, as this season was the most recent season before the COVID-19 pandemic (which massively affected Broadway)
 
+The following filters were used:
+Issue Date contains 2019
+Plate is not blank
+State is not blank
+County is not blank
+License Type is PAS
+Fine Amount is not blank
+
 Let's scrape some data (from https://www.ibdb.com/season/1288). First, we will scrape the opening dates:
 
 ```{r}
@@ -28,6 +36,51 @@ broadway_html = read_html(url)
 show_names <-
   broadway_html %>%
   html_elements(".s12:nth-child(2) .s6") %>%
-  html_text()
+  html_text() %>% 
+  str_replace_all("\r\n", "") %>% 
+  trimws()
+
+opening_dates <-
+  broadway_html %>%
+  html_elements(".s12:nth-child(2) .s3:nth-child(2)") %>%
+  html_text() %>% 
+  str_replace_all("<*>", "") %>% 
+  trimws()
+
+theater <-
+  broadway_html %>%
+  html_elements(".s12:nth-child(2) .s3:nth-child(3)") %>%
+  html_text() %>% 
+  str_replace_all("<*>", "") %>% 
+  trimws()
+
+openings <- tibble(
+  show = show_names,
+  date = opening_dates,
+  theater = theater
+)
+
+openings <- openings %>%
+  mutate(
+    opening_date = as.Date(date,  format = "%B %d, %Y"),
+    month = month(opening_date),
+    day = day(opening_date),
+    year = year(opening_date)
+  )
 ```
+
+Now, let's join the Broadway opening dates dataset with our violations dataset.
+
+```{r}
+manhattan_violations <-
+  violation %>% filter(borough == "Manhattan")
+
+violations_broadway <-
+  violation %>% 
+  filter(borough == "Manhattan") %>% 
+  left_join(openings, by = c("issue_date" = "opening_date"))
+```
+
+
+
 

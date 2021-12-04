@@ -1,0 +1,15 @@
+---
+title: "mapping"
+author: "Waveley Qiu (wq2162)"
+date: "2021-12-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(plotly)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+```
