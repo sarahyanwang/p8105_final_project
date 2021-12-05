@@ -1,0 +1,72 @@
+---
+title: "timeline"
+author: Sarah
+output: github_document
+---
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+# load the data
+violation_df = read_csv("data_after_sampling.csv")
+violation_df = violation_df %>%
+  janitor::clean_names() 
+
+```
+
+```{r}
+violation_df %>%
+  separate(issue_date, into = c("month", "date", "year")) %>%
+  mutate(month = month.name[as.numeric(month)]) %>%
+  mutate(month = as.factor(month),
+         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
+  relocate(year, month, date) %>%
+  group_by(year, month) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = month, y = n_obs, group = 1)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
+  labs(title = "The observation of parking violations \n of each month in 2021")
+  
+```
+
+```{r}
+plot_timeline_day = 
+  violation_df %>%
+  separate(violation_time, c("hour", "min"), ":") %>%
+  mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
+  mutate(hour = as.numeric(hour)) %>%
+  group_by(hour) %>%
+  summarize(count = n()) %>%
+  filter(hour <= 24)
+
+plot_timeline_day %>%
+  ggplot(aes(x = hour, y = count)) + geom_point() + geom_line() +
+  labs(title = "The total number of violations during 24 hours \n of a day in 2021")
+```
+
+```{r}
+## another way I tried for day time
+violation_df %>%
+  separate(violation_time, c("hour", "min"), ":") %>%
+  mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
+  mutate(hour = as.character(hour),
+         min = substr(min, 1, 2)) %>%
+  mutate(time = paste(hour, min, sep = ":")) %>%
+  mutate(time_2 = as.POSIXct(time, format = "%H:%M")) %>%
+  ggplot(aes(x = time_2)) + geom_histogram() + xlab("Time") + ylab("Count") 
+  
+```
+
+
+
+
+
+
+
+
+
+
+
