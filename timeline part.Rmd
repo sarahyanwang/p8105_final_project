@@ -47,6 +47,8 @@ plot_timeline_day %>%
   labs(title = "The total number of violations during 24 hours \n of a day in 2021")
 ```
 
+8:00 seems to have the highest number of parking violations.
+
 ```{r}
 ## another way I tried for day time
 violation_df %>%
@@ -57,7 +59,6 @@ violation_df %>%
   mutate(time = paste(hour, min, sep = ":")) %>%
   mutate(time_2 = as.POSIXct(time, format = "%H:%M")) %>%
   ggplot(aes(x = time_2)) + geom_histogram() + xlab("Time") + ylab("Count") 
-  
 ```
 
 
