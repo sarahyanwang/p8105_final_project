@@ -59,7 +59,9 @@ openings <- openings %>%
     day = day(opening_date),
     year = year(opening_date)
   )
+```
 
+```{r}
 closing_show_names <-
   broadway_html %>%
   html_elements(":nth-child(4) .seasons-list a") %>%
