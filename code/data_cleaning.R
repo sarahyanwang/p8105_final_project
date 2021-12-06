@@ -9,7 +9,8 @@ library(httr)
 library(lubridate)
 library(plotly)
 
-violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
+violation1 <-
+  read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
@@ -25,8 +26,17 @@ violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>%
       month = month(issue_date),
       day = day(issue_date)
   )  %>%  # make the borough the same 
-  filter(borough != "A",                  # get rid of "A"
+  filter(borough != "A", 
          weekday != "NA") 
-  # %>%   # remove data that cannot turn into weekday
-  # separate(temp_issue_date, into = c("year", "month", "day"), sep = "-")  # separate date into year, month, day
 
+violation2 <- 
+  read_csv("data/Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
+  janitor::clean_names() %>%
+  rename(borough = violation_county) %>%
+  mutate(
+    address = paste(house_number, street_name, ", NY")
+  )  %>% 
+  select(address, summons_number)
+
+violation <-
+  violation1 %>% left_join(violation2, by = "summons_number")

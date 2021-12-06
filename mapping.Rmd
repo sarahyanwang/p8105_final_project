@@ -8,8 +8,44 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+library(tidygeocoder)
 library(plotly)
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
 ```
+
+
+```{r}
+test_df <- violation %>% filter(!is.na(address)) %>% geocode(address,  method = 'osm', lat = latitude , long = longitude, limit = 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
