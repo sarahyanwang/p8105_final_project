@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). We were intrigued by the potential of investigating the parking violation in NYC in 2021. 
 
 ### Questions
-1. When and where a parking ticket in NYC is most likely to be found?
+1. How the parking violation frequency related to time and location?
 2. 
 3. 
 
@@ -36,14 +36,14 @@ The Open Parking and Camera violations contains violations from 2016 to 2021 and
 The key variables that we used in our analysis include:
 
 
-
-#### Data Cleaning
-
 ### Exploratory Analysis
 
 
 ### Additional Analysis(Regression Analysis)
+chi-square : weekday vs violation count 
+chi-suqare : borough vs violation count
 
+potential analysis(waveley)
 
 ### Discussion
 
