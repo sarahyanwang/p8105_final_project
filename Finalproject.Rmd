@@ -33,7 +33,7 @@ A. Number
 
 1）Frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
 ```{r}
-violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
+violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
@@ -66,27 +66,29 @@ Frequency of violation type in each borough.
 
 ```{r}
 violation %>% 
-  count(violation) %>% 
+  count(borough, violation) %>% 
   mutate(
       violation = fct_reorder(violation, n)
   ) %>% 
-  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", facet_col = "borough") %>% 
+  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", groups = ~borough) %>% 
   layout(title = "Frequency of Violation Type",
          xaxis = list(title = "Violation Type"),
          yaxis = list(title = "Number of Tickets"))
 
-violation_type = violation %>% 
+
+violation_type = 
+  violation %>% 
   group_by(borough) %>% 
   count(violation) %>% 
   mutate(
       violation = fct_reorder(violation, n)
   ) %>% 
   ggplot(aes(x = violation, y = n)) + 
-  geom_point() + geom_bar() 
-  facet_grid(~borough)
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10)) +
+  geom_bar(stat = "identity") +
+  facet_grid(. ~ borough)
 
 ggplotly(violation_type)
-
 ```
 
 
