@@ -6,12 +6,27 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(httr)
 library(lubridate)
 library(plotly)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
 
 A. Number
@@ -32,7 +47,7 @@ violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>%
     weekday = weekdays(issue_date),
     )  %>%  # make the borough the same 
   filter(borough != "A",                  # get rid of "A"
-         weekday !="NA") %>%   # remove data that cannot turn into weekday
+         weekday != "NA") %>%   # remove data that cannot turn into weekday
   separate(issue_date, into = c("year", "month", "day"), sep = "-")  # separate date into year, month, day
 
 # another potential cleaning 1)select the variables we needed 2)convert the mon into character ?
@@ -47,5 +62,31 @@ violation %>%
          yaxis = list(title = "Number of Tickets"))
 ```
 
+Frequency of violation type in each borough.
+
+```{r}
+violation %>% 
+  count(violation) %>% 
+  mutate(
+      violation = fct_reorder(violation, n)
+  ) %>% 
+  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", facet_col = "borough") %>% 
+  layout(title = "Frequency of Violation Type",
+         xaxis = list(title = "Violation Type"),
+         yaxis = list(title = "Number of Tickets"))
+
+violation_type = violation %>% 
+  group_by(borough) %>% 
+  count(violation) %>% 
+  mutate(
+      violation = fct_reorder(violation, n)
+  ) %>% 
+  ggplot(aes(x = violation, y = n)) + 
+  geom_point() + geom_bar() 
+  facet_grid(~borough)
+
+ggplotly(violation_type)
+
+```
 
 
