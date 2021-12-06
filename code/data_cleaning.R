@@ -4,11 +4,6 @@
 # Call by using source("code/data_cleaning.R") 
 ###
 
-library(tidyverse)
-library(httr)
-library(lubridate)
-library(plotly)
-
 violation1 <-
   read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
@@ -27,7 +22,10 @@ violation1 <-
       day = day(issue_date)
   )  %>%  # make the borough the same 
   filter(borough != "A", 
-         weekday != "NA") 
+         weekday != "NA") %>%
+  separate(violation_time, c("hour", "min"), ":") %>%
+  mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
+  mutate(hour = as.numeric(hour))
 
 violation2 <- 
   read_csv("data/Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%

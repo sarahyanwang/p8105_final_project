@@ -17,6 +17,7 @@ A. Number (Hailey, Freya)
 B. Timeline (sarah)
    1)distribution of ticket quantities over month
    2)distribution of ticket quantities over time
+   3)distribution of ticket quantities over week 
    
 C. Fine amount (waveley)
    1）total fine amount and average fine amount in each county (table)
