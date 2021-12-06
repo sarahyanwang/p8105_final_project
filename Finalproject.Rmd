@@ -66,24 +66,31 @@ Frequency of violation type in each borough.
 
 ```{r}
 violation %>% 
-  count(violation) %>% 
+  count(borough, violation) %>% 
   mutate(
       violation = fct_reorder(violation, n)
   ) %>% 
-  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", facet_col = "borough") %>% 
+  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", facet_col = ~borough) %>% 
   layout(title = "Frequency of Violation Type",
          xaxis = list(title = "Violation Type"),
          yaxis = list(title = "Number of Tickets"))
 
 violation_type = violation %>% 
-  group_by(borough) %>% 
-  count(violation) %>% 
+  count(borough, violation) %>% 
   mutate(
-      violation = fct_reorder(violation, n)
-  ) %>% 
-  ggplot(aes(x = violation, y = n)) + 
-  geom_point() + geom_bar() 
-  facet_grid(~borough)
+    violation = fct_reorder(violation, n)
+  ) %>% filter(borough == "Manhattan") %>% arrange(desc(n)) %>% head(10) %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type", 
+    xlab = "Violation Type", 
+    ylab = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
+    legend.position = "right",
+    legend.text = element_text(size = 8)
+  )
 
 ggplotly(violation_type)
 
