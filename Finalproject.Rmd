@@ -33,7 +33,7 @@ A. Number
 
 1）Frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
 ```{r}
-violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
+violation = read_csv(".data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
