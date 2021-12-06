@@ -17,7 +17,9 @@ source("code/formatting.R")
 
 
 ```{r}
-test_df <- violation %>% filter(!is.na(address)) %>% geocode(address,  method = 'osm', lat = latitude , long = longitude, limit = 1)
+violation_lat_long <- violation %>% filter(!is.na(address)) %>% sample_n(100) %>% geocode(address,  method = 'google', lat = latitude , long = longitude, limit = 1)
+
+write_csv(violation_lat_long, file = "violations_lat_long.csv")
 ```
 
 

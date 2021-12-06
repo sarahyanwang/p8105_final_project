@@ -34,9 +34,35 @@ violation2 <-
   janitor::clean_names() %>%
   rename(borough = violation_county) %>%
   mutate(
-    address = paste(house_number, street_name, ", NY")
+    address = paste(ifelse(is.na(house_number), "0", house_number), street_name, ", ", ifelse(!is.na(intersecting_street), intersecting_street, ""), ", NY")
   )  %>% 
   select(address, summons_number)
 
 violation <-
   violation1 %>% left_join(violation2, by = "summons_number")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
