@@ -2,7 +2,7 @@
 title: "fines"
 author: "Waveley Qiu (wq2162)"
 date: "2021-12-03"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,7 @@ source("code/data_cleaning.R")
 source("code/formatting.R")
 ```
 
-#W Mean Fine Amount Across Boroughs
+## Mean Fine Amount Across Boroughs
 
 First, let us compute the average fine amounts across the different boroughs:
 ```{r}
