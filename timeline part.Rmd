@@ -6,35 +6,66 @@ output: github_document
 ```{r}
 library(tidyverse)
 library(ggplot2)
-```
 
-```{r}
-# load the data
-violation_df = read_csv("data_after_sampling.csv")
-violation_df = violation_df %>%
-  janitor::clean_names() 
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+head(violation)
 
 ```
 
+This plot shows the overall parking violations each month in 2020.
+
 ```{r}
-violation_df %>%
-  separate(issue_date, into = c("month", "date", "year")) %>%
+violation %>%
   mutate(month = month.name[as.numeric(month)]) %>%
   mutate(month = as.factor(month),
          month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
-  relocate(year, month, date) %>%
-  group_by(year, month) %>%
+  relocate(month) %>%
+  group_by(month) %>%
   summarize(n_obs = n()) %>%
   ggplot(aes(x = month, y = n_obs, group = 1)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = "The observation of parking violations \n of each month in 2021")
-  
+  labs(title = "The observation of parking violations \n of each month in 202")
+
+```
+
+
+```{r}
+violation %>%
+  mutate(month = month.name[as.numeric(month)]) %>%
+  mutate(month = as.factor(month),
+         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
+  relocate(month) %>%
+  mutate(month = "November") %>%
+  group_by(month, day) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = day, y = n_obs, group = 1)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
+  labs(title = "The observation of parking violations \n of each month in 202")
+
+```
+
+It seems like there is a weekly pattern.
+
+```{r}
+violation %>% 
+  group_by(weekday) %>%
+  mutate(weekday = as.factor(weekday)) %>%
+  mutate(weekday = fct_relevel(weekday, "Monday", "Tuesday", "Wednesday", "Thurday", "Friday")) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = weekday, y = n_obs, group = 1)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
+  labs(title = "ddd")
+
 ```
 
 ```{r}
 plot_timeline_day = 
-  violation_df %>%
+  violation %>%
   separate(violation_time, c("hour", "min"), ":") %>%
   mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
   mutate(hour = as.numeric(hour)) %>%
@@ -44,22 +75,28 @@ plot_timeline_day =
 
 plot_timeline_day %>%
   ggplot(aes(x = hour, y = count)) + geom_point() + geom_line() +
-  labs(title = "The total number of violations during 24 hours \n of a day in 2021")
+  labs(title = "The total number of violations during 24 hours \n of a day in 2020")
 ```
 
 8:00 seems to have the highest number of parking violations.
 
 ```{r}
-## another way I tried for day time
-violation_df %>%
+plot_timeline_day = 
+  violation %>%
+  mutate(weekday == "Monday") %>%
   separate(violation_time, c("hour", "min"), ":") %>%
   mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
-  mutate(hour = as.character(hour),
-         min = substr(min, 1, 2)) %>%
-  mutate(time = paste(hour, min, sep = ":")) %>%
-  mutate(time_2 = as.POSIXct(time, format = "%H:%M")) %>%
-  ggplot(aes(x = time_2)) + geom_histogram() + xlab("Time") + ylab("Count") 
+  mutate(hour = as.numeric(hour)) %>%
+  group_by(hour) %>%
+  summarize(count = n()) %>%
+  filter(hour <= 24)
+
+plot_timeline_day %>%
+  ggplot(aes(x = hour, y = count)) + geom_point() + geom_line() +
+  labs(title = "The total number of violations during 24 hours \n of every Monday in 2020")
 ```
+
+
 
 
 
