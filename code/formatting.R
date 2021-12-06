@@ -9,7 +9,8 @@
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
-  out.width = "90%"
+  out.width = "90%",
+  dpi = 300
 )
 
 theme_set(theme_minimal() + theme(legend.position = "bottom"))

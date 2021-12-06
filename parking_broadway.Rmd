@@ -15,22 +15,14 @@ source("code/data_cleaning.R")
 source("code/formatting.R")
 ```
 
-## Broadway Opening and Closing Dates (2018-2019 season)
+## Broadway Opening and Closing Dates (2019-2020 season)
 
-IBDB is an internet database containing a vast collection of information about Broadway shows, theaters, and seasons. We will first investigate the 2018-2019 season, as this season was the most recent season before the COVID-19 pandemic (which massively affected Broadway)
+IBDB is an internet database containing a vast collection of information about Broadway shows, theaters, and seasons. 
 
-The following filters were used:
-Issue Date contains 2019
-Plate is not blank
-State is not blank
-County is not blank
-License Type is PAS
-Fine Amount is not blank
-
-Let's scrape some data (from https://www.ibdb.com/season/1288). First, we will scrape the opening dates:
+Let's scrape some data (from https://www.ibdb.com/season/1289). First, we will scrape the opening dates:
 
 ```{r}
-url = "https://www.ibdb.com/season/1288"
+url = "https://www.ibdb.com/season/1289"
 broadway_html = read_html(url)
 
 show_names <-
@@ -69,6 +61,43 @@ openings <- openings %>%
   )
 ```
 
+```{r}
+closing_show_names <-
+  broadway_html %>%
+  html_elements(":nth-child(4) .seasons-list a") %>%
+  html_text() %>% 
+  str_replace_all("\r\n", "") %>% 
+  trimws()
+
+closing_dates <-
+  broadway_html %>%
+  html_elements(".s12:nth-child(2) .s3:nth-child(2)") %>%
+  html_text() %>% 
+  str_replace_all("<*>", "") %>% 
+  trimws()
+
+theater <-
+  broadway_html %>%
+  html_elements(".s12:nth-child(2) .s3:nth-child(3)") %>%
+  html_text() %>% 
+  str_replace_all("<*>", "") %>% 
+  trimws()
+
+openings <- tibble(
+  show = show_names,
+  date = opening_dates,
+  theater = theater
+)
+
+openings <- openings %>%
+  mutate(
+    opening_date = as.Date(date,  format = "%B %d, %Y"),
+    month = month(opening_date),
+    day = day(opening_date),
+    year = year(opening_date)
+  )
+```
+
 Now, let's join the Broadway opening dates dataset with our violations dataset.
 
 ```{r}
@@ -79,6 +108,30 @@ violations_broadway <-
   violation %>% 
   filter(borough == "Manhattan") %>% 
   left_join(openings, by = c("issue_date" = "opening_date"))
+
+show_violation <- violations_broadway %>% filter(!is.na(show))
+
+show_violation %>%
+  group_by(show, issue_date, weekday) %>%
+  summarise(
+    total_violations = n(),
+    total_fine = sum(fine_amount)
+  ) %>%
+  arrange(issue_date)
+
+show_violation %>%
+  group_by(show, issue_date) %>%
+  count(violation) %>%
+  arrange(-n) %>%
+  slice(1) %>%
+  arrange(issue_date)
+
+violations_broadway %>% 
+  group_by(show, weekday) %>%
+  summarise(
+    total_violations = n()
+  ) %>% 
+  knitr::kable()
 ```
 
 
