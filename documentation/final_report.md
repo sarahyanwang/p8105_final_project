@@ -15,7 +15,7 @@ violation in NYC in 2021.
 
 ### Questions
 
-1.  When and where a parking ticket in NYC is most likely to be found?
+1.  How the parking violation frequency related to time and location?
 2.  
 3.  
 
@@ -47,11 +47,14 @@ plotting the violation over a day.
 
 The key variables that we used in our analysis include:
 
-#### Data Cleaning
-
 ### Exploratory Analysis
 
 ### Additional Analysis(Regression Analysis)
+
+chi-square : weekday vs violation count chi-suqare : borough vs
+violation count
+
+potential analysis(waveley)
 
 ### Discussion
 
