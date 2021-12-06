@@ -17,7 +17,7 @@ source("code/formatting.R")
 
 
 ```{r}
-violation_lat_long <- violation %>% filter(!is.na(address)) %>% geocode(address,  method = 'google', lat = latitude , long = longitude, limit = 1)
+violation_lat_long <- violation %>% filter(!is.na(address)) %>% geocode(address, method = 'google', lat = latitude , long = longitude, limit = 1)
 ```
 
 
