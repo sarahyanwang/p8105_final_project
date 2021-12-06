@@ -1,5 +1,6 @@
 ---
-title: "Final Project"
+title: "frequency_part"
+authors: Yuanyuan Zeng
 date: "11/21/2021"
 output: html_document
 ---
@@ -35,22 +36,6 @@ violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>%
   separate(issue_date, into = c("year", "month", "day"), sep = "-")  # separate date into year, month, day
 
 # another potential cleaning 1)select the variables we needed 2)convert the mon into character ?
-  
-#  frequency_ticket = violation %>% 
-#    select(plate, county, issue_date, violation) %>% 
-#      mutate(
-#      county = case_when(
-#        county %in% c("BK","K", "Kings") ~ "Brooklyn",
-#        county %in% c("BX", "Bronx") ~ "Bronx",
-#        county %in% c("Q", "QN", "Qns") ~ "Queens",
-#        county %in% c("ST", "R", "Rich", "RICH") ~ "State Island",
-#        county %in% c("NY", "MN") ~ "Manhattan"),
-#      issue_date = mdy(issue_date),
-#      weekday = weekdays(issue_date)) %>% 
-#    filter(county != "A", 
-#           weekday != "NA") %>% 
-#    separate(issue_date, into = c("year", "month", "day"), sep = "-") %>% 
-
 
 violation %>% 
   count(borough) %>% 
