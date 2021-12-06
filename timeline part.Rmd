@@ -11,7 +11,6 @@ source("code/data_cleaning.R")
 source("code/formatting.R")
 
 head(violation)
-
 ```
 
 This plot shows the overall parking violations each month in 2020.
@@ -27,7 +26,7 @@ violation %>%
   ggplot(aes(x = month, y = n_obs, group = 1)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = "The observation of parking violations \n of each month in 202")
+  labs(title = "The observation of parking violations \n of each month in 2020")
 
 ```
 
@@ -83,10 +82,6 @@ plot_timeline_day %>%
 ```{r}
 plot_timeline_day = 
   violation %>%
-  mutate(weekday == "Monday") %>%
-  separate(violation_time, c("hour", "min"), ":") %>%
-  mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
-  mutate(hour = as.numeric(hour)) %>%
   group_by(hour) %>%
   summarize(count = n()) %>%
   filter(hour <= 24)
