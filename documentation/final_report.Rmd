@@ -1,7 +1,7 @@
 ---
 title: "Final Report"
 date: "12/6/2021"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -46,3 +46,4 @@ The key variables that we used in our analysis include:
 
 
 ### Discussion
+
