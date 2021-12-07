@@ -19,8 +19,8 @@ One of our group members' had the unfortunate experience of getting her car towe
 
 ### Questions
 1. When and where a parking ticket in NYC is most likely to be found?
-2. 
-3. 
+2. what possible factors are associated with the tickets? The driver's experience, the car's size?
+3. how to avoid the future ticket? Suggestions based on the analysis...
 
 
 ### Data
