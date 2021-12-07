@@ -89,6 +89,17 @@ violation_type = violation %>%
   group_by(borough) %>% 
   count(violation) %>% 
   mutate(
+<<<<<<< HEAD
+      violation = fct_reorder(violation, n)
+  ) 
+
+ violation_type %>% mutate(index = row_number()) %>% filter(index <= 10)
+  
+  ggplot(aes(x = violation, y = n)) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10)) +
+  geom_bar(stat = "identity") +
+  facet_grid(. ~ borough)
+=======
     violation = fct_reorder(violation, n)
   ) %>% 
   arrange(desc(n)) %>% 
@@ -104,6 +115,7 @@ violation_type = violation %>%
     axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
     legend.text = element_text(size = 8)
   )
+>>>>>>> 63b1bce399744cc4afada331d7eff49a2a4dd760
 
 ggplotly(violation_type)
 
