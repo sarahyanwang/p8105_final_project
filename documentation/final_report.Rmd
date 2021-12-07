@@ -1,7 +1,9 @@
 ---
 title: "Final Report"
 date: "12/6/2021"
-output: github_document
+output: 
+  github_document:
+  code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -9,9 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(ggplot2)
-
-source("code/data_cleaning.R")
-source("code/formatting.R")
+library(httr)
+library(lubridate)
+library(plotly)
 ```
 
 ### Motivation
@@ -31,7 +33,7 @@ We used two datasets from NYC OpenData in our project:
 * Open Parking and Camera Violations 
 [-Link](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera violations contains violations from 2016 to 2021 and have 73.6 millions of rows. Since we only focus on year 2021, we filter the dataset on the website page to remove redundant information and download the dataset after filtering. The dataset we used was too large to store in github. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. The original variable `county` renamed as `borough` and names are aligned. We separated the `issue_date` into `month`, `date`, and `year` and apply function to find the weekday of the date. We further broke down the `violation_time` into `hour` and `min` for plotting the violation over a day.
+The Open Parking and Camera Violations contains violations from 2016 to 2021 and have 73.6 millions of rows. Since we only focus on year 2021 from January to October, we filter the dataset on the website page to remove redundant information and download the dataset after filtering. The dataset we used was too large to store in github. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. The original variable `county` renamed as `borough` and names are aligned. We separated the `issue_date` into `month`, `date`, and `year` and apply function to find the weekday of the date. We further broke down the `violation_time` into `hour` and `min` for plotting the violation over a day.
 
 
 * Parking Violations Issued - Fiscal Year 2021
@@ -42,10 +44,34 @@ The Parking Violations Issued - Fiscal Year 2021 dataset provides information ab
 After data cleaning, the two datasets are joined by `summons_number` finally.
 
 #### Variable of Interests
+<<<<<<< HEAD
+__Open Parking and Camera Violations__
+
+* `plate`
+
+* `issue_date`
+
+* `violation_time`
+
+* `violation` : type of violation
+
+* `fine_amount`
+
+* `borough`
+
+* `weekday`
+
+=======
 The key variables that we used in our analysis include:
 `House Number`, `Street Name`, `Intersecting Street` for mapping;
+>>>>>>> 4e590c3f8ed2557cc98b5119d7c49c829b5a1067
 
 ### Exploratory Analysis
+
+__Open Parking and Camera Violations__
+We used the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday. 
+
+####
 
 #### Visualization over time
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
