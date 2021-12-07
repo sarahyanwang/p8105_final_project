@@ -15,9 +15,10 @@ violation in NYC in 2021.
 
 ### Questions
 
-1.  How the parking violation frequency related to time and location?
-2.  
-3.  
+1.  When and where a parking ticket in NYC is most likely to be found?
+2.  what possible factors are associated with the tickets? The driver’s
+    experience, the car’s size?
+3.  how to avoid the future ticket? Suggestions based on the analysis…
 
 ### Data
 
@@ -28,33 +29,52 @@ We used two datasets from NYC OpenData in our project:
 -   Open Parking and Camera Violations
     [-Link](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera violations contains violations from 2016 to
-2021 and have 73.6 millions of rows. Since we only focus on year 2021,
-we filter the dataset on the website page to remove redundant
-information and download the dataset after filtering. The dataset we
-used was too large to store in github. We are interested in parking
-violation in five boroughs, Manhattan, Kings, The Bronx, State Island,
-and Queens. The original variable `county` renamed as `borough` and
-names are aligned. We separated the `issue_date` into `month`, `date`,
-and `year` and apply function to find the weekday of the date. We
-further broke down the `violation_time` into `hour` and `min` for
-plotting the violation over a day.
+The Open Parking and Camera Violations contains violations from 2016 to
+2021 and have 73.6 millions of rows. Since we only focus on year 2021
+from January to October, we filter the dataset on the website page to
+remove redundant information and download the dataset after filtering.
+The dataset we used was too large to store in github. We are interested
+in parking violation in five boroughs, Manhattan, Kings, The Bronx,
+State Island, and Queens. The original variable `county` renamed as
+`borough` and names are aligned. We separated the `issue_date` into
+`month`, `date`, and `year` and apply function to find the weekday of
+the date. We further broke down the `violation_time` into `hour` and
+`min` for plotting the violation over a day.
 
 -   Parking Violations Issued - Fiscal Year 2021
     [-Link](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
 #### Variable of Interests
 
-The key variables that we used in our analysis include:
+**Open Parking and Camera Violations**
+
+-   `plate`
+
+-   `issue_date`
+
+-   `violation_time`
+
+-   `violation` : type of violation
+
+-   `fine_amount`
+
+-   `borough`
+
+-   `weekday`
 
 ### Exploratory Analysis
 
+**Open Parking and Camera Violations** We used the dataset to explored
+about the distribution of number of of violation and violation types in
+five boroughs to understand the trend of violation in NYC. Then, we
+explored the distribution of number of violation over a day and in each
+weekday.
+
+#### 
+
+#### Visualization over time
+
 ### Additional Analysis(Regression Analysis)
-
-chi-square : weekday vs violation count chi-suqare : borough vs
-violation count
-
-potential analysis(waveley)
 
 ### Discussion
 

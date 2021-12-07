@@ -46,6 +46,7 @@ anova(violation_reg)
 There appear to be differences between fine amounts and at least 2 boroughs. 
 
 
+
 ## Which borough tends to pay the most in excess fees?
 
 Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.

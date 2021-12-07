@@ -13,7 +13,9 @@ source("code/formatting.R")
 head(violation)
 ```
 
-This plot shows the overall parking violations each month in 2020.
+#### Visualization over time 
+
+For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
 ```{r}
 violation %>%
@@ -21,14 +23,19 @@ violation %>%
   mutate(month = as.factor(month),
          month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
   relocate(month) %>%
-  group_by(month) %>%
+  group_by(borough, month) %>%
   summarize(n_obs = n()) %>%
   ggplot(aes(x = month, y = n_obs, group = 1)) + 
   geom_point() + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = "The observation of parking violations \n of each month in 2020")
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
+  labs(title = "The observation of parking violations of each month \n in 2021 for each borough") + facet_wrap(~ borough, nrow = 1)
 
 ```
+
+The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
+
+
+
 
 
 ```{r}

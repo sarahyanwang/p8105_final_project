@@ -27,13 +27,15 @@ options(
 
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+
+source("code/formatting.R")
 ```
 
 A. Number
 
 1）Frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
 ```{r}
-violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
+violation = read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
@@ -43,13 +45,18 @@ violation = read_csv("data/Open_Parking_and_Camera_Violations.csv") %>%
       borough %in% c("Q", "QN", "Qns") ~ "Queens",
       borough %in% c("ST", "R", "Rich", "RICH") ~ "State Island",
       borough %in% c("NY", "MN") ~ "Manhattan"),
-    issue_date = mdy(issue_date),
-    weekday = weekdays(issue_date),
+      issue_date = as.Date(issue_date, format = "%m/%d/%y"),
+      weekday = weekdays(issue_date),
+      year = year(issue_date),
+      month = month(issue_date),
+      day = day(issue_date)
     )  %>%  # make the borough the same 
   filter(borough != "A",                  # get rid of "A"
-         weekday != "NA") %>%   # remove data that cannot turn into weekday
-  separate(issue_date, into = c("year", "month", "day"), sep = "-")  # separate date into year, month, day
+         weekday != "NA",
+         month != "11",
+         month != "12")  # remove data that cannot turn into weekday
 
+  
 # another potential cleaning 1)select the variables we needed 2)convert the mon into character ?
 
 violation %>% 
@@ -57,30 +64,32 @@ violation %>%
   mutate(
     borough = fct_reorder(borough, n)) %>% 
   plot_ly(x = ~borough, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>% 
-  layout(title = "Frequency of Tickets in Boroughs",
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
          xaxis = list(title = "Borough"),
          yaxis = list(title = "Number of Tickets"))
+
+violation %>% 
+  group_by(borough) %>%
+  count(month) %>% 
+  mutate(month = month.abb[as.numeric(month)],
+         month = fct_relevel(month, c("Jan", "Feb", "Mar", "Apr","May","Jun", "Jul", "Aug", "Sep", "Oct"))) %>% 
+      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis")%>%
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
+         xaxis = list(title = "Borough"),
+         yaxis = list(title = "Number of Tickets in Each Month in 2021"))
+
+
 ```
 
 Frequency of violation type in each borough.
 
 ```{r}
-violation %>% 
-  count(borough, violation) %>% 
-  mutate(
-      violation = fct_reorder(violation, n)
-  ) %>% 
-  plot_ly(x = ~violation, y = ~n, color = ~violation, type = "bar", groups = ~borough) %>% 
-  layout(title = "Frequency of Violation Type",
-         xaxis = list(title = "Violation Type"),
-         yaxis = list(title = "Number of Tickets"))
 
-
-violation_type = 
-  violation %>% 
+violation_type = violation %>% 
   group_by(borough) %>% 
   count(violation) %>% 
   mutate(
+<<<<<<< HEAD
       violation = fct_reorder(violation, n)
   ) 
 
@@ -90,8 +99,26 @@ violation_type =
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10)) +
   geom_bar(stat = "identity") +
   facet_grid(. ~ borough)
+=======
+    violation = fct_reorder(violation, n)
+  ) %>% 
+  arrange(desc(n)) %>% 
+  mutate(index = row_number()) %>% 
+  filter(index <= 10) %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + facet_grid(. ~ borough) +
+  labs(
+    title = "Frequency of Violation Type in Each Borough", 
+    xlab = "Violation Type", 
+    ylab = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 8)
+  )
+>>>>>>> 63b1bce399744cc4afada331d7eff49a2a4dd760
 
 ggplotly(violation_type)
+
 ```
 
 
