@@ -6,6 +6,12 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
 ```
 
 ### Motivation
@@ -36,10 +42,9 @@ The Open Parking and Camera violations contains violations from 2016 to 2021 and
 The key variables that we used in our analysis include:
 
 
-
-#### Data Cleaning
-
 ### Exploratory Analysis
+
+#### Visualization over time
 
 
 ### Additional Analysis(Regression Analysis)
