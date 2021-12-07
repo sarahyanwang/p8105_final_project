@@ -77,7 +77,8 @@ violation %>%
   layout(title = "Frequency of Tickets in Boroughs in 2021",
          xaxis = list(title = "Borough"),
          yaxis = list(title = "Number of Tickets in Each Month in 2021"))
-    
+
+
 ```
 
 Frequency of violation type in each borough.
