@@ -22,7 +22,9 @@ violation1 <-
       day = day(issue_date)
   )  %>%  # make the borough the same 
   filter(borough != "A", 
-         weekday != "NA") %>%
+         weekday != "NA",
+         month != "11",
+         month != "12") %>%
   separate(violation_time, c("hour", "min"), ":") %>%
   mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
   mutate(hour = as.numeric(hour))
