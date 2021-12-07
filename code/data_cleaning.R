@@ -5,7 +5,7 @@
 ###
 
 violation1 <-
-  read_csv("/Open_Parking_and_Camera_Violations.csv") %>% 
+  read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
@@ -30,7 +30,7 @@ violation1 <-
   mutate(hour = as.numeric(hour))
 
 violation2 <- 
-  read_csv("/Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
+  read_csv("data/Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
   janitor::clean_names() %>%
   rename(borough = violation_county) %>%
   mutate(
