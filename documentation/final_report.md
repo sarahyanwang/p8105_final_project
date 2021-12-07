@@ -44,6 +44,18 @@ the date. We further broke down the `violation_time` into `hour` and
 -   Parking Violations Issued - Fiscal Year 2021
     [-Link](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
+The Parking Violations Issued - Fiscal Year 2021 dataset provides
+information about the violations issued during the respective fiscal
+year. We extract the information about the location where parking
+violation issused in 2021. The variables we count on are `House Number`,
+`Street Name`, `Intersecting Street`. We would combine the contents from
+those columns and draw the complete address where violation happened.
+These addresses would occur as a data point in the map for data
+visualization.
+
+After data cleaning, the two datasets are joined by `summons_number`
+finally.
+
 #### Variable of Interests
 
 **Open Parking and Camera Violations**
@@ -62,17 +74,38 @@ the date. We further broke down the `violation_time` into `hour` and
 
 -   `weekday`
 
+**The Parking Violations Issued - Fiscal Year 2021**
+
+The key variables that we used in our analysis include for mapping
+
+-   `House Number`
+
+-   `Street Name`
+
+-   `Intersecting Street`
+
 ### Exploratory Analysis
 
-**Open Parking and Camera Violations** We used the dataset to explored
-about the distribution of number of of violation and violation types in
-five boroughs to understand the trend of violation in NYC. Then, we
-explored the distribution of number of violation over a day and in each
-weekday.
+**Open Parking and Camera Violations**
+
+We use the dataset to explored about the distribution of number of of
+violation and violation types in five boroughs to understand the trend
+of violation in NYC. Then, we explored the distribution of number of
+violation over a day and in each weekday.
 
 #### 
 
 #### Visualization over time
+
+We export the complete parking violation address from the Parking
+Violations Issued - Fiscal Year 2021 dataset. The package of
+tidygeocoder makes getting data from geocoding services easy. We import
+the address data and get the return of latitudes and longitudes via
+Google Api. Dropping the null value, we obtain the csv file containing
+latitudes and longitudes of parking violation address. Then we adopt the
+file to visualize geographical data on the map in
+[kepler](https://kepler.gl/). The shining points reveal the parking
+violation sites distribution.
 
 ### Additional Analysis(Regression Analysis)
 
