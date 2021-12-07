@@ -2,8 +2,10 @@
 title: "Final Report"
 date: "12/6/2021"
 output: 
-  github_document:
+  html_document:
   code_folding: hide
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -14,10 +16,14 @@ library(ggplot2)
 library(httr)
 library(lubridate)
 library(plotly)
+
+source("code/formatting.R")
 ```
 
 ### Motivation
 One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). We were intrigued by the potential of investigating the parking violation in NYC in 2021. 
+
+(insert code)
 
 ### Questions
 1. When and where a parking ticket in NYC is most likely to be found?
@@ -78,7 +84,14 @@ The key variables that we used in our analysis include for mapping
 
 We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday. 
 
-####
+#### Distribution of number of violation
+
+This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
+(Insert the code)
+
+
+The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October.
+(Insert the code)
 
 #### Visualization over time
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
