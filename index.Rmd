@@ -13,7 +13,26 @@ One of our group members' had the unfortunate experience of getting her car towe
 
 
 ### Website Overview
-In the exploratory
+In the exploratory analyses section, we include 
+
+* visualization of frequency of violation and violation type
+
+* Analyses of fine amount 
+
+* Map showing the location of violation and number of violation in each county
+
+
+In the statistical analyses section, we include
 
 
 #### Collaborators:
+Waveley Qiu (wq2162)
+
+Haotian Wu (hw2849)
+
+Yan Wang (yw3773)
+
+Yuanyuan Zeng (yz4181)
+
+Dantong Zhu (dz2451)
+
