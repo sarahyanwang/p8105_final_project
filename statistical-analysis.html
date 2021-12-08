@@ -11,7 +11,7 @@
 
 
 
-<title>Violation Timeline</title>
+<title>Statistical Analyses</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -370,63 +370,85 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Violation Timeline</h1>
+<h1 class="title toc-ignore">Statistical Analyses</h1>
 
 </div>
 
 
-<div id="visualization-over-time" class="section level4">
-<h4>Visualization over time</h4>
-<p>For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.</p>
-<pre class="r"><code>violation %&gt;%
-  mutate(month = month.name[as.numeric(month)]) %&gt;%
-  mutate(month = as.factor(month),
-         month = fct_relevel(month, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;)) %&gt;%
-  relocate(month) %&gt;%
-  group_by(borough, month) %&gt;%
-  summarize(n_obs = n()) %&gt;%
-  ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
-  geom_point() + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = &quot;The observation of parking violations of each month \n in 2021 for each borough&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
-<p><img src="timeline-part_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
-<p>The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.</p>
-<pre class="r"><code>violation %&gt;%
-  mutate(month = month.name[as.numeric(month)]) %&gt;%
-  mutate(month = as.factor(month),
-         month = fct_relevel(month, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;)) %&gt;%
-  relocate(month) %&gt;%
-  group_by(month, day) %&gt;%
-  summarize(n_obs = n()) %&gt;%
-  ggplot(aes(x = day, y = n_obs, group = 1, color = month)) + 
-  geom_point(size = 0.5) + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = &quot;The observation of parking violations of day in each \n month in 2021&quot;) + facet_wrap(~ month, nrow = 3)</code></pre>
-<p><img src="timeline-part_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
-<p>After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.</p>
-<pre class="r"><code>violation %&gt;% 
-  mutate(weekday = as.factor(weekday)) %&gt;%
-  mutate(weekday = fct_relevel(weekday, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) %&gt;%
-  relocate(weekday) %&gt;%
-  group_by(borough, weekday) %&gt;%
-  summarize(n_obs = n()) %&gt;%
-  ggplot(aes(x = weekday, y = n_obs, group = 1, color = borough)) + 
-  geom_point() + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
-  facet_wrap(~ borough, nrow = 1) +
-  labs(title = &quot;The observation of parking violations vs. weekday in each \n borough in 2021&quot;)</code></pre>
-<p><img src="timeline-part_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
-<p>In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.</p>
-<pre class="r"><code>violation %&gt;%
-  mutate(hour = as.numeric(hour)) %&gt;%
-  group_by(borough, hour) %&gt;%
-  summarize(n_obs = n()) %&gt;%
-  filter(hour &lt;= 24) %&gt;%
-  ggplot(aes(x = hour, y = n_obs, color = borough)) + geom_point() + geom_line() +
-  labs(title = &quot;The total number of violations during 24 hours \n of a day in 2021 for each borough&quot;) +
-  facet_wrap(~ borough, nrow = 2) </code></pre>
-<p><img src="timeline-part_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
-<p>Furthermore, we also try to explore the 24-hour violation pattern within a day. From the above plot, all boroughs also show a similar daily pattern. The number of violations tends to increase from 6:00 AM to 8:00 AM, remain high in 8:00 AM to 2:00 PM, decrease from 2:00PM to 7:00 PM, and remain low from 7:00 PM to 5:00 AM.</p>
+<div id="one-way-anova-test-for-weekday-and-month-on-violation-frequency" class="section level4">
+<h4>One-way anova test for weekday and month on violation frequency</h4>
+<pre class="r"><code>fit_df = violation %&gt;%
+  mutate(month = as.factor(month)) %&gt;%
+  group_by(month, weekday, day) %&gt;%
+  summarize(n_obs = n())
+
+fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
+anova(fit_model_weekday) %&gt;% knitr::kable(caption = &quot;One way anova of violation frequency and weekday&quot;)</code></pre>
+<table>
+<caption>One way anova of violation frequency and weekday</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Df</th>
+<th align="right">Sum Sq</th>
+<th align="right">Mean Sq</th>
+<th align="right">F value</th>
+<th align="right">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">weekday</td>
+<td align="right">6</td>
+<td align="right">1188117175</td>
+<td align="right">198019529</td>
+<td align="right">60.08402</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Residuals</td>
+<td align="right">297</td>
+<td align="right">978825984</td>
+<td align="right">3295710</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>fit_model_month = lm(n_obs ~ month, data = fit_df)
+anova(fit_model_month) %&gt;% knitr::kable(caption = &quot;One way anova of violation frequency and month&quot;)</code></pre>
+<table>
+<caption>One way anova of violation frequency and month</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">Df</th>
+<th align="right">Sum Sq</th>
+<th align="right">Mean Sq</th>
+<th align="right">F value</th>
+<th align="right">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">month</td>
+<td align="right">9</td>
+<td align="right">494640293</td>
+<td align="right">54960033</td>
+<td align="right">9.662275</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Residuals</td>
+<td align="right">294</td>
+<td align="right">1672302865</td>
+<td align="right">5688105</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<p>In order to go more about the how month and weekday are associated with the frequency of parking violation. We try to use one-way anova test for weekday and month. From the above results, both the p-values are 0, so we can say that the parking violation counts are associated with month and weekday.</p>
 </div>
 
 
