@@ -1,11 +1,13 @@
 ---
-title: "Violation by Vehicle Body Types"
+title: "Violations by Vehicle Body Type"
 output: 
   html_document:
     code_folding: hide
     toc: true
     toc_float: true
     theme: cosmo
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -33,11 +35,11 @@ violation_df =
   ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
   geom_bar(stat = "identity") +
   labs(
-    title = "Frequency of Violation by Vehicle Body Types",
+    title = "Frequency of Violation by Vehicle Body Type",
     x = "Vehicle Body Types",
     y = "Numbers"
-  )+
-  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=0.25)
+  ) +
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
+violation_df
 
-ggplotly(violation_df)
 ```

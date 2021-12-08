@@ -11,10 +11,10 @@
 
 
 
-<title>Violation by Vehicle Body Types</title>
+<title>Violations by Vehicle Body Type</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -36,13 +36,6 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
-<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="site_libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
-<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -347,6 +340,9 @@ div.tocify {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
+      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+    </li>
+    <li>
       <a href="fines.html">Fine Amount</a>
     </li>
   </ul>
@@ -377,7 +373,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Violation by Vehicle Body Types</h1>
+<h1 class="title toc-ignore">Violations by Vehicle Body Type</h1>
 
 </div>
 
@@ -395,15 +391,13 @@ div.tocify {
   ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
   geom_bar(stat = &quot;identity&quot;) +
   labs(
-    title = &quot;Frequency of Violation by Vehicle Body Types&quot;,
+    title = &quot;Frequency of Violation by Vehicle Body Type&quot;,
     x = &quot;Vehicle Body Types&quot;,
     y = &quot;Numbers&quot;
-  )+
-  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=0.25)
-
-ggplotly(violation_df)</code></pre>
-<div id="htmlwidget-dcfbb87aa1cc2e925cd8" style="width:90%;height:1080px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-dcfbb87aa1cc2e925cd8">{"x":{"data":[{"orientation":"v","width":0.9,"base":0,"x":[1],"y":[12660],"text":"vehicle_body_type: SDN<br />n:  12660<br />vehicle_body_type: SDN","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(68,1,84,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"SDN","legendgroup":"SDN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[2],"y":[18648],"text":"vehicle_body_type: PICK<br />n:  18648<br />vehicle_body_type: PICK","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(59,82,139,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"PICK","legendgroup":"PICK","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[3],"y":[25543],"text":"vehicle_body_type: 2DSD<br />n:  25543<br />vehicle_body_type: 2DSD","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(33,144,140,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"2DSD","legendgroup":"2DSD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[4],"y":[314519],"text":"vehicle_body_type: 4DSD<br />n: 314519<br />vehicle_body_type: 4DSD","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(93,200,99,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"4DSD","legendgroup":"4DSD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[5],"y":[396413],"text":"vehicle_body_type: SUBN<br />n: 396413<br />vehicle_body_type: SUBN","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(253,231,37,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"SUBN","legendgroup":"SUBN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[12660],"text":12660,"hovertext":"vehicle_body_type: SDN<br />n:  12660<br />vehicle_body_type: SDN<br />n:  12660","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"SDN","legendgroup":"SDN","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[18648],"text":18648,"hovertext":"vehicle_body_type: PICK<br />n:  18648<br />vehicle_body_type: PICK<br />n:  18648","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"PICK","legendgroup":"PICK","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[25543],"text":25543,"hovertext":"vehicle_body_type: 2DSD<br />n:  25543<br />vehicle_body_type: 2DSD<br />n:  25543","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"2DSD","legendgroup":"2DSD","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[314519],"text":314519,"hovertext":"vehicle_body_type: 4DSD<br />n: 314519<br />vehicle_body_type: 4DSD<br />n: 314519","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"4DSD","legendgroup":"4DSD","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[396413],"text":396413,"hovertext":"vehicle_body_type: SUBN<br />n: 396413<br />vehicle_body_type: SUBN<br />n: 396413","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"SUBN","legendgroup":"SUBN","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":45.7108066971081,"r":7.30593607305936,"b":42.130898021309,"l":54.7945205479452},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Frequency of Violation by Vehicle Body Types","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,5.6],"tickmode":"array","ticktext":["SDN","PICK","2DSD","4DSD","SUBN"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["SDN","PICK","2DSD","4DSD","SUBN"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Vehicle Body Types","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-19820.65,416233.65],"tickmode":"array","ticktext":["0e+00","1e+05","2e+05","3e+05","4e+05"],"tickvals":[0,100000,200000,300000,400000],"categoryorder":"array","categoryarray":["0e+00","1e+05","2e+05","3e+05","4e+05"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Numbers","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"vehicle_body_type","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"16c49345d29e0":{"x":{},"y":{},"fill":{},"type":"bar"},"16c4950684bfb":{"x":{},"y":{},"fill":{},"label":{}}},"cur_data":"16c49345d29e0","visdat":{"16c49345d29e0":["function (y) ","x"],"16c4950684bfb":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+  ) +
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
+violation_df</code></pre>
+<p><img src="vehicle_files/figure-html/unnamed-chunk-1-1.png" width="90%" /></p>
 
 
 
