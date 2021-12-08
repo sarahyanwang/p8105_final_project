@@ -5,8 +5,10 @@ navbar:
   right:
     - text: "Exploratory Analyses"
       menu:
-      - text: "Violation Frequency"
+      - text: "Violation Frequency "
         href: frequencyI.html
+      - text: "Violation Timeline "
+        href: timeline-part.html
       - text: "Fine Amount"
         href: fines.html
     - text: "Project Report"

@@ -217,5 +217,3 @@ si_vio_type =
 
 ggplotly(si_vio_type)
 ```
-
-
