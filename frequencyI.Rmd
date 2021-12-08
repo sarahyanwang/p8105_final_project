@@ -1,5 +1,5 @@
 ---
-title: "frequencyI"
+title: "Violation Frequency"
 authors: Yuanyuan Zeng
 output: 
   html_document:
@@ -8,7 +8,7 @@ output:
     toc_float: true
     theme: cosmo
 ---
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo = FALSE}
 
 library(tidyverse)
 library(httr)
@@ -33,10 +33,9 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 
-A. Number
+We first Distribution of number of parking violation in five boroughs (Manhattan, Kings, Bronx, Queens, and State Island). This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
 
-1）Frequency of tickets in five boroughs (Manhattan, Kings, The Bronx, State Island, Queens)
-```{r}
+```{r, message = FALSE}
 violation1 = read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
@@ -58,8 +57,6 @@ violation1 = read_csv("./Open_Parking_and_Camera_Violations.csv") %>%
          month != "11",
          month != "12")  # remove data that cannot turn into weekday
 
-  
-# another potential cleaning 1)select the variables we needed 2)convert the mon into character ?
 violation1 %>% 
   count(borough) %>% 
   mutate(
@@ -68,7 +65,10 @@ violation1 %>%
   layout(title = "Frequency of Tickets in Boroughs in 2021",
          xaxis = list(title = "Borough"),
          yaxis = list(title = "Number of Tickets"))
+```
 
+The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. The distribution of number of tickets are similar from January to October across Borough. Brooklyn has the highest number of tickets, while State Island has the least number of tickets. There is large increase in number of tickets in October in all boroughs except State Island.
+```{r}
 violation1 %>% 
   group_by(borough) %>%
   count(month) %>% 
@@ -78,7 +78,5 @@ violation1 %>%
   layout(title = "Frequency of Tickets in Boroughs in 2021",
          xaxis = list(title = "Borough"),
          yaxis = list(title = "Number of Tickets in Each Month in 2021"))
-
-
 ```
 
