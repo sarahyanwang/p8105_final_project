@@ -14,8 +14,9 @@ source("code/formatting.R")
 head(violation)
 ```
 
-```{r}
-violation %>%
+```{r warning=FALSE, message=FALSE}
+violation_df = 
+  violation %>%
   count(vehicle_body_type) %>% 
   mutate(
     vehicle_body_type = fct_reorder(vehicle_body_type, n) 
@@ -31,7 +32,7 @@ violation %>%
 ```
 
 model1: explore the regression model for number of vehicle_body_type and amount_due.
-```{r}
+```{r warning=FALSE, message=FALSE}
 body_type_effect = 
   lm(amount_due ~ vehicle_body_type, data = violation)
 
@@ -41,7 +42,7 @@ body_type_effect %>%
 ```
 
 model2: explore the regression model for vehicle_year(somewhat/ideally represent the driver's experience) and amount_due.
-```{r}
+```{r warning=FALSE, message=FALSE}
 vehicle_year_effect = 
   lm(amount_due ~ vehicle_year, data = violation)
 
@@ -51,7 +52,7 @@ vehicle_year_effect %>%
 ```
 
 model3: collective impact
-```{r}
+```{r warning=FALSE, message=FALSE}
 collective_effect = 
   lm(amount_due ~ vehicle_year + vehicle_body_type, data = violation)
 
@@ -59,3 +60,51 @@ collective_effect %>%
   broom::tidy() %>% 
   knitr::kable(digits = 2)
 ```
+
+Cross Validation
+```{r warning=FALSE, message=FALSE}
+cv_df = crossv_mc(violation_df, 100)
+
+cv_df = 
+  cv_df %>% 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble)
+  )
+  
+cv_df =
+  cv_df %>%
+  mutate(
+    body_type_mod = map(.x = train, ~lm(amount_due ~ vehicle_body_type, data = .x)),
+    vehicle_year_mod = map(.x = train, ~lm(amount_due ~ vehicle_year, data = .x)),
+    collective_mod = map(.x = train, ~lm(amount_due ~ vehicle_year + vehicle_body_type, data = .x))
+  ) %>% 
+  mutate(
+    rmse_body_type = map2_dbl(.x = body_type_mod, .y = test, ~rmse(model = .x, data = .y)),
+    rmse_vehicle_year = map2_dbl(.x = vehicle_year_mod, .y = test, ~rmse(model = .x, data = .y)),
+    rmse_collective = map2_dbl(.x = collective_mod, .y = test, ~rmse(model = .x, data = .y))
+  )
+```
+
+It seems that the %%% model has the lowest Rmse value, which should be regarded as the best regression model for violation amount.
+
+```{r}
+result_df = 
+  cv_df %>% 
+  select(starts_with("rmse")) %>% 
+  pivot_longer(
+    everything(),
+    names_to = "Model",
+    values_to = "Rmse",
+    names_prefix = "rmse_"
+  ) 
+
+result_df %>% 
+  mutate(Model = fct_inorder(Model)) %>% 
+  ggplot(aes(x = Model, y = Rmse)) +
+  geom_violin() +
+  labs(
+    title = "Rmse comparision in three models"
+  )
+```
+
