@@ -11,10 +11,10 @@
 
 
 
-<title>Final Report</title>
+<title>Violation by Vehicle Body Types</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -36,6 +36,13 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -370,85 +377,33 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Final Report</h1>
+<h1 class="title toc-ignore">Violation by Vehicle Body Types</h1>
 
 </div>
 
 
-<div id="motivation" class="section level3">
-<h3>Motivation</h3>
-<p>One of our group members’ had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 <a href="https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/">-Link</a>. We were intrigued by the potential of investigating the parking violation in NYC in 2021.</p>
-<p>(insert code)</p>
-</div>
-<div id="questions" class="section level3">
-<h3>Questions</h3>
-<ol style="list-style-type: decimal">
-<li>When and where a parking ticket in NYC is most likely to be found?</li>
-<li>what possible factors are associated with the tickets? The driver’s experience, the car’s size?</li>
-<li>how to avoid the future ticket? Suggestions based on the analysis…</li>
-</ol>
-</div>
-<div id="data" class="section level3">
-<h3>Data</h3>
-<div id="data-processing-and-cleaning" class="section level4">
-<h4>Data Processing and Cleaning</h4>
-<p>We used two datasets from NYC OpenData in our project:</p>
-<ul>
-<li>Open Parking and Camera Violations <a href="https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89">-Link</a></li>
-</ul>
-<p>The Open Parking and Camera Violations contains violations from 2016 to 2021 and have 73.6 millions of rows. Since we only focus on year 2021 from January to October, we filter the dataset on the website page to remove redundant information and download the dataset after filtering. The dataset we used was too large to store in github. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. The original variable <code>county</code> renamed as <code>borough</code> and names are aligned. We separated the <code>issue_date</code> into <code>month</code>, <code>date</code>, and <code>year</code> and apply function to find the weekday of the date. We further broke down the <code>violation_time</code> into <code>hour</code> and <code>min</code> for plotting the violation over a day.</p>
-<ul>
-<li>Parking Violations Issued - Fiscal Year 2021 <a href="https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves">-Link</a></li>
-</ul>
-<p>The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. We extract the information about the location where parking violation issused in 2021. The variables we count on are <code>House Number</code>, <code>Street Name</code>, <code>Intersecting Street</code>. We would combine the contents from those columns and draw the complete address where violation happened. These addresses would occur as a data point in the map for data visualization.</p>
-<p>After data cleaning, the two datasets are joined by <code>summons_number</code> finally.</p>
-</div>
-<div id="variable-of-interests" class="section level4">
-<h4>Variable of Interests</h4>
-<p><strong>Open Parking and Camera Violations</strong></p>
-<ul>
-<li><p><code>plate</code></p></li>
-<li><p><code>issue_date</code></p></li>
-<li><p><code>violation_time</code></p></li>
-<li><p><code>violation</code> : type of violation</p></li>
-<li><p><code>fine_amount</code></p></li>
-<li><p><code>borough</code></p></li>
-<li><p><code>weekday</code></p></li>
-</ul>
-<p><strong>The Parking Violations Issued - Fiscal Year 2021</strong></p>
-<p>The key variables that we used in our analysis include for mapping</p>
-<ul>
-<li><p><code>House Number</code></p></li>
-<li><p><code>Street Name</code></p></li>
-<li><p><code>Intersecting Street</code></p></li>
-</ul>
-</div>
-</div>
-<div id="exploratory-analysis" class="section level3">
-<h3>Exploratory Analysis</h3>
-<p><strong>Open Parking and Camera Violations</strong></p>
-<p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday.</p>
-<div id="distribution-of-number-of-violation" class="section level4">
-<h4>Distribution of number of violation</h4>
-<p>This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021. (Insert the code)</p>
-<p>The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. (Insert the code)</p>
-<p>Exploratory analysis from Sarah</p>
-<p>Total fine amount and average fine amount in each county Waveley</p>
-</div>
-<div id="visualization-over-time" class="section level4">
-<h4>Visualization over time</h4>
-<p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
-</div>
-</div>
-<div id="statistical-analyses" class="section level3">
-<h3>Statistical Analyses</h3>
-</div>
-<div id="discussion" class="section level3">
-<h3>Discussion</h3>
-</div>
-<div id="conclusion" class="section level3">
-<h3>Conclusion</h3>
-</div>
+<pre class="r"><code>violation_df = 
+  violation %&gt;%
+  count(vehicle_body_type) %&gt;% 
+  mutate(
+    vehicle_body_type = fct_reorder(vehicle_body_type, n) 
+  ) %&gt;% 
+  filter(
+    vehicle_body_type !=&quot;NA&quot;,
+    n &gt; 10000
+  ) %&gt;% 
+  ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(
+    title = &quot;Frequency of Violation by Vehicle Body Types&quot;,
+    x = &quot;Vehicle Body Types&quot;,
+    y = &quot;Numbers&quot;
+  )+
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=0.25)
+
+ggplotly(violation_df)</code></pre>
+<div id="htmlwidget-dcfbb87aa1cc2e925cd8" style="width:90%;height:1080px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dcfbb87aa1cc2e925cd8">{"x":{"data":[{"orientation":"v","width":0.9,"base":0,"x":[1],"y":[12660],"text":"vehicle_body_type: SDN<br />n:  12660<br />vehicle_body_type: SDN","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(68,1,84,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"SDN","legendgroup":"SDN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[2],"y":[18648],"text":"vehicle_body_type: PICK<br />n:  18648<br />vehicle_body_type: PICK","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(59,82,139,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"PICK","legendgroup":"PICK","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[3],"y":[25543],"text":"vehicle_body_type: 2DSD<br />n:  25543<br />vehicle_body_type: 2DSD","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(33,144,140,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"2DSD","legendgroup":"2DSD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[4],"y":[314519],"text":"vehicle_body_type: 4DSD<br />n: 314519<br />vehicle_body_type: 4DSD","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(93,200,99,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"4DSD","legendgroup":"4DSD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[5],"y":[396413],"text":"vehicle_body_type: SUBN<br />n: 396413<br />vehicle_body_type: SUBN","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(253,231,37,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"SUBN","legendgroup":"SUBN","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[12660],"text":12660,"hovertext":"vehicle_body_type: SDN<br />n:  12660<br />vehicle_body_type: SDN<br />n:  12660","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"SDN","legendgroup":"SDN","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[18648],"text":18648,"hovertext":"vehicle_body_type: PICK<br />n:  18648<br />vehicle_body_type: PICK<br />n:  18648","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"PICK","legendgroup":"PICK","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[25543],"text":25543,"hovertext":"vehicle_body_type: 2DSD<br />n:  25543<br />vehicle_body_type: 2DSD<br />n:  25543","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"2DSD","legendgroup":"2DSD","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[314519],"text":314519,"hovertext":"vehicle_body_type: 4DSD<br />n: 314519<br />vehicle_body_type: 4DSD<br />n: 314519","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"4DSD","legendgroup":"4DSD","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[396413],"text":396413,"hovertext":"vehicle_body_type: SUBN<br />n: 396413<br />vehicle_body_type: SUBN<br />n: 396413","textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"SUBN","legendgroup":"SUBN","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":45.7108066971081,"r":7.30593607305936,"b":42.130898021309,"l":54.7945205479452},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Frequency of Violation by Vehicle Body Types","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,5.6],"tickmode":"array","ticktext":["SDN","PICK","2DSD","4DSD","SUBN"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["SDN","PICK","2DSD","4DSD","SUBN"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"Vehicle Body Types","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-19820.65,416233.65],"tickmode":"array","ticktext":["0e+00","1e+05","2e+05","3e+05","4e+05"],"tickvals":[0,100000,200000,300000,400000],"categoryorder":"array","categoryarray":["0e+00","1e+05","2e+05","3e+05","4e+05"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Numbers","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"vehicle_body_type","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"16c49345d29e0":{"x":{},"y":{},"fill":{},"type":"bar"},"16c4950684bfb":{"x":{},"y":{},"fill":{},"label":{}}},"cur_data":"16c49345d29e0","visdat":{"16c49345d29e0":["function (y) ","x"],"16c4950684bfb":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 
 
 
