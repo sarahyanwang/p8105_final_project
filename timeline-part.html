@@ -375,9 +375,9 @@ div.tocify {
 </div>
 
 
-<div id="visualization-over-time" class="section level4">
-<h4>Visualization over time</h4>
 <p>For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.</p>
+<div id="violation-frequency-vs.-month-for-each-borough" class="section level3">
+<h3>Violation frequency vs. month for each borough</h3>
 <pre class="r"><code>violation %&gt;%
   mutate(month = month.name[as.numeric(month)]) %&gt;%
   mutate(month = as.factor(month),
@@ -391,6 +391,9 @@ div.tocify {
   labs(title = &quot;The observation of parking violations of each month \n in 2021 for each borough&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
 <p>The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.</p>
+</div>
+<div id="violation-frequency-vs.-day-for-each-month" class="section level3">
+<h3>Violation frequency vs. day for each month</h3>
 <pre class="r"><code>violation %&gt;%
   mutate(month = month.name[as.numeric(month)]) %&gt;%
   mutate(month = as.factor(month),
@@ -404,6 +407,9 @@ div.tocify {
   labs(title = &quot;The observation of parking violations of day in each \n month in 2021&quot;) + facet_wrap(~ month, nrow = 3)</code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
 <p>After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.</p>
+</div>
+<div id="violation-frequency-vs.-weekday-for-each-borough" class="section level3">
+<h3>Violation frequency vs. weekday for each borough</h3>
 <pre class="r"><code>violation %&gt;% 
   mutate(weekday = as.factor(weekday)) %&gt;%
   mutate(weekday = fct_relevel(weekday, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) %&gt;%
@@ -417,6 +423,9 @@ div.tocify {
   labs(title = &quot;The observation of parking violations vs. weekday in each \n borough in 2021&quot;)</code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.</p>
+</div>
+<div id="violation-frequency-vs.hour-of-the-day-for-each-borough" class="section level3">
+<h3>Violation frequency vs.hour of the day for each borough</h3>
 <pre class="r"><code>violation %&gt;%
   mutate(hour = as.numeric(hour)) %&gt;%
   group_by(borough, hour) %&gt;%
