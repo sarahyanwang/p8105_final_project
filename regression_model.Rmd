@@ -1,0 +1,61 @@
+---
+title: "regression_model"
+author: "Dantong Zhu"
+date: "2021/12/7"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+head(violation)
+```
+
+```{r}
+violation %>%
+  count(vehicle_body_type) %>% 
+  mutate(
+    vehicle_body_type = fct_reorder(vehicle_body_type, n) 
+  ) %>% 
+  ggplot(aes(x = vehicle_body_type, y = n)) +
+  geom_point() +
+  geom_bar() +
+  labs(
+    title = "Frequency of Violation in Vehicle Body Types",
+    x = "Vehicle Body Types",
+    y = "Numbers"
+  )
+```
+
+model1: explore the regression model for number of vehicle_body_type and amount_due.
+```{r}
+body_type_effect = 
+  lm(amount_due ~ vehicle_body_type, data = violation)
+
+body_type_effect %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 2)
+```
+
+model2: explore the regression model for vehicle_year(somewhat/ideally represent the driver's experience) and amount_due.
+```{r}
+vehicle_year_effect = 
+  lm(amount_due ~ vehicle_year, data = violation)
+
+vehicle_year_effect %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 2)
+```
+
+model3: collective impact
+```{r}
+collective_effect = 
+  lm(amount_due ~ vehicle_year + vehicle_body_type, data = violation)
+
+collective_effect %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 2)
+```
