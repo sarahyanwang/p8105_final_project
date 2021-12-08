@@ -1,0 +1,51 @@
+---
+title: "Statistical Analyses"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
+---
+```{r, message=FALSE, warning=FALSE, include=FALSE, echo = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+```
+
+#### One-way anova test for weekday and month on violation frequency
+
+```{r, message=FALSE, warning=FALSE}
+fit_df = violation %>%
+  mutate(month = as.factor(month)) %>%
+  group_by(month, weekday, day) %>%
+  summarize(n_obs = n())
+
+fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
+anova(fit_model_weekday) %>% knitr::kable(caption = "One way anova of violation frequency and weekday")
+
+fit_model_month = lm(n_obs ~ month, data = fit_df)
+anova(fit_model_month) %>% knitr::kable(caption = "One way anova of violation frequency and month")
+```
+
+In order to go more about the how month and weekday are associated with the frequency of parking violation. We try to use one-way anova test for weekday and month. From the above results, both the p-values are 0, so we can say that the parking violation counts are associated with month and weekday.
