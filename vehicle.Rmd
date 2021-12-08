@@ -1,0 +1,43 @@
+---
+title: "Violation by Vehicle Body Types"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
+---
+
+```{r setup, include=FALSE, echo = FALSE}
+library(tidyverse)
+library(mgcv)
+library(plotly)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+head(violation)
+```
+
+```{r, warning=FALSE, message=FALSE}
+violation_df = 
+  violation %>%
+  count(vehicle_body_type) %>% 
+  mutate(
+    vehicle_body_type = fct_reorder(vehicle_body_type, n) 
+  ) %>% 
+  filter(
+    vehicle_body_type !="NA",
+    n > 10000
+  ) %>% 
+  ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Frequency of Violation by Vehicle Body Types",
+    x = "Vehicle Body Types",
+    y = "Numbers"
+  )+
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=0.25)
+
+ggplotly(violation_df)
+```

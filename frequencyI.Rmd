@@ -103,7 +103,7 @@ total_violation %>%
          yaxis = list(title = "Number of Tickets in Total"))
 ```
 
-### 5 common violation types in each borough (Manhattan, Kings, Bronx, Staten Island, Queens)
+### 5 common violation types in five boroughs 
 
 We want to find the top five common violation types in each borough, and see whether there exists difference among boroughs. We found that the most common 5 reasons of getting a violation tickets in NYC among all five boroughs are: 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
 
