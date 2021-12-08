@@ -340,9 +340,15 @@ div.tocify {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
+      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+    </li>
+    <li>
       <a href="fines.html">Fine Amount</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="statistical-analysis.html">Statistical Analyses</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -375,8 +381,8 @@ div.tocify {
 </div>
 
 
-<div id="one-way-anova-test-for-weekday-and-month-on-violation-frequency" class="section level4">
-<h4>One-way anova test for weekday and month on violation frequency</h4>
+<div id="one-way-anova-test-for-weekday-and-month-on-violation-frequency" class="section level3">
+<h3>One-way anova test for weekday and month on violation frequency</h3>
 <pre class="r"><code>fit_df = violation %&gt;%
   mutate(month = as.factor(month)) %&gt;%
   group_by(month, weekday, day) %&gt;%

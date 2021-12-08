@@ -33,7 +33,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 
-#### One-way anova test for weekday and month on violation frequency
+### One-way anova test for weekday and month on violation frequency
 
 ```{r, message=FALSE, warning=FALSE}
 fit_df = violation %>%
