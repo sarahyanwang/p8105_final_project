@@ -15,7 +15,7 @@ violation1 <-
       borough %in% c("Q", "QN", "Qns") ~ "Queens",
       borough %in% c("ST", "R", "Rich", "RICH") ~ "Staten Island",
       borough %in% c("NY", "MN") ~ "Manhattan"),
-      issue_date = as.Date(issue_date, format = "%m/%d/%y"),
+      issue_date = as.Date(issue_date, format = "%m/%d/%Y"),
       weekday = weekdays(issue_date),
       year = year(issue_date),
       month = month(issue_date),
@@ -36,7 +36,7 @@ violation2 <-
   mutate(
     address = paste(ifelse(is.na(house_number), "0", house_number), street_name, ", ", ifelse(!is.na(intersecting_street), intersecting_street, ""), ", NY")
   )  %>% 
-  select(address, summons_number)
+  select(address, summons_number, vehicle_body_type, vehicle_year)
 
 violation <-
   violation1 %>% left_join(violation2, by = "summons_number")
