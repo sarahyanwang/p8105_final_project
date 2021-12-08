@@ -15,7 +15,7 @@ violation1 <-
       borough %in% c("Q", "QN", "Qns") ~ "Queens",
       borough %in% c("ST", "R", "Rich", "RICH") ~ "Staten Island",
       borough %in% c("NY", "MN") ~ "Manhattan"),
-      issue_date = as.Date(issue_date, format = "%m/%d/%y"),
+      issue_date = as.Date(issue_date, format = "%m/%d/%Y"),
       weekday = weekdays(issue_date),
       year = year(issue_date),
       month = month(issue_date),
