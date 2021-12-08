@@ -85,7 +85,9 @@ violation %>%
 
 Furthermore, we also try to explore the 24-hour violation pattern within a day. From the above plot, all boroughs also show a similar daily pattern. The number of violations tends to increase from 6:00 AM to 8:00 AM, remain high in 8:00 AM to 2:00 PM, decrease from 2:00PM to 7:00 PM, and remain low from 7:00 PM to 5:00 AM.
 
-#### 
+#### chi-square analysis for weekday and violation counts
+
+
 
 
 
