@@ -3,21 +3,20 @@ title: "timeline"
 author: Sarah
 output: github_document
 ---
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
-
 ```
 
 #### Visualization over time 
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 violation %>%
   mutate(month = month.name[as.numeric(month)]) %>%
   mutate(month = as.factor(month),
@@ -35,7 +34,7 @@ violation %>%
 The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
 
 
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 violation %>%
   mutate(month = month.name[as.numeric(month)]) %>%
   mutate(month = as.factor(month),
@@ -54,7 +53,7 @@ violation %>%
 After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.
 
 
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 violation %>% 
   mutate(weekday = as.factor(weekday)) %>%
   mutate(weekday = fct_relevel(weekday, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) %>%
@@ -72,7 +71,7 @@ violation %>%
 In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
 
 
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 violation %>%
   mutate(hour = as.numeric(hour)) %>%
   group_by(borough, hour) %>%
@@ -87,13 +86,14 @@ Furthermore, we also try to explore the 24-hour violation pattern within a day. 
 
 #### One-way anova test for weekday and violation counts
 
-```{r, message=False, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 fit_df = violation %>%
+  mutate(month = as.factor(month)) %>%
   group_by(month, weekday, day) %>%
   summarize(n_obs = n())
 
 fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
-anova(fit_model) %>% knitr::kable()
+anova(fit_model_weekday) %>% knitr::kable()
 
 fit_model_month = lm(n_obs ~ month, data = fit_df)
 anova(fit_model_month) %>% knitr::kable()
