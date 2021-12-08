@@ -1,8 +1,11 @@
 ---
 title: "Final Report"
-date: "12/6/2021"
 output: 
-  html_document
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +17,6 @@ library(httr)
 library(lubridate)
 library(plotly)
 
-source("code/formatting.R")
 ```
 
 ### Motivation
@@ -89,6 +91,12 @@ This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn
 
 The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October.
 (Insert the code)
+
+
+Exploratory analysis from Sarah
+
+
+Total fine amount and average fine amount in each county Waveley
 
 #### Visualization over time
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
