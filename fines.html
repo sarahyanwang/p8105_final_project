@@ -11,7 +11,7 @@
 
 
 
-<title>Parking Violation in NYC</title>
+<title>Fine Amount</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -376,32 +376,148 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Parking Violation in NYC</h1>
+<h1 class="title toc-ignore">Fine Amount</h1>
 
 </div>
 
 
-<div id="introduction" class="section level3">
-<h3>Introduction</h3>
-<p>One of our group members’ had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 <a href="https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/">-Link</a>. We were intrigued by the potential of investigating the parking violation in NYC in 2021.</p>
+<div id="mean-fine-amount-across-boroughs" class="section level3">
+<h3>Mean Fine Amount Across Boroughs</h3>
+<p>First, let us compute the average fine amounts across the different boroughs:</p>
+<pre class="r"><code>violation %&gt;%
+  group_by(borough) %&gt;%
+  summarise(
+    average_fine = mean(fine_amount)
+  )%&gt;%
+  knitr::kable(caption = &quot;Average fine amounts across the different boroughs&quot;) </code></pre>
+<table>
+<caption>Average fine amounts across the different boroughs</caption>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">average_fine</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">76.46053</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">74.34834</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">82.25287</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">68.42849</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">66.92960</td>
+</tr>
+</tbody>
+</table>
+<p>We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.</p>
+<pre class="r"><code>violation %&gt;% group_by(borough) %&gt;% 
+  ggplot(aes(x = fine_amount, fill = borough)) + 
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = &quot;Fine Amount&quot;,
+    fill = &quot;Borough&quot;,
+    title = &quot;Fine Amount Across Boroughs&quot;)</code></pre>
+<p><img src="fines_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p>To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.</p>
+<pre class="r"><code>violation_reg &lt;- lm(fine_amount~borough, data = violation)
+anova(violation_reg)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: fine_amount
+##                Df     Sum Sq  Mean Sq F value    Pr(&gt;F)    
+## borough         4   46651474 11662868   16653 &lt; 2.2e-16 ***
+## Residuals 1733700 1214179375      700                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>There appear to be differences between fine amounts and at least 2 boroughs.</p>
 </div>
-<div id="website-overview" class="section level3">
-<h3>Website Overview</h3>
-<p>In the exploratory analyses section, we include</p>
-<ul>
-<li><p>visualization of frequency of violation and violation type</p></li>
-<li><p>Analyses of fine amount</p></li>
-<li><p>Map showing the location of violation and number of violation in each county</p></li>
-</ul>
-<p>In the statistical analyses section, we include</p>
-<div id="collaborators" class="section level4">
-<h4>Collaborators:</h4>
-<p><strong>Waveley Qiu (wq2162)</strong></p>
-<p><strong>Haotian Wu (hw2849)</strong></p>
-<p><strong>Yan Wang (yw3773)</strong></p>
-<p><strong>Yuanyuan Zeng (yz4181)</strong></p>
-<p><strong>Dantong Zhu (dz2451)</strong></p>
-</div>
+<div id="which-borough-tends-to-pay-the-most-in-excess-fees" class="section level3">
+<h3>Which borough tends to pay the most in excess fees?</h3>
+<p>Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.</p>
+<pre class="r"><code>violation %&gt;%
+  select(borough, contains(&quot;amount&quot;)) %&gt;%
+  mutate(
+    net_total_amount = fine_amount + penalty_amount + interest_amount - reduction_amount,
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %&gt;%
+  group_by(borough) %&gt;%
+  summarise(
+    avg_excess_amount = mean(excess_amount),
+    avg_net_total_amount = mean(net_total_amount),
+    avg_total_amount = mean(fine_amount)
+  ) %&gt;% 
+  knitr::kable(caption = &quot;Amounts paid in excess of the baseline fine amount&quot;)</code></pre>
+<table>
+<caption>Amounts paid in excess of the baseline fine amount</caption>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">avg_excess_amount</th>
+<th align="right">avg_net_total_amount</th>
+<th align="right">avg_total_amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">-5.127610</td>
+<td align="right">71.33292</td>
+<td align="right">76.46053</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">-5.593115</td>
+<td align="right">68.75523</td>
+<td align="right">74.34834</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">-7.304869</td>
+<td align="right">74.94800</td>
+<td align="right">82.25287</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">-6.843527</td>
+<td align="right">61.58496</td>
+<td align="right">68.42849</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">-6.887677</td>
+<td align="right">60.04193</td>
+<td align="right">66.92960</td>
+</tr>
+</tbody>
+</table>
+<p>It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.</p>
+<pre class="r"><code>violation %&gt;%
+  select(borough, contains(&quot;amount&quot;)) %&gt;%
+  mutate(
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %&gt;%
+  filter(excess_amount !=  0) %&gt;%
+  
+  ggplot(aes(x = excess_amount, fill = borough)) +
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = &quot;Fine Adjustment Amount&quot;,
+    fill = &quot;Borough&quot;,
+    title = &quot;Fine Adjustments by Borough&quot;
+  )</code></pre>
+<p><img src="fines_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
 </div>
 
 

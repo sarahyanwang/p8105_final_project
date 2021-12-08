@@ -8,6 +8,7 @@ library(jsonlite)
 library(progress)
 library(tidyverse)
 library(lubridate)
+library(plotly)
 
 violation1 <-
   read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 

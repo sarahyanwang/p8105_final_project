@@ -28,8 +28,12 @@ In the statistical analyses section, we include
 #### Collaborators:
 
 **Waveley Qiu (wq2162)**
+
 **Haotian Wu (hw2849)**
+
 **Yan Wang (yw3773)**
+
 **Yuanyuan Zeng (yz4181)**
+
 **Dantong Zhu (dz2451)**
 
