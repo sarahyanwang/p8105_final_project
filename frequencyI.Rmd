@@ -1,0 +1,221 @@
+---
+title: "Violation Frequency"
+authors: Yuanyuan Zeng
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
+---
+```{r setup, include=FALSE, echo = FALSE}
+
+library(tidyverse)
+library(httr)
+library(lubridate)
+library(plotly)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+```
+
+### Distribution of parking violation 
+
+We first Distribution of number of parking violation in five boroughs (Manhattan, Kings, Bronx, Queens, and Staten Island). This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
+
+```{r, message = FALSE}
+violation1 = read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
+  janitor::clean_names() %>%
+  rename(borough = county) %>%  # rename county to borough
+  mutate(
+    borough = case_when(
+      borough %in% c("BK","K", "Kings") ~ "Brooklyn",
+      borough %in% c("BX", "Bronx") ~ "Bronx",
+      borough %in% c("Q", "QN", "Qns") ~ "Queens",
+      borough %in% c("ST", "R", "Rich", "RICH") ~ "Staten Island",
+      borough %in% c("NY", "MN") ~ "Manhattan"),
+      issue_date = as.Date(issue_date, format = "%m/%d/%y"),
+      weekday = weekdays(issue_date),
+      year = year(issue_date),
+      month = month(issue_date),
+      day = day(issue_date)
+    )  %>%  # make the borough the same 
+  filter(borough != "A",                  # get rid of "A"
+         weekday != "NA",
+         month != "11",
+         month != "12")  # remove data that cannot turn into weekday
+
+violation1 %>% 
+  count(borough) %>% 
+  mutate(
+    borough = fct_reorder(borough, n)) %>% 
+  plot_ly(x = ~borough, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>% 
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
+         xaxis = list(title = "Borough"),
+         yaxis = list(title = "Number of Tickets"))
+```
+
+The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. The distribution of number of tickets are similar from January to October across Borough. Brooklyn has the highest number of tickets, while State Island has the least number of tickets. There is large increase in number of tickets in October in all boroughs except Staten Island.
+```{r}
+violation1 %>% 
+  group_by(borough) %>%
+  count(month) %>% 
+  mutate(month = month.abb[as.numeric(month)],
+         month = fct_relevel(month, c("Jan", "Feb", "Mar", "Apr","May","Jun", "Jul", "Aug", "Sep", "Oct"))) %>% 
+      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis")%>%
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
+         xaxis = list(title = "Borough"),
+         yaxis = list(title = "Number of Tickets in Each Month in 2021"))
+```
+
+###Top 10 violations in MYC in 2021
+
+We want to know the most common ten violation types based on the total frequency in NYC in 2021. 
+
+```{r}
+total_violation = violation1 %>% 
+  count(violation) %>% 
+  mutate(
+    violation = fct_reorder(violation, n),
+    ranking = min_rank(desc(n))
+  ) %>% 
+  filter(ranking <= 10) %>% 
+  arrange(n)
+
+total_violation %>% 
+  plot_ly(x = ~violation, y = ~n, type = "bar") %>% 
+  layout(title = "10 Most Common Violations in Total in NYC in 2021",
+         xaxis = list(title = "Violation"),
+         yaxis = list(title = "Number of Tickets in Total"))
+```
+
+### 5 common violation types in each borough (Manhattan, Kings, Bronx, Staten Island, Queens)
+
+We want to find the top five common violation types in each borough, and see whether there exists difference among boroughs. We found that the most common 5 reasons of getting a violation tickets in NYC among all five boroughs are: 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
+
+```{r}
+## top 5 reasons of violation tickets
+violation_type = violation1 %>% 
+  group_by(borough) %>% 
+  count(violation) %>% 
+  mutate(
+    violation = fct_reorder(violation, n),
+    index = min_rank(desc(n))) %>% 
+  filter(index <= 5) 
+```
+
+**Bronx**
+
+```{r}
+bronx_vio_type = 
+  violation_type %>% 
+  filter(borough == "Bronx") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Bronx in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(bronx_vio_type)
+```
+
+**Brooklyn**
+
+```{r}
+brooklyn_vio_type = 
+  violation_type %>% 
+  filter(borough == "Brooklyn") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Brooklyn in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(brooklyn_vio_type)
+```
+
+**Manhattan**
+
+```{r}
+manhattan_vio_type = 
+  violation_type %>% 
+  filter(borough == "Manhattan") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Manhattan in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(manhattan_vio_type)
+```
+
+**Queens**
+
+```{r}
+queens_vio_type = 
+  violation_type %>% 
+  filter(borough == "Queens") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in QUeens in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(queens_vio_type)
+```
+
+**Staten Island**
+
+```{r}
+si_vio_type = 
+  violation_type %>% 
+  filter(borough == "Staten Island") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Staten Island in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(si_vio_type)
+```
+
+
