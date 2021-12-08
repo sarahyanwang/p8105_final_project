@@ -3,6 +3,10 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
+    - text: "Exploratory Analyses"
+      menu:
+      - text: "Violation Frequency"
+        href: frequencyI.html
     - text: "Project Report"
       href: final_report.html
     - icon: fa-github fa-lg

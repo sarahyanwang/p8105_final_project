@@ -1,7 +1,12 @@
 ---
 title: "frequencyI"
 authors: Yuanyuan Zeng
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
 ---
 ```{r setup, include=FALSE}
 
