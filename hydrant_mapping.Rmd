@@ -26,8 +26,7 @@ source("code/formatting.R")
 ```{r, warning=FALSE}
 hydrant <- 
   violation %>% 
-  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address)) %>%
-  sample_n(1000)
+  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address))
 
 pb <- progress_bar$new(total = nrow(hydrant))
 
