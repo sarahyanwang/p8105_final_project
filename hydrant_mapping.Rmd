@@ -1,0 +1,103 @@
+---
+title: "hydrant"
+author: "Waveley Qiu (wq2162)"
+date: "2021-12-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(httr)
+library(tidyverse)
+library(lubridate)
+library(lmtest)
+library(patchwork)
+library(tidygeocoder)
+library(progress)
+library(jsonlite)
+library(plotly)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+```
+
+## Using NYC Geo
+
+```{r, warning=FALSE}
+hydrant <- 
+  violation %>% 
+  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address))
+
+pb <- progress_bar$new(total = nrow(hydrant))
+
+get_coord <- function(url) {
+  pb$tick()
+  coord <- fromJSON(url(url))$features$geometry[2]
+  return(coord)
+}
+
+hydrant_lat_long <- 
+  hydrant %>%
+  mutate(
+  new_url = paste0("https://geosearch.planninglabs.nyc/v1/autocomplete?text=", geo_nyc_address, "&size=50"),
+  coord = map(new_url, get_coord)
+) %>%
+  unnest(coord)
+
+for (i in 1:nrow(hydrant_lat_long)) {
+  hydrant_lat_long$lat[i] <- hydrant_lat_long$coordinates[[i]][2]
+  hydrant_lat_long$long[i] <- hydrant_lat_long$coordinates[[i]][1]
+}
+
+hydrant_lat_long <-
+  hydrant_lat_long %>%
+  group_by(summons_number, geo_nyc_address) %>%
+  slice(1)
+  
+write_csv(hydrant_lat_long, "hydrant_lat_long.csv")
+```
+
+```{r}
+hydrant_lat_long <- read_csv("hydrant_lat_long.csv")
+```
+
+## Mapping of Hydrant Tickets
+
+```{r}
+hydrant_lat_long %>%
+  plot_ly(
+    x = ~lat, y = ~long, type = "scatter", mode = "markers",
+    alpha = 0.5)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
