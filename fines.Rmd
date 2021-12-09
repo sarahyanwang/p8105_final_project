@@ -2,7 +2,7 @@
 title: "fines"
 author: "Waveley Qiu (wq2162)"
 date: "2021-12-03"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
