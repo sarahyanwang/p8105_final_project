@@ -23,7 +23,7 @@ source("code/formatting.R")
 
 ## Using NYC Geo
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, eval=FALSE}
 hydrant <- 
   violation %>% 
   filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address))
