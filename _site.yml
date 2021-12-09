@@ -9,8 +9,12 @@ navbar:
         href: frequencyI.html
       - text: "Violation Timeline "
         href: timeline-part.html
+      - text: "Violation by Vehicle Body Types"
+        href: vehicle.html
       - text: "Fine Amount"
         href: fines.html
+    - text: "Statistical Analyses"
+      href: statistical-analysis.html
     - text: "Project Report"
       href: final_report.html
     - icon: fa-github fa-lg

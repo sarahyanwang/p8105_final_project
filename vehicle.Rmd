@@ -1,11 +1,13 @@
 ---
-title: "Violation by Vehicle Body Types"
+title: "Violations by Vehicle Body Type"
 output: 
   html_document:
     code_folding: hide
     toc: true
     toc_float: true
     theme: cosmo
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE, echo = FALSE}
@@ -19,6 +21,7 @@ source("code/formatting.R")
 head(violation)
 ```
 
+The plot describes the frequency of violation by vehicle body types. There are mainly top 5 types of vehicle body at the top 5 ranking(unknown type excluded), which are SDN, PICK, 2DSD, 4DSD, SUBN. The type abbreviations are the exact match of the body type listed on the vehicle registration. The law defines a suburban(SUBN) as a vehicle that can be used to carry passengers and cargo. Other common body types and codes for vehicles registered in the passenger vehicle class are sedan (SDN), a two-door sedan (2DSD) and a four-door sedan (4DSD), pick-up trucks (PICK).
 ```{r, warning=FALSE, message=FALSE}
 violation_df = 
   violation %>%
@@ -33,11 +36,11 @@ violation_df =
   ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
   geom_bar(stat = "identity") +
   labs(
-    title = "Frequency of Violation by Vehicle Body Types",
+    title = "Frequency of Violation by Vehicle Body Type",
     x = "Vehicle Body Types",
     y = "Numbers"
-  )+
-  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=0.25)
+  ) +
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
+violation_df
 
-ggplotly(violation_df)
 ```

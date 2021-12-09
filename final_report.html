@@ -340,9 +340,15 @@ div.tocify {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
+      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+    </li>
+    <li>
       <a href="fines.html">Fine Amount</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="statistical-analysis.html">Statistical Analyses</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -424,17 +430,14 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div id="exploratory-analysis" class="section level3">
-<h3>Exploratory Analysis</h3>
+<div id="exploratory-analyses" class="section level3">
+<h3>Exploratory Analyses</h3>
 <p><strong>Open Parking and Camera Violations</strong></p>
 <p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday.</p>
-<div id="distribution-of-number-of-violation" class="section level4">
-<h4>Distribution of number of violation</h4>
-<p>This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021. (Insert the code)</p>
-<p>The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. (Insert the code)</p>
-<p>Exploratory analysis from Sarah</p>
+<p><a href="frequencyI.html">Violation Frequency</a></p>
+<p><a href="timeline-part.html">Violation Timeline</a></p>
 <p>Total fine amount and average fine amount in each county Waveley</p>
-</div>
+<p><a href="fines.html">Fine Amount</a></p>
 <div id="visualization-over-time" class="section level4">
 <h4>Visualization over time</h4>
 <p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
@@ -442,6 +445,7 @@ div.tocify {
 </div>
 <div id="statistical-analyses" class="section level3">
 <h3>Statistical Analyses</h3>
+<p>We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we perform chi-squared test to test the homogeneity of violation types in five boroughs. Click the link see the details about <a href="statistical-analysis.html">Statistical Analyses</a></p>
 </div>
 <div id="discussion" class="section level3">
 <h3>Discussion</h3>

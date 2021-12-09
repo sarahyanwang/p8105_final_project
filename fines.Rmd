@@ -1,8 +1,18 @@
 ---
+<<<<<<< HEAD
 title: "fines"
 author: "Waveley Qiu (wq2162)"
 date: "2021-12-03"
 output: html_document
+=======
+title: "Fine Amount"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 ---
 
 ```{r setup, include=FALSE}
@@ -12,15 +22,17 @@ source("code/data_cleaning.R")
 source("code/formatting.R")
 ```
 
-## Mean Fine Amount Across Boroughs
+
+### Mean Fine Amount Across Boroughs
 
 First, let us compute the average fine amounts across the different boroughs:
 ```{r}
 violation %>%
   group_by(borough) %>%
   summarise(
-    avg_fine = mean(fine_amount)
-  )
+    average_fine = mean(fine_amount)
+  )%>%
+  knitr::kable(caption = "Average fine amounts across the different boroughs") 
 ```
 
 We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.
@@ -32,8 +44,7 @@ violation %>% group_by(borough) %>%
   labs(
     x = "Fine Amount",
     fill = "Borough",
-    title = "Fine Amount Across Boroughs"
-  )
+    title = "Fine Amount Across Boroughs")
 ```
 
 To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.
@@ -46,8 +57,7 @@ anova(violation_reg)
 There appear to be differences between fine amounts and at least 2 boroughs. 
 
 
-
-## Which borough tends to pay the most in excess fees?
+### Which borough tends to pay the most in excess fees?
 
 Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.
 
@@ -63,7 +73,8 @@ violation %>%
     avg_excess_amount = mean(excess_amount),
     avg_net_total_amount = mean(net_total_amount),
     avg_total_amount = mean(fine_amount)
-  )
+  ) %>% 
+  knitr::kable(caption = "Amounts paid in excess of the baseline fine amount")
 ```
 
 It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.
@@ -83,35 +94,5 @@ violation %>%
     fill = "Borough",
     title = "Fine Adjustments by Borough"
   )
+
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

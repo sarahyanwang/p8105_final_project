@@ -7,6 +7,7 @@ output:
     toc_float: true
     theme: cosmo
 ---
+(Video!!)
 
 ### Introduction
 One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). We were intrigued by the potential of investigating the parking violation in NYC in 2021. 
@@ -28,8 +29,12 @@ In the statistical analyses section, we include
 #### Collaborators:
 
 **Waveley Qiu (wq2162)**
+
 **Haotian Wu (hw2849)**
+
 **Yan Wang (yw3773)**
+
 **Yuanyuan Zeng (yz4181)**
+
 **Dantong Zhu (dz2451)**
 

@@ -77,32 +77,26 @@ The key variables that we used in our analysis include for mapping
 * `Intersecting Street` 
 
 
-### Exploratory Analysis
+### Exploratory Analyses
 
 **Open Parking and Camera Violations**
 
 We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday. 
 
-#### Distribution of number of violation
+[Violation Frequency](frequencyI.html)
 
-This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
-(Insert the code)
-
-
-The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October.
-(Insert the code)
-
-
-Exploratory analysis from Sarah
+[Violation Timeline](timeline-part.html)
 
 
 Total fine amount and average fine amount in each county Waveley
+
+[Fine Amount](fines.html)
 
 #### Visualization over time
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
 
 ### Statistical Analyses
-
+We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we perform chi-squared test to test the homogeneity of violation types in five boroughs. Click the link see the details about [Statistical Analyses](statistical-analysis.html)
 
 ### Discussion
 
