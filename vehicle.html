@@ -340,15 +340,18 @@ div.tocify {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+      <a href="fine_amount.html">Fine Amount</a>
     </li>
     <li>
-      <a href="fines.html">Fine Amount</a>
+      <a href="vehicle.html">Violation by Vehicle types</a>
     </li>
   </ul>
 </li>
 <li>
   <a href="statistical-analysis.html">Statistical Analyses</a>
+</li>
+<li>
+  <a href="hydrant_mapping.html">Hydrant Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -381,6 +384,8 @@ div.tocify {
 </div>
 
 
+<div id="frequency-of-violation-by-vehicle-body-type" class="section level2">
+<h2>Frequency of violation by Vehicle Body Type</h2>
 <p>The plot describes the frequency of violation by vehicle body types. There are mainly top 5 types of vehicle body at the top 5 ranking(unknown type excluded), which are SDN, PICK, 2DSD, 4DSD, SUBN. The type abbreviations are the exact match of the body type listed on the vehicle registration. The law defines a suburban(SUBN) as a vehicle that can be used to carry passengers and cargo. Other common body types and codes for vehicles registered in the passenger vehicle class are sedan (SDN), a two-door sedan (2DSD) and a four-door sedan (4DSD), pick-up trucks (PICK).</p>
 <pre class="r"><code>violation_df = 
   violation %&gt;%
@@ -402,6 +407,7 @@ div.tocify {
   geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
 violation_df</code></pre>
 <p><img src="vehicle_files/figure-html/unnamed-chunk-1-1.png" width="90%" /></p>
+</div>
 
 
 
