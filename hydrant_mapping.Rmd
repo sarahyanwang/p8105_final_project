@@ -1,5 +1,5 @@
-
-title: "hydrant"
+---
+title: "Hydrant Mapping"
 output: 
   html_document:
     code_folding: hide
@@ -232,7 +232,7 @@ isolated_hydrants <- inner_join(hydrant_actual, hit_hydrants2, by = c("unitid" =
 
 We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. Let's now plot the results.
 
-```{r}
+```{r, warning=FALSE}
 isolated_hydrants_plot <- 
   isolated_hydrants %>%
   mutate(
