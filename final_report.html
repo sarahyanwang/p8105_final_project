@@ -384,10 +384,11 @@ div.tocify {
 </div>
 
 
+<p> </p>
 <div id="motivation" class="section level3">
 <h3>Motivation</h3>
 <p>One of our group members’ had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 <a href="https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/">-Link</a>. We were intrigued by the potential of investigating the parking violation in NYC in 2021.</p>
-<p>(insert code)</p>
+<p> </p>
 </div>
 <div id="questions" class="section level3">
 <h3>Questions</h3>
@@ -396,11 +397,10 @@ div.tocify {
 <li>What other possible factors are associated with the violation tickets? Does the date associated with the parking violation counts? What about the frequency of vehicle type?</li>
 <li>Back to the starting point, what’s the suspicious hydrant’s distribution that possibly causes the parking violation? How to prevent the violation when parking next to the hydrant the next time?</li>
 </ol>
+<p> </p>
 </div>
-<div id="data" class="section level3">
-<h3>Data</h3>
-<div id="data-processing-and-cleaning" class="section level4">
-<h4>Data Processing and Cleaning</h4>
+<div id="data-processing-and-cleaning" class="section level3">
+<h3>Data Processing and Cleaning</h3>
 <p>We used two datasets from NYC OpenData in our project:</p>
 <ul>
 <li>Open Parking and Camera Violations <a href="https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89">-Link</a></li>
@@ -414,9 +414,10 @@ div.tocify {
 <ul>
 <li>Hydrants in NYC <a href="https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz">-Link</a></li>
 </ul>
+<p> </p>
 </div>
-<div id="variable-of-interests" class="section level4">
-<h4>Variable of Interests</h4>
+<div id="variable-of-interests" class="section level3">
+<h3>Variable of Interests</h3>
 <p><strong>Open Parking and Camera Violations</strong></p>
 <ul>
 <li><p><code>plate</code></p></li>
@@ -434,7 +435,7 @@ div.tocify {
 <li><p><code>Street Name</code></p></li>
 <li><p><code>Intersecting Street</code></p></li>
 </ul>
-</div>
+<p> </p>
 </div>
 <div id="exploratory-analyses" class="section level3">
 <h3>Exploratory Analyses</h3>
@@ -449,11 +450,13 @@ div.tocify {
 <p>First, we want to build the mapping for the distribution of parking violation spots.</p>
 <p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
 <p>Then we focus on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.</p>
+<p> </p>
 </div>
 </div>
 <div id="statistical-analyses" class="section level3">
 <h3>Statistical Analyses</h3>
 <p>We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we performed a chi-squared test to test the homogeneity of violation types in five boroughs. Next, we performed a proportion test to examine whether the proportion of fire hydrant violation is associated with the population of each borough. Click the link see the details about <a href="statistical-analysis.html">Statistical Analyses</a>.</p>
+<p> </p>
 </div>
 <div id="discussion" class="section level3">
 <h3>Discussion</h3>
