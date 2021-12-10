@@ -120,10 +120,3 @@ After conducting the exploratory analyses, we found that:
 
 * **Suburban(SUBN)** is the vehicle type that has the highest number of violation.
 
-
-
-
-
-
-### Conclusion
-
