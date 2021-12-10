@@ -105,8 +105,6 @@ hydrant_actual <-
 
 
 ```{r, message=FALSE}
-
-
 hydrant_plot_1 <- 
   hydrant_lat_long %>% 
   plot_ly(
@@ -123,7 +121,7 @@ hydrant_plot_1 <-
       center = list(lon = -73.9, lat = 40.7))) 
 
 hydrant_plot_2 <- 
-  hydrant_actual_plot %>% 
+  hydrant_actual %>% 
   plot_ly(
   lat = ~lat,
   lon = ~long,
