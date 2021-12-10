@@ -1,0 +1,127 @@
+---
+title: "hydrant_analysis"
+output: github_document
+---
+```{r setup, include=FALSE}
+library(tidyverse)
+library(httr)
+library(rvest)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+```
+
+### Chi-square Test
+
+We want to examine whether the violation types vary among boroughs. We predicted that there is no difference in ticket amounts proportions in violation types in different boroughs. 
+
+We perform the chi-square test to verify our assumption. 
+
+$H_0:$ the proportions of tickets of violation type in five boroughs are equal; 
+$H_a:$ there exists at least one borough is different. 
+
+```{r}
+## 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
+
+five_common_violation = 
+  violation1 %>%
+  select(borough, violation) %>% 
+  filter(violation %in%
+           c("NO PARKING-STREET CLEANING",
+             "FAIL TO DSPLY MUNI METER RECPT",
+             "INSP. STICKER-EXPIRED/MISSING",
+             "REG. STICKER-EXPIRED/MISSING",
+             "FIRE HYDRANT")) %>%
+  count(violation, borough) %>% 
+  pivot_wider(
+    names_from = "violation",
+    values_from = "n"
+  ) %>% 
+  data.matrix() %>% 
+  subset(select = -c(borough))
+
+rownames(five_common_violation) <- c("Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")
+
+five_common_violation %>% 
+  knitr::kable(caption = "Results Table")
+
+chisq.test(five_common_violation)
+
+x_crit = qchisq(0.95, 16)
+x_crit
+```
+
+Interpretation: The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, sp we reject the null hypothesis and conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
+
+
+
+```{r}
+fire_hydrant = violation1 %>% filter(violation == "FIRE HYDRANT")
+
+fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>% 
+  select(issue_date, borough, violation, plate) %>% 
+  group_by(plate) %>% 
+  filter(n() > 1) %>% 
+  distinct(plate) %>% 
+  ungroup()
+ 
+ duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = "plate")
+ 
+ duplicate_hydrant %>% 
+  count(plate) %>% 
+   ggplot(aes(x = n)) + 
+   geom_histogram()
+   
+   violation %>% 
+     filter(plate == "JRA7539") %>% 
+     summarize(sum = sum(amount_due))
+```
+
+We want to know whether proportions of the population receives fire hydrant violations in each borough are equal. 
+
+First, we will assume: 
+1) Each car has only one driver;
+2) Each car gets one fire hydrant violation in 2021
+
+We perform a t-test to see if the mean number of fire hydrant violations is 1. 
+
+```{r}
+
+```
+
+### prop.test
+```{r}
+
+url = "https://www.citypopulation.de/en/usa/newyorkcity/"
+nyc_population_html = read_html(url)
+
+population = nyc_population_html %>% 
+  html_elements(".rname .prio1") %>% 
+  html_text()
+
+boro = nyc_population_html %>% 
+  html_elements(".rname a span") %>% 
+  html_text()
+
+nyc_population = tibble(
+  borough = boro,
+  population = population %>% str_remove_all(",") %>% as.numeric()
+) 
+  
+fire_hydrant = violation1 %>%
+  select(borough, violation, plate) %>% 
+  filter(violation == "FIRE HYDRANT") %>%
+  distinct(plate, borough) %>% 
+  count(borough) 
+
+boro_population = left_join(fire_hydrant, nyc_population)
+
+boro_population %>% 
+  knitr::kable(caption = "Results Table")
+
+prop.test(boro_population$n, boro_population$population)
+
+```
+
+The proportions of people getting fire hydrant violations are different across boroughs.

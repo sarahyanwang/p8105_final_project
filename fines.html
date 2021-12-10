@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<<<<<<< HEAD
+<meta name="author" content="Waveley Qiu (wq2162)" />
+
+<meta name="date" content="2021-12-03" />
+
+<title>fines</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+=======
+
+
+<title>Fine Amount</title>
+
+<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<<<<<<< HEAD
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+=======
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<<<<<<< HEAD
+
+
+=======
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<<<<<<< HEAD
+=======
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exploratory Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="frequencyI.html">Violation Frequency </a>
+    </li>
+    <li>
+      <a href="timeline-part.html">Violation Timeline </a>
+    </li>
+    <li>
+<<<<<<< HEAD
+=======
+      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+    </li>
+    <li>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+      <a href="fines.html">Fine Amount</a>
+    </li>
+  </ul>
+</li>
+<li>
+<<<<<<< HEAD
+=======
+  <a href="statistical-analysis.html">Statistical Analyses</a>
+</li>
+<li>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+  <a href="final_report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://github.com/sarahyanwang/parking_violation.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<<<<<<< HEAD
+
+
+<h1 class="title toc-ignore">fines</h1>
+<h4 class="author">Waveley Qiu (wq2162)</h4>
+<h4 class="date">2021-12-03</h4>
+=======
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Fine Amount</h1>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+
+</div>
+
+
+<<<<<<< HEAD
+<div id="mean-fine-amount-across-boroughs" class="section level2">
+<h2>Mean Fine Amount Across Boroughs</h2>
+=======
+<div id="mean-fine-amount-across-boroughs" class="section level3">
+<h3>Mean Fine Amount Across Boroughs</h3>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<p>First, let us compute the average fine amounts across the different boroughs:</p>
+<pre class="r"><code>violation %&gt;%
+  group_by(borough) %&gt;%
+  summarise(
+<<<<<<< HEAD
+    avg_fine = mean(fine_amount)
+  )</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   borough       avg_fine
+##   &lt;chr&gt;            &lt;dbl&gt;
+## 1 Bronx             76.5
+## 2 Brooklyn          74.3
+## 3 Manhattan         82.3
+## 4 Queens            68.4
+## 5 Staten Island     66.9</code></pre>
+=======
+    average_fine = mean(fine_amount)
+  )%&gt;%
+  knitr::kable(caption = &quot;Average fine amounts across the different boroughs&quot;) </code></pre>
+<table>
+<caption>Average fine amounts across the different boroughs</caption>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">average_fine</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">76.46053</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">74.34834</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">82.25287</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">68.42849</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">66.92960</td>
+</tr>
+</tbody>
+</table>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<p>We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.</p>
+<pre class="r"><code>violation %&gt;% group_by(borough) %&gt;% 
+  ggplot(aes(x = fine_amount, fill = borough)) + 
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = &quot;Fine Amount&quot;,
+    fill = &quot;Borough&quot;,
+<<<<<<< HEAD
+    title = &quot;Fine Amount Across Boroughs&quot;
+  )</code></pre>
+=======
+    title = &quot;Fine Amount Across Boroughs&quot;)</code></pre>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<p><img src="fines_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p>To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.</p>
+<pre class="r"><code>violation_reg &lt;- lm(fine_amount~borough, data = violation)
+anova(violation_reg)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: fine_amount
+##                Df     Sum Sq  Mean Sq F value    Pr(&gt;F)    
+## borough         4   46651474 11662868   16653 &lt; 2.2e-16 ***
+## Residuals 1733700 1214179375      700                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>There appear to be differences between fine amounts and at least 2 boroughs.</p>
+</div>
+<<<<<<< HEAD
+<div id="which-borough-tends-to-pay-the-most-in-excess-fees" class="section level2">
+<h2>Which borough tends to pay the most in excess fees?</h2>
+=======
+<div id="which-borough-tends-to-pay-the-most-in-excess-fees" class="section level3">
+<h3>Which borough tends to pay the most in excess fees?</h3>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<p>Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.</p>
+<pre class="r"><code>violation %&gt;%
+  select(borough, contains(&quot;amount&quot;)) %&gt;%
+  mutate(
+    net_total_amount = fine_amount + penalty_amount + interest_amount - reduction_amount,
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %&gt;%
+  group_by(borough) %&gt;%
+  summarise(
+    avg_excess_amount = mean(excess_amount),
+    avg_net_total_amount = mean(net_total_amount),
+    avg_total_amount = mean(fine_amount)
+<<<<<<< HEAD
+  )</code></pre>
+<pre><code>## # A tibble: 5 x 4
+##   borough       avg_excess_amount avg_net_total_amount avg_total_amount
+##   &lt;chr&gt;                     &lt;dbl&gt;                &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Bronx                     -5.13                 71.3             76.5
+## 2 Brooklyn                  -5.59                 68.8             74.3
+## 3 Manhattan                 -7.30                 74.9             82.3
+## 4 Queens                    -6.84                 61.6             68.4
+## 5 Staten Island             -6.89                 60.0             66.9</code></pre>
+=======
+  ) %&gt;% 
+  knitr::kable(caption = &quot;Amounts paid in excess of the baseline fine amount&quot;)</code></pre>
+<table>
+<caption>Amounts paid in excess of the baseline fine amount</caption>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">avg_excess_amount</th>
+<th align="right">avg_net_total_amount</th>
+<th align="right">avg_total_amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">-5.127610</td>
+<td align="right">71.33292</td>
+<td align="right">76.46053</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">-5.593115</td>
+<td align="right">68.75523</td>
+<td align="right">74.34834</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">-7.304869</td>
+<td align="right">74.94800</td>
+<td align="right">82.25287</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">-6.843527</td>
+<td align="right">61.58496</td>
+<td align="right">68.42849</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">-6.887677</td>
+<td align="right">60.04193</td>
+<td align="right">66.92960</td>
+</tr>
+</tbody>
+</table>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+<p>It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.</p>
+<pre class="r"><code>violation %&gt;%
+  select(borough, contains(&quot;amount&quot;)) %&gt;%
+  mutate(
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %&gt;%
+  filter(excess_amount !=  0) %&gt;%
+  
+  ggplot(aes(x = excess_amount, fill = borough)) +
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = &quot;Fine Adjustment Amount&quot;,
+    fill = &quot;Borough&quot;,
+    title = &quot;Fine Adjustments by Borough&quot;
+  )</code></pre>
+<p><img src="fines_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+</div>
+
+
+
+<<<<<<< HEAD
+=======
+</div>
+</div>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<<<<<<< HEAD
+
+=======
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+>>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

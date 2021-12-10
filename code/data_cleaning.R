@@ -8,6 +8,7 @@ library(jsonlite)
 library(progress)
 library(tidyverse)
 library(lubridate)
+library(plotly)
 
 violation1 <-
   read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
@@ -53,7 +54,9 @@ violation <-
     house_street = ifelse(is.na(street_name), NA, ifelse(is.na(house_number), paste("0", street_name), paste(house_number, street_name))),
     geo_nyc_address = paste(house_street[!is.na(house_street)], 
                             intersecting_street[!is.na(intersecting_street)], 
-                            toupper(borough), sep = ","),
+                            paste(toupper(borough), "COUNTY"),
+                            "NEW YORK, NY",
+                            sep = ","),
     google_address = paste(house_street[!is.na(house_street)], 
                            intersecting_street[!is.na(intersecting_street)], 
                            toupper(borough), 
