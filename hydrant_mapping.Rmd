@@ -1,8 +1,18 @@
 ---
+<<<<<<< HEAD
 title: "Hydrant Mapping"
 author: "Waveley Qiu (wq2162)"
 date: "2021-12-08"
 output: html_document
+=======
+title: "hydrant"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
+>>>>>>> 8ee1cfb12492717eb5750f909b425bfb08599437
 ---
 
 ```{r setup, include=FALSE}

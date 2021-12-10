@@ -334,15 +334,24 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="frequencyI.html">Violation Frequency </a>
+      <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline </a>
+      <a href="timeline-part.html">Violation Timeline</a>
     </li>
     <li>
-      <a href="fines.html">Fine Amount</a>
+      <a href="fine_amount.html">Fine Amount</a>
+    </li>
+    <li>
+      <a href="vehicle.html">Violation by Vehicle types</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="statistical-analysis.html">Statistical Analyses</a>
+</li>
+<li>
+  <a href="hydrant_mapping.html">Hydrant Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -375,23 +384,23 @@ div.tocify {
 </div>
 
 
+<p> </p>
 <div id="motivation" class="section level3">
 <h3>Motivation</h3>
 <p>One of our group members’ had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 <a href="https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/">-Link</a>. We were intrigued by the potential of investigating the parking violation in NYC in 2021.</p>
-<p>(insert code)</p>
+<p> </p>
 </div>
 <div id="questions" class="section level3">
 <h3>Questions</h3>
 <ol style="list-style-type: decimal">
 <li>When and where a parking ticket in NYC is most likely to be found?</li>
-<li>what possible factors are associated with the tickets? The driver’s experience, the car’s size?</li>
-<li>how to avoid the future ticket? Suggestions based on the analysis…</li>
+<li>What other possible factors are associated with the violation tickets? Does the date associated with the parking violation counts? What about the frequency of vehicle type?</li>
+<li>Back to the starting point, what’s the suspicious hydrant’s distribution that possibly causes the parking violation? How to prevent the violation when parking next to the hydrant the next time?</li>
 </ol>
+<p> </p>
 </div>
-<div id="data" class="section level3">
-<h3>Data</h3>
-<div id="data-processing-and-cleaning" class="section level4">
-<h4>Data Processing and Cleaning</h4>
+<div id="data-processing-and-cleaning" class="section level3">
+<h3>Data Processing and Cleaning</h3>
 <p>We used two datasets from NYC OpenData in our project:</p>
 <ul>
 <li>Open Parking and Camera Violations <a href="https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89">-Link</a></li>
@@ -405,9 +414,10 @@ div.tocify {
 <ul>
 <li>Hydrants in NYC <a href="https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz">-Link</a></li>
 </ul>
+<p> </p>
 </div>
-<div id="variable-of-interests" class="section level4">
-<h4>Variable of Interests</h4>
+<div id="variable-of-interests" class="section level3">
+<h3>Variable of Interests</h3>
 <p><strong>Open Parking and Camera Violations</strong></p>
 <ul>
 <li><p><code>plate</code></p></li>
@@ -425,30 +435,47 @@ div.tocify {
 <li><p><code>Street Name</code></p></li>
 <li><p><code>Intersecting Street</code></p></li>
 </ul>
-</div>
+<p> </p>
 </div>
 <div id="exploratory-analyses" class="section level3">
 <h3>Exploratory Analyses</h3>
 <p><strong>Open Parking and Camera Violations</strong></p>
-<p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday.</p>
+<p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday and by vehicle types, and fine amounts in boroughs.</p>
 <p><a href="frequencyI.html">Violation Frequency</a></p>
 <p><a href="timeline-part.html">Violation Timeline</a></p>
-<p>Total fine amount and average fine amount in each county Waveley</p>
 <p><a href="fines.html">Fine Amount</a></p>
-<div id="visualization-over-time" class="section level4">
-<h4>Visualization over time</h4>
+<p><a href="vehicle.html">Violation by Vehicle Type</a></p>
+<div id="visualization-on-the-map" class="section level4">
+<h4>Visualization on the map</h4>
+<p>First, we want to build the mapping for the distribution of parking violation spots.</p>
 <p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
+<p>Then we focus on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.</p>
+<p> </p>
 </div>
 </div>
 <div id="statistical-analyses" class="section level3">
 <h3>Statistical Analyses</h3>
-<p>We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we perform chi-squared test to test the homogeneity of violation types in five boroughs. Click the link see the details about <a href="statistical-analysis.html">Statistical Analyses</a></p>
+<p>We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we performed a chi-squared test to test the homogeneity of violation types in five boroughs. Next, we performed a proportion test to examine whether the proportion of fire hydrant violation is associated with the population of each borough. Click the link see the details about <a href="statistical-analysis.html">Statistical Analyses</a>.</p>
+<p> </p>
 </div>
 <div id="discussion" class="section level3">
 <h3>Discussion</h3>
-</div>
-<div id="conclusion" class="section level3">
-<h3>Conclusion</h3>
+<p>Exploratory analyses foundings:</p>
+<ul>
+<li><p><strong>Brooklyn</strong> has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets.</p></li>
+<li><p>There is a sharp increase in number of tickets in <strong>October</strong> in all boroughs.</p></li>
+<li><p>Top three types of violation: <strong>No Parking-Street Cleaning</strong>, <strong>Inspection Sticker Expired/Missing</strong>, <strong>Fail to Display a muni-meter receipt</strong>.</p></li>
+<li><p><strong>Saturday</strong> has the lowest violation counts and <strong>Friday</strong> had the second lowest counts comparing to all other weekdays.</p></li>
+<li><p>Violation increases from <strong>6:00 AM</strong> to <strong>8:00 AM</strong>, remains high in <strong>8:00 AM</strong> to <strong>2:00 PM</strong>, decrease from <strong>2:00 PM</strong> to <strong>7:00 PM</strong>.</p></li>
+<li><p>Average fine amount is <strong>highest</strong> in <strong>Manhattan</strong> and <strong>lowest</strong> in <strong>Staten Island</strong>. There is <strong>significant difference</strong> between fine amounts and at least 2 boroughs.</p></li>
+<li><p><strong>Suburban(SUBN)</strong> is the vehicle type that has the highest number of violation.</p></li>
+</ul>
+<p>Our statistical analyses findings:</p>
+<ul>
+<li><p><strong>ANOVA test</strong>: the parking violation counts are associated with <strong>month</strong> and <strong>weekday</strong>.</p></li>
+<li><p><strong>Chi-square test</strong>: the proportions of violation amounts is <strong>different</strong> among boroughs.</p></li>
+<li><p><strong>Proportion test</strong>: the proportions of people getting fire hydrant violations are <strong>different</strong> across boroughs.</p></li>
+</ul>
 </div>
 
 

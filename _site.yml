@@ -3,20 +3,27 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "Exploratory Analyses"
+    - text: 'Exploratory Analyses'
       menu:
-      - text: "Violation Frequency "
+      - text: 'Violation Frequency'
         href: frequencyI.html
-      - text: "Violation Timeline "
+      - text: 'Violation Timeline'
         href: timeline-part.html
-      - text: "Fine Amount"
-        href: fines.html
-    - text: "Project Report"
+      - text: 'Fine Amount'
+        href: fine_amount.html
+      - text: 'Violation by Vehicle types'
+        href: vehicle.html
+    - text: 'Statistical Analyses'
+      href: statistical-analysis.html
+    - text: 'Hydrant Mapping'
+      href: hydrant_mapping.html
+    - text: 'Project Report'
       href: final_report.html
     - icon: fa-github fa-lg
       href: https://github.com/sarahyanwang/parking_violation.github.io
-
-    
 output:
   html_document:
-    theme: cerulean
+    theme: cosmo
+    toc : true
+    toc_float: true
+    code_folding: hide

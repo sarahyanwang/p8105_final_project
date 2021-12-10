@@ -334,21 +334,24 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="frequencyI.html">Violation Frequency </a>
+      <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline </a>
+      <a href="timeline-part.html">Violation Timeline</a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle Body Types</a>
+      <a href="fine_amount.html">Fine Amount</a>
     </li>
     <li>
-      <a href="fines.html">Fine Amount</a>
+      <a href="vehicle.html">Violation by Vehicle types</a>
     </li>
   </ul>
 </li>
 <li>
   <a href="statistical-analysis.html">Statistical Analyses</a>
+</li>
+<li>
+  <a href="hydrant_mapping.html">Hydrant Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -381,8 +384,11 @@ div.tocify {
 </div>
 
 
-<div id="one-way-anova-test-for-weekday-and-month-on-violation-frequency" class="section level3">
-<h3>One-way anova test for weekday and month on violation frequency</h3>
+<div id="anova-test---whether-month-and-weekday-are-associated-with-parking-violation" class="section level3">
+<h3>ANOVA Test - whether month and weekday are associated with parking violation</h3>
+<p>As from the data visualization, we observe patterns for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month.</p>
+<p><span class="math inline">\(H_0\)</span>: The mean numbers of parking violation are not different across months and weekdays.</p>
+<p><span class="math inline">\(H_1\)</span>: The mean numbers of parking violation are different across months and weekdays.</p>
 <pre class="r"><code>fit_df = violation %&gt;%
   mutate(month = as.factor(month)) %&gt;%
   group_by(month, weekday, day) %&gt;%
@@ -454,7 +460,188 @@ anova(fit_model_month) %&gt;% knitr::kable(caption = &quot;One way anova of viol
 </tr>
 </tbody>
 </table>
-<p>In order to go more about the how month and weekday are associated with the frequency of parking violation. We try to use one-way anova test for weekday and month. From the above results, both the p-values are 0, so we can say that the parking violation counts are associated with month and weekday.</p>
+<p>From the above results, both the p-values are very small, so we can say that the parking violation counts are associated with month and weekday.</p>
+</div>
+<div id="chi-square-test---whether-the-violation-types-vary-among-boroughs" class="section level3">
+<h3>Chi-square Test - whether the violation types vary among boroughs</h3>
+<p>We predicted that there is no difference in ticket amounts proportions in violation types in different boroughs, and we perform the chi-square test to verify our assumption.</p>
+<p><span class="math inline">\(H_0:\)</span> the proportions of tickets of violation type in five boroughs are equal; <span class="math inline">\(H_a:\)</span> there exists at least one borough is different.</p>
+<pre class="r"><code>## 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
+
+five_common_violation = 
+  violation1 %&gt;%
+  select(borough, violation) %&gt;% 
+  filter(violation %in%
+           c(&quot;NO PARKING-STREET CLEANING&quot;,
+             &quot;FAIL TO DSPLY MUNI METER RECPT&quot;,
+             &quot;INSP. STICKER-EXPIRED/MISSING&quot;,
+             &quot;REG. STICKER-EXPIRED/MISSING&quot;,
+             &quot;FIRE HYDRANT&quot;)) %&gt;%
+  count(violation, borough) %&gt;% 
+  pivot_wider(
+    names_from = &quot;violation&quot;,
+    values_from = &quot;n&quot;
+  ) %&gt;% 
+  data.matrix() %&gt;% 
+  subset(select = -c(borough))
+
+rownames(five_common_violation) &lt;- c(&quot;Bronx&quot;, &quot;Brooklyn&quot;, &quot;Manhattan&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)
+
+five_common_violation %&gt;% 
+  knitr::kable(caption = &quot;Results Table&quot;)</code></pre>
+<table>
+<caption>Results Table</caption>
+<colgroup>
+<col width="9%" />
+<col width="21%" />
+<col width="9%" />
+<col width="20%" />
+<col width="18%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">FAIL TO DSPLY MUNI METER RECPT</th>
+<th align="right">FIRE HYDRANT</th>
+<th align="right">INSP. STICKER-EXPIRED/MISSING</th>
+<th align="right">NO PARKING-STREET CLEANING</th>
+<th align="right">REG. STICKER-EXPIRED/MISSING</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">24005</td>
+<td align="right">32407</td>
+<td align="right">44436</td>
+<td align="right">46874</td>
+<td align="right">35410</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">49347</td>
+<td align="right">43903</td>
+<td align="right">67654</td>
+<td align="right">101494</td>
+<td align="right">51038</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">49902</td>
+<td align="right">31794</td>
+<td align="right">40856</td>
+<td align="right">43963</td>
+<td align="right">35280</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">72767</td>
+<td align="right">31610</td>
+<td align="right">61256</td>
+<td align="right">60778</td>
+<td align="right">56589</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">6025</td>
+<td align="right">1946</td>
+<td align="right">15857</td>
+<td align="right">16</td>
+<td align="right">13492</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>chisq.test(five_common_violation)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  five_common_violation
+## X-squared = 53839, df = 16, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>x_crit = qchisq(0.95, 16)
+x_crit</code></pre>
+<pre><code>## [1] 26.29623</code></pre>
+<p>Interpretation: The result of chi-square shows that <span class="math inline">\(\chi^2 &gt; \chi_{crit}\)</span>, at significant level <span class="math inline">\(\alpha = 0.05\)</span>, sp we reject the null hypothesis and conclude that there does exist at least one borough’s proportion of violation amounts is different from others.</p>
+</div>
+<div id="proportion-test---whether-proportions-of-the-population-receiving-fire-hydrant-violations-in-each-borough-are-equal" class="section level3">
+<h3>Proportion Test - whether proportions of the population receiving fire hydrant violations in each borough are equal</h3>
+<p>We derived the population of each borough from the most recent <a href="https://www.citypopulation.de/en/usa/newyorkcity/">census</a>.</p>
+<p>First, we will assume: 1) Each car has only one driver; 2) Each car gets one fire hydrant violation in 2021.</p>
+<pre class="r"><code>url = &quot;https://www.citypopulation.de/en/usa/newyorkcity/&quot;
+nyc_population_html = read_html(url)
+
+population = nyc_population_html %&gt;% 
+  html_elements(&quot;.rname .prio1&quot;) %&gt;% 
+  html_text()
+
+boro = nyc_population_html %&gt;% 
+  html_elements(&quot;.rname a span&quot;) %&gt;% 
+  html_text()
+
+nyc_population = tibble(
+  borough = boro,
+  population = population %&gt;% str_remove_all(&quot;,&quot;) %&gt;% as.numeric()
+) 
+  
+fire_hydrant = violation1 %&gt;%
+  select(borough, violation, plate) %&gt;% 
+  filter(violation == &quot;FIRE HYDRANT&quot;) %&gt;%
+  distinct(plate, borough) %&gt;% 
+  count(borough) 
+
+boro_population = left_join(fire_hydrant, nyc_population)</code></pre>
+<pre><code>## Joining, by = &quot;borough&quot;</code></pre>
+<pre class="r"><code>boro_population %&gt;% 
+  knitr::kable(caption = &quot;Results Table&quot;)</code></pre>
+<table>
+<caption>Results Table</caption>
+<thead>
+<tr class="header">
+<th align="left">borough</th>
+<th align="right">n</th>
+<th align="right">population</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bronx</td>
+<td align="right">18432</td>
+<td align="right">1472654</td>
+</tr>
+<tr class="even">
+<td align="left">Brooklyn</td>
+<td align="right">28124</td>
+<td align="right">2736074</td>
+</tr>
+<tr class="odd">
+<td align="left">Manhattan</td>
+<td align="right">20809</td>
+<td align="right">1694251</td>
+</tr>
+<tr class="even">
+<td align="left">Queens</td>
+<td align="right">21832</td>
+<td align="right">2405464</td>
+</tr>
+<tr class="odd">
+<td align="left">Staten Island</td>
+<td align="right">1611</td>
+<td align="right">495747</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>prop.test(boro_population$n, boro_population$population)</code></pre>
+<pre><code>## 
+##  5-sample test for equality of proportions without continuity
+##  correction
+## 
+## data:  boro_population$n out of boro_population$population
+## X-squared = 4127.7, df = 4, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided
+## sample estimates:
+##      prop 1      prop 2      prop 3      prop 4      prop 5 
+## 0.012516178 0.010278962 0.012282123 0.009076004 0.003249641</code></pre>
+<p>From the above results, we can say that the proportions of people getting fire hydrant violations are different across boroughs.</p>
 </div>
 
 
