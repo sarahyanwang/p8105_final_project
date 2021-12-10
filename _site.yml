@@ -11,6 +11,8 @@ navbar:
         href: timeline-part.html
       - text: "Fine Amount"
         href: fines.html
+      - text: "Violation by Vehicle types"
+        href: vehicle.html
     - text: "Statistical Analyses"
       href: statistical-analysis.html
     - text: "Project Report"
