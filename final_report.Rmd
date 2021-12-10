@@ -104,5 +104,26 @@ We conduct a one-way anova test about the violation frequency to see if there is
 
 ### Discussion
 
+After conducting the exploratory analyses, we found that:
+
+* **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
+
+* There is a sharp increase in number of tickets in **October** in all boroughs. 
+
+* Top three types of violation: **No Parking-Street Cleaning**, **Inspection Sticker Expired/Missing**, **Fail to Display a muni-meter receipt**.
+
+* Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
+
+* Violation increases from **6:00 AM** to **8:00 AM**, remains high in **8:00 AM** to **2:00 PM**, decrease from **2:00 PM** to **7:00 PM**.
+
+* Average fine amount is **highest** in **Manhattan** and **lowest** in **Staten Island**. There is **significant difference** between fine amounts and at least 2 boroughs.
+
+
+
+
+
+
+
+
 ### Conclusion
 
