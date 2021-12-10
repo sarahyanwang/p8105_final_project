@@ -35,9 +35,9 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 
-### ANOVA Test - whether month and weekday are assiciated with parking violation
+### ANOVA Test - whether month and weekday are associated with parking violation
 
-As from the data visualization, we observe a pattern for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month. 
+As from the data visualization, we observe patterns for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month. 
 
 $H_0$: The mean numbers of parking violation are not different across months and weekdays.
 
@@ -101,7 +101,7 @@ x_crit
 Interpretation: The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, sp we reject the null hypothesis and conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
 
 
-### Proportion Test - whether proportions of the population receives fire hydrant violations in each borough are equal
+### Proportion Test - whether proportions of the population receiving fire hydrant violations in each borough are equal
 
 We derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). 
 
@@ -142,4 +142,4 @@ prop.test(boro_population$n, boro_population$population)
 
 ```
 
-In conclusion, the proportions of people getting fire hydrant violations are different across boroughs. 
+From the above results, we can say that the proportions of people getting fire hydrant violations are different across boroughs. 
