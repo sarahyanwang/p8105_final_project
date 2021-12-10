@@ -7,19 +7,29 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(httr)
+# library(httr)
+# library(tidygeocoder)
+# library(progress) 
+
 library(tidyverse)
-library(tidygeocoder)
-library(progress)
 library(jsonlite)
 library(plotly)
+
+# creates polygons
 library(sp)
+
+# produces coordinates
+library(geosphere)
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
 ```
 
+We would like to create some maps of fire hydrant violations by borough. We also want to investigate whether we can find hydrants that are most frequently ticketed. 
+
 ## Using NYC Geo
+
+After trying several different geolocating methods, we found that NYCGeosearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. 
 
 ```{r, warning=FALSE, eval=FALSE}
 hydrant <- 
@@ -70,65 +80,99 @@ The previous chunk takes approximately 7 hours to run. We have saved the output 
 
 We will also load a dataset containing locations of all fire hydrants in NYC, from a file named `Hydrants.csv`.
 
-```{r}
+```{r, message=FALSE}
 hydrant_lat_long <- read_csv("hydrant_lat_long.csv") %>% select(-coordinates)
+
 hydrant_actual <- read_csv("Hydrants.csv")
+
+hydrant_actual <- 
+  hydrant_actual %>%
+  mutate(borough = case_when(
+    BORO == 1 ~ "Manhattan",
+    BORO == 2 ~ "Bronx",
+    BORO == 3 ~ "Brooklyn",
+    BORO == 4 ~ "Queens",
+    BORO == 5 ~ "Staten Island"
+  )) %>%
+  rename(
+    lat = LATITUDE,
+    long = LONGITUDE,
+    unitid = UNITID
+  )
 ```
 
 ## Mapping of Hydrant Tickets
 
-```{r}
-hydrant_to_plot <- hydrant_actual %>%
-  mutate(borough = "Hydrant") %>%
-  rename(
-    lat = LATITUDE,
-    long = LONGITUDE
-  ) %>% 
-  bind_rows(hydrant_lat_long)
 
-hydrant_plot <- 
-  hydrant_to_plot %>% 
+```{r, message=FALSE}
+
+
+hydrant_plot_1 <- 
+  hydrant_lat_long %>% 
   plot_ly(
     lat = ~lat, 
     lon = ~long, 
     type = "scattermapbox", 
     mode = "markers", 
     alpha = 0.2,
-    color = ~borough)
-
-hydrant_plot %>% layout(
+    color = ~borough) %>% 
+  layout(
     mapbox = list(
       style = 'carto-positron',
       zoom = 9,
       center = list(lon = -73.9, lat = 40.7))) 
+
+hydrant_plot_2 <- 
+  hydrant_actual_plot %>% 
+  plot_ly(
+  lat = ~lat,
+  lon = ~long,
+  type = "scattermapbox",
+  mode = "markers",
+  alpha = 0.02,
+  color = ~borough
+  ) %>% 
+  layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7))) 
+
+hydrant_plot_1
+
+hydrant_plot_2
 ```
 
 We want to find the hydrants that are most commonly ticketed. As cars (or, drivers) are ticketed if they park within 15 feet of a hydrant, we will attempt to do this by constructing hitboxes of approximately 15 feet in radius around each hydrant and see how many violation points are within those circles.
 
 Circles are a little difficult to work with. Let's use squares instead, such that they are about 15 feet from the center of the square to any edge -- this distance:
 
-We used the following website to determine the distance each unit change in latitude/longitude covers in NYC. 
-[-Link] (https://www.movable-type.co.uk/scripts/latlong.html)
-
-If we go from the coordinate (40.7, -73.9) to (40.7, -74.0), we will have traveled 7.587 kilometers, or approximately 27657.48 feet. This indicates that a change of 0.000054 degrees longitude is approximately 15 feet.
-
-If we go from the coordinate (40.7, -73.9) to (40.8, -73.9), we will have traveled 11.12 kilometers, or approximately 36482.94 feet. This indicates that a change of 0.000041 degrees latitude is approximately 15 feet.
-
-To make things a little bit simpler, we will proceed as if one degree change in latitude covers the same amount of distance as one degree change in longitude. We will use the average of these two coordinate-distance approximations in our constructions of the hitboxes. We will just say that 15 feet can be represented by a change of 0.000045 degrees longitude or latitude.
+We will use the function `destPoint()` from the package `geosphere` to calculate this. This function takes a latitude and longitude coordinate, a bearing (measured from North), and a distaance in meters. We will use this function to obtain the coordinates of the vertices of a square centered around the position of the fire hydrant, 15 feet (5 meters) in radius (measured from center to edge).
 
 ```{r}
-# store "radius" of square (in degrees)
-r = 0.00005
-d = sqrt(2)*r
+# distance in meters
+d = 10
  
 # need 5 points per square. points are: (x-d, y+d), (x+d, y+d), (x+d, y-d), (x-d, y-d), (x-d, y+d), (x-d, y+d)
  
- working_fh <- hydrant_actual
- 
- square_coord <- function(xpt, ypt, dist = d){
-   x <- c(xpt - dist, xpt + dist, xpt + dist, xpt - dist, xpt - dist)
-   y <- c(ypt + dist, ypt + dist, ypt - dist, ypt - dist, ypt + dist)
+ #working_fh <- hydrant_actual %>% slice(1)
+
+ square_coord <- function(lat, long, dist = 5){
+   
+   point_init <- destPoint(c(long, lat), b = 0, d = dist)
+   
+   point1 <- destPoint(point_init, b = 270, d = dist) %>% as.data.frame()
+   point2 <- destPoint(point1, b = 180, d = dist*2) %>% as.data.frame()
+   point3 <- destPoint(point2, b = 90, d = dist*2) %>% as.data.frame()
+   point4 <- destPoint(point3, b = 0, d = dist*2) %>% as.data.frame()
+   
+   sq <- bind_rows(point1, point2, point3, point4, point1)
+   
+   x <- sq %>% pull(lat)
+   y <- sq %>% pull(lon)
+   
    out_mat <- cbind(x, y)
+   
    return(out_mat)
  }
  
@@ -137,10 +181,10 @@ d = sqrt(2)*r
    return(poly)
  }
 
-first_step <- working_fh %>%
+first_step <- hydrant_actual %>%
   mutate(
-    sq = map2(LATITUDE, LONGITUDE, square_coord),
-    polys = map2(sq, UNITID, to_poly)
+    sq = map2(.x = lat, .y = long, ~square_coord(lat = .x, long = .y, dist = d)),
+    polys = map2(sq, unitid, to_poly)
   )  %>% 
   select(polys) %>%
   pull(polys)
@@ -159,19 +203,17 @@ squares <- SpatialPolygons(first_step)
 # check if drawn squares have points in them
 hits <- over(squares, pts)
 
-isolated_hydrants <-  tibble(id = names(hits), hits = hits) %>% filter(!is.na(hits)) %>% inner_join(hydrant_actual, by = c("UNITID" = "id"))
+hit_hydrants <- tibble(id = names(hits), hits = hits) %>% filter(!is.na(hits))
 
+isolated_hydrants <- inner_join(hydrant_actual, hit_hydrants, by = c("unitid" = "id"))
 ```
 
+We see that there are `r nrow(hit_hydrants)` hydrants. Let's now plot the results.
 
 ```{r}
 isolated_hydrants_plot <- 
   isolated_hydrants %>%
-  mutate(borough = "Hydrant") %>%
-  rename(
-    lat = LATITUDE,
-    long = LONGITUDE
-  )
+  mutate(borough = "Hydrant")
 
 hydrant_plot <- 
   hydrant_lat_long %>% 
@@ -192,10 +234,6 @@ plot <- hydrant_plot %>% add_trace(
   mode = "markers",
   marker = list(
     color = "red",
-    line = list(
-        color = 'white',
-        width = 2
-      ),
     size = 5
     ),
   alpha = 1
@@ -208,9 +246,9 @@ plot %>% layout(
       center = list(lon = -73.9, lat = 40.7))) 
 ```
 
+The hydrants that had points intersecting their hitboxes land in positions on the map that we would expect. 
 
-
-
+Granted, there are quite a few limitations to this analysis -- the largest of which being the accuracy of the parking violation locations themselves. 
 
 
 

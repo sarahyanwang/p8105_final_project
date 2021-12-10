@@ -1,0 +1,14 @@
+---
+title: "references"
+author: "Waveley Qiu (wq2162)"
+date: "12/10/2021"
+output: html_document
+---
+
+### Hydrant Mapping
+
+Geosphere Package:
+https://cran.r-project.org/web/packages/geosphere/geosphere.pdf
+
+Map Overlay:
+https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
