@@ -9,18 +9,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<<<<<<< HEAD
-<meta name="author" content="Waveley Qiu (wq2162)" />
-
-<meta name="date" content="2021-12-03" />
-
-<title>fines</title>
-
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
-=======
 
 
 <title>Fine Amount</title>
@@ -29,7 +17,6 @@
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -42,15 +29,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<<<<<<< HEAD
-<script src="site_libs/navigation-1.1/tabsets.js"></script>
-=======
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -238,10 +221,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<<<<<<< HEAD
-
-
-=======
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
@@ -310,7 +289,6 @@ div.tocify {
 
 </style>
 
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 
 
 </head>
@@ -321,8 +299,6 @@ div.tocify {
 <div class="container-fluid main-container">
 
 
-<<<<<<< HEAD
-=======
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
@@ -333,7 +309,6 @@ div.tocify {
 <div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -365,23 +340,11 @@ div.tocify {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
-<<<<<<< HEAD
-=======
-      <a href="vehicle.html">Violation by Vehicle Body Types</a>
-    </li>
-    <li>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
       <a href="fines.html">Fine Amount</a>
     </li>
   </ul>
 </li>
 <li>
-<<<<<<< HEAD
-=======
-  <a href="statistical-analysis.html">Statistical Analyses</a>
-</li>
-<li>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
   <a href="final_report.html">Project Report</a>
 </li>
 <li>
@@ -397,13 +360,6 @@ div.tocify {
 
 <div id="header">
 
-<<<<<<< HEAD
-
-
-<h1 class="title toc-ignore">fines</h1>
-<h4 class="author">Waveley Qiu (wq2162)</h4>
-<h4 class="date">2021-12-03</h4>
-=======
 <div class="btn-group pull-right float-right">
 <button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
@@ -415,34 +371,16 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Fine Amount</h1>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 
 </div>
 
 
-<<<<<<< HEAD
-<div id="mean-fine-amount-across-boroughs" class="section level2">
-<h2>Mean Fine Amount Across Boroughs</h2>
-=======
 <div id="mean-fine-amount-across-boroughs" class="section level3">
 <h3>Mean Fine Amount Across Boroughs</h3>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <p>First, let us compute the average fine amounts across the different boroughs:</p>
 <pre class="r"><code>violation %&gt;%
   group_by(borough) %&gt;%
   summarise(
-<<<<<<< HEAD
-    avg_fine = mean(fine_amount)
-  )</code></pre>
-<pre><code>## # A tibble: 5 x 2
-##   borough       avg_fine
-##   &lt;chr&gt;            &lt;dbl&gt;
-## 1 Bronx             76.5
-## 2 Brooklyn          74.3
-## 3 Manhattan         82.3
-## 4 Queens            68.4
-## 5 Staten Island     66.9</code></pre>
-=======
     average_fine = mean(fine_amount)
   )%&gt;%
   knitr::kable(caption = &quot;Average fine amounts across the different boroughs&quot;) </code></pre>
@@ -477,7 +415,6 @@ div.tocify {
 </tr>
 </tbody>
 </table>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <p>We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.</p>
 <pre class="r"><code>violation %&gt;% group_by(borough) %&gt;% 
   ggplot(aes(x = fine_amount, fill = borough)) + 
@@ -485,12 +422,7 @@ div.tocify {
   labs(
     x = &quot;Fine Amount&quot;,
     fill = &quot;Borough&quot;,
-<<<<<<< HEAD
-    title = &quot;Fine Amount Across Boroughs&quot;
-  )</code></pre>
-=======
     title = &quot;Fine Amount Across Boroughs&quot;)</code></pre>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <p><img src="fines_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
 <p>To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.</p>
 <pre class="r"><code>violation_reg &lt;- lm(fine_amount~borough, data = violation)
@@ -505,13 +437,8 @@ anova(violation_reg)</code></pre>
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>There appear to be differences between fine amounts and at least 2 boroughs.</p>
 </div>
-<<<<<<< HEAD
-<div id="which-borough-tends-to-pay-the-most-in-excess-fees" class="section level2">
-<h2>Which borough tends to pay the most in excess fees?</h2>
-=======
 <div id="which-borough-tends-to-pay-the-most-in-excess-fees" class="section level3">
 <h3>Which borough tends to pay the most in excess fees?</h3>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <p>Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.</p>
 <pre class="r"><code>violation %&gt;%
   select(borough, contains(&quot;amount&quot;)) %&gt;%
@@ -524,17 +451,6 @@ anova(violation_reg)</code></pre>
     avg_excess_amount = mean(excess_amount),
     avg_net_total_amount = mean(net_total_amount),
     avg_total_amount = mean(fine_amount)
-<<<<<<< HEAD
-  )</code></pre>
-<pre><code>## # A tibble: 5 x 4
-##   borough       avg_excess_amount avg_net_total_amount avg_total_amount
-##   &lt;chr&gt;                     &lt;dbl&gt;                &lt;dbl&gt;            &lt;dbl&gt;
-## 1 Bronx                     -5.13                 71.3             76.5
-## 2 Brooklyn                  -5.59                 68.8             74.3
-## 3 Manhattan                 -7.30                 74.9             82.3
-## 4 Queens                    -6.84                 61.6             68.4
-## 5 Staten Island             -6.89                 60.0             66.9</code></pre>
-=======
   ) %&gt;% 
   knitr::kable(caption = &quot;Amounts paid in excess of the baseline fine amount&quot;)</code></pre>
 <table>
@@ -580,7 +496,6 @@ anova(violation_reg)</code></pre>
 </tr>
 </tbody>
 </table>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 <p>It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.</p>
 <pre class="r"><code>violation %&gt;%
   select(borough, contains(&quot;amount&quot;)) %&gt;%
@@ -601,11 +516,8 @@ anova(violation_reg)</code></pre>
 
 
 
-<<<<<<< HEAD
-=======
 </div>
 </div>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 
 </div>
 
@@ -637,9 +549,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<<<<<<< HEAD
-
-=======
 <script>
 $(document).ready(function () {
   window.initializeCodeFolding("hide" === "show");
@@ -675,7 +584,6 @@ $(document).ready(function ()  {
     var toc = $("#TOC").tocify(options).data("toc-tocify");
 });
 </script>
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

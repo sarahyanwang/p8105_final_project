@@ -1,10 +1,4 @@
 ---
-<<<<<<< HEAD
-title: "fines"
-author: "Waveley Qiu (wq2162)"
-date: "2021-12-03"
-output: html_document
-=======
 title: "Fine Amount"
 output: 
   html_document:
@@ -12,7 +6,6 @@ output:
     toc: true
     toc_float: true
     theme: cosmo
->>>>>>> 6eaf441a6eae3d1649668b7388572d2721d36616
 ---
 
 ```{r setup, include=FALSE}
