@@ -13,6 +13,7 @@ library(tidygeocoder)
 library(progress)
 library(jsonlite)
 library(plotly)
+library(sp)
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
@@ -65,6 +66,10 @@ for (i in 1:nrow(hydrant_lat_long)) {
 write_csv(hydrant_lat_long, "hydrant_lat_long.csv")
 ```
 
+The previous chunk takes approximately 7 hours to run. We have saved the output from running this code in `hydrant_lat_long.csv` and the following code chunck should be run instead to load the data. 
+
+We will also load a dataset containing locations of all fire hydrants in NYC, from a file named `Hydrants.csv`.
+
 ```{r}
 hydrant_lat_long <- read_csv("hydrant_lat_long.csv") %>% select(-coordinates)
 hydrant_actual <- read_csv("Hydrants.csv")
@@ -73,7 +78,6 @@ hydrant_actual <- read_csv("Hydrants.csv")
 ## Mapping of Hydrant Tickets
 
 ```{r}
-
 hydrant_to_plot <- hydrant_actual %>%
   mutate(borough = "Hydrant") %>%
   rename(
@@ -113,10 +117,8 @@ If we go from the coordinate (40.7, -73.9) to (40.8, -73.9), we will have travel
 To make things a little bit simpler, we will proceed as if one degree change in latitude covers the same amount of distance as one degree change in longitude. We will use the average of these two coordinate-distance approximations in our constructions of the hitboxes. We will just say that 15 feet can be represented by a change of 0.000045 degrees longitude or latitude.
 
 ```{r}
-library(sp)
-
 # store "radius" of square (in degrees)
-r = 0.000045
+r = 0.00005
 d = sqrt(2)*r
  
 # need 5 points per square. points are: (x-d, y+d), (x+d, y+d), (x+d, y-d), (x-d, y-d), (x-d, y+d), (x-d, y+d)
@@ -147,18 +149,64 @@ squares <- SpatialPolygons(first_step)
 
 # now, get points ready 
  
- x = hydrant_actual %>% pull(LATITUDE)
- y = hydrant_actual %>% pull(LONGITUDE)
+ x = hydrant_lat_long %>% pull(lat)
+ y = hydrant_lat_long %>% pull(long)
  xy = cbind(x,y)
- dimnames(xy)[[1]] = hydrant_actual %>% pull(UNITID)
+ 
+ dimnames(xy)[[1]] = hydrant_lat_long %>% pull(summons_number)
  pts = SpatialPoints(xy)
 
-over(pts, squares)
+# check if drawn squares have points in them
+hits <- over(squares, pts)
+
+isolated_hydrants <-  tibble(id = names(hits), hits = hits) %>% filter(!is.na(hits)) %>% inner_join(hydrant_actual, by = c("UNITID" = "id"))
+
 ```
 
 
+```{r}
+isolated_hydrants_plot <- 
+  isolated_hydrants %>%
+  mutate(borough = "Hydrant") %>%
+  rename(
+    lat = LATITUDE,
+    long = LONGITUDE
+  )
 
+hydrant_plot <- 
+  hydrant_lat_long %>% 
+  plot_ly(
+    lat = ~lat, 
+    lon = ~long, 
+    type = "scattermapbox", 
+    mode = "markers", 
+    alpha = 0.1,
+    color = ~borough,
+    colors = "viridis")
 
+plot <- hydrant_plot %>% add_trace(
+  data = isolated_hydrants_plot,
+  lat = ~lat,
+  lon = ~long,
+  type = "scattermapbox",
+  mode = "markers",
+  marker = list(
+    color = "red",
+    line = list(
+        color = 'white',
+        width = 2
+      ),
+    size = 5
+    ),
+  alpha = 1
+  )
+
+plot %>% layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7))) 
+```
 
 
 
