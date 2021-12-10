@@ -342,6 +342,9 @@ div.tocify {
     <li>
       <a href="fines.html">Fine Amount</a>
     </li>
+    <li>
+      <a href="vehicle.html">Violation by Vehicle types</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -433,11 +436,11 @@ div.tocify {
 <div id="exploratory-analyses" class="section level3">
 <h3>Exploratory Analyses</h3>
 <p><strong>Open Parking and Camera Violations</strong></p>
-<p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday.</p>
+<p>We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday and by vehicle types, and fine amounts in boroughs.</p>
 <p><a href="frequencyI.html">Violation Frequency</a></p>
 <p><a href="timeline-part.html">Violation Timeline</a></p>
-<p>Total fine amount and average fine amount in each county Waveley</p>
 <p><a href="fines.html">Fine Amount</a></p>
+<p><a href="vehicle.html">Violation by Vehicle Type</a></p>
 <div id="visualization-over-time" class="section level4">
 <h4>Visualization over time</h4>
 <p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
@@ -457,10 +460,8 @@ div.tocify {
 <li><p><strong>Saturday</strong> has the lowest violation counts and <strong>Friday</strong> had the second lowest counts comparing to all other weekdays.</p></li>
 <li><p>Violation increases from <strong>6:00 AM</strong> to <strong>8:00 AM</strong>, remains high in <strong>8:00 AM</strong> to <strong>2:00 PM</strong>, decrease from <strong>2:00 PM</strong> to <strong>7:00 PM</strong>.</p></li>
 <li><p>Average fine amount is <strong>highest</strong> in <strong>Manhattan</strong> and <strong>lowest</strong> in <strong>Staten Island</strong>. There is <strong>significant difference</strong> between fine amounts and at least 2 boroughs.</p></li>
+<li><p><strong>Suburban(SUBN)</strong> is the vehicle type that has the highest number of violation.</p></li>
 </ul>
-</div>
-<div id="conclusion" class="section level3">
-<h3>Conclusion</h3>
 </div>
 
 
