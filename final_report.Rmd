@@ -85,16 +85,15 @@ The key variables that we used in our analysis include for mapping
 
 **Open Parking and Camera Violations**
 
-We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday. 
+We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday and by vehicle types, and fine amounts in boroughs.
 
 [Violation Frequency](frequencyI.html)
 
 [Violation Timeline](timeline-part.html)
 
-
-Total fine amount and average fine amount in each county Waveley
-
 [Fine Amount](fines.html)
+
+[Violation by Vehicle Type](vehicle.html)
 
 #### Visualization over time
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
@@ -104,5 +103,19 @@ We conduct a one-way anova test about the violation frequency to see if there is
 
 ### Discussion
 
-### Conclusion
+After conducting the exploratory analyses, we found that:
+
+* **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
+
+* There is a sharp increase in number of tickets in **October** in all boroughs. 
+
+* Top three types of violation: **No Parking-Street Cleaning**, **Inspection Sticker Expired/Missing**, **Fail to Display a muni-meter receipt**.
+
+* **Saturday** has the lowest violation counts and **Friday** had the second lowest counts comparing to all other weekdays.
+
+* Violation increases from **6:00 AM** to **8:00 AM**, remains high in **8:00 AM** to **2:00 PM**, decrease from **2:00 PM** to **7:00 PM**.
+
+* Average fine amount is **highest** in **Manhattan** and **lowest** in **Staten Island**. There is **significant difference** between fine amounts and at least 2 boroughs.
+
+* **Suburban(SUBN)** is the vehicle type that has the highest number of violation.
 
