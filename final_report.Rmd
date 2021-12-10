@@ -48,6 +48,10 @@ The Parking Violations Issued - Fiscal Year 2021 dataset provides information ab
 
 After data cleaning, the two datasets are joined by `summons_number` finally.
 
+* Hydrants in NYC
+[-Link](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
+
+
 #### Variable of Interests
 
 __Open Parking and Camera Violations__

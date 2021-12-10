@@ -1,7 +1,7 @@
 
 hydrant <- 
   violation %>% 
-  filter(violation %in% c("FIRE HYDRANT"), !is.na(address)) 
+  filter(violation %in% c("FIRE HYDRANT"), !is.na(google_address)) 
 
 num_groups <- 10
 

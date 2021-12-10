@@ -9,9 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(httr)
 library(tidyverse)
-library(lubridate)
-library(lmtest)
-library(patchwork)
 library(tidygeocoder)
 library(progress)
 library(jsonlite)
@@ -26,48 +23,176 @@ source("code/formatting.R")
 ```{r, warning=FALSE, eval=FALSE}
 hydrant <- 
   violation %>% 
-  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address))
+  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address)) 
 
 pb <- progress_bar$new(total = nrow(hydrant))
 
 get_coord <- function(url) {
   pb$tick()
-  coord <- fromJSON(url(url))$features$geometry[2]
-  return(coord)
+  
+  json_output <- fromJSON(url(url))$features
+  
+  coord <- json_output$geometry[2]
+  borough <-  json_output$properties$borough
+  
+  out_df <- 
+    tibble(
+      coordinates = coord$coord,
+      mapped_borough = borough
+    )
+  return(out_df)
 }
 
 hydrant_lat_long <- 
   hydrant %>%
   mutate(
-  new_url = paste0("https://geosearch.planninglabs.nyc/v1/autocomplete?text=", geo_nyc_address, "&size=50"),
+  new_url = paste0("https://geosearch.planninglabs.nyc/v1/search?text=", geo_nyc_address, "&size=25"),
   coord = map(new_url, get_coord)
 ) %>%
-  unnest(coord)
-
-for (i in 1:nrow(hydrant_lat_long)) {
-  hydrant_lat_long$lat[i] <- hydrant_lat_long$coordinates[[i]][2]
-  hydrant_lat_long$long[i] <- hydrant_lat_long$coordinates[[i]][1]
-}
+  unnest(coord) %>%
+  filter(mapped_borough == borough)
 
 hydrant_lat_long <-
   hydrant_lat_long %>%
   group_by(summons_number, geo_nyc_address) %>%
   slice(1)
+
+for (i in 1:nrow(hydrant_lat_long)) {
+  hydrant_lat_long$lat[i] <- hydrant_lat_long$coordinates[[i]][2]
+  hydrant_lat_long$long[i] <- hydrant_lat_long$coordinates[[i]][1]
+}
   
 write_csv(hydrant_lat_long, "hydrant_lat_long.csv")
 ```
 
 ```{r}
-hydrant_lat_long <- read_csv("hydrant_lat_long.csv")
+hydrant_lat_long <- read_csv("hydrant_lat_long.csv") %>% select(-coordinates)
+hydrant_actual <- read_csv("Hydrants.csv")
 ```
 
 ## Mapping of Hydrant Tickets
 
 ```{r}
-hydrant_lat_long %>%
+
+hydrant_to_plot <- hydrant_actual %>%
+  mutate(borough = "Hydrant") %>%
+  rename(
+    lat = LATITUDE,
+    long = LONGITUDE
+  ) %>% 
+  bind_rows(hydrant_lat_long)
+
+hydrant_plot <- 
+  hydrant_to_plot %>% 
   plot_ly(
-    x = ~lat, y = ~long, type = "scatter", mode = "markers",
-    alpha = 0.5)
+    lat = ~lat, 
+    lon = ~long, 
+    type = "scattermapbox", 
+    mode = "markers", 
+    alpha = 0.2,
+    color = ~borough)
+
+hydrant_plot %>% layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7))) 
+```
+
+We want to find the hydrants that are most commonly ticketed. As cars (or, drivers) are ticketed if they park within 15 feet of a hydrant, we will attempt to do this by constructing hitboxes of approximately 15 feet in radius around each hydrant and see how many violation points are within those circles.
+
+Circles are a little difficult to work with. Let's use squares instead, such that they are about 15 feet from the center of the square to any edge -- this distance:
+
+We used the following website to determine the distance each unit change in latitude/longitude covers in NYC. 
+[-Link] (https://www.movable-type.co.uk/scripts/latlong.html)
+
+If we go from the coordinate (40.7, -73.9) to (40.7, -74.0), we will have traveled 7.587 kilometers, or approximately 27657.48 feet. This indicates that a change of 0.000054 degrees longitude is approximately 15 feet.
+
+If we go from the coordinate (40.7, -73.9) to (40.8, -73.9), we will have traveled 11.12 kilometers, or approximately 36482.94 feet. This indicates that a change of 0.000041 degrees latitude is approximately 15 feet.
+
+To make things a little bit simpler, we will proceed as if one degree change in latitude covers the same amount of distance as one degree change in longitude. We will use the average of these two coordinate-distance approximations in our constructions of the hitboxes. We will just say that 15 feet can be represented by a change of 0.000045 degrees longitude or latitude.
+
+```{r}
+library(sp)
+
+# store "radius" of square (in degrees)
+r = 0.000045
+d = sqrt(2)*r
+ 
+ x = c(0.5, 0.5, 1.0, 1.5)
+ y = c(1.5, 0.5, 0.5, 0.5)
+ xy = cbind(x,y)
+ dimnames(xy)[[1]] = c("a", "b", "c", "d")
+ pts = SpatialPoints(xy)
+ 
+ # need 5 points per square. points are: (x-d, y+d), (x+d, y+d), (x+d, y-d), (x-d, y-d), (x-d, y+d), (x-d, y+d)
+ 
+ 
+ 
+ xpol = c(0,1,1,0,0)
+ ypol = c(0,0,1,1,0)
+ 
+ pol = SpatialPolygons(list(
+ Polygons(list(Polygon(cbind(xpol-1.05,ypol))), ID="x1"),
+ Polygons(list(Polygon(cbind(xpol,ypol))), ID="x2"),
+ Polygons(list(Polygon(cbind(xpol,ypol - 1.0))), ID="x3"),
+ Polygons(list(Polygon(cbind(xpol + 1.0, ypol))), ID="x4"),
+ Polygons(list(Polygon(cbind(xpol+.4, ypol+.1))), ID="x5")
+ ))
+ 
+ whatru <- list(
+ Polygons(list(Polygon(cbind(xpol-1.05,ypol))), ID="x1"),
+ Polygons(list(Polygon(cbind(xpol,ypol))), ID="x2"),
+ Polygons(list(Polygon(cbind(xpol,ypol - 1.0))), ID="x3"),
+ Polygons(list(Polygon(cbind(xpol + 1.0, ypol))), ID="x4"),
+ Polygons(list(Polygon(cbind(xpol+.4, ypol+.1))), ID="x5")
+ )
+ 
+SpatialPolygons(whatru)
+ 
+over(pts, pol)
+ 
+hydrant_to_square <-
+  hydrant_actual %>%
+  select(
+    UNITID,
+    BORO,
+    LATITUDE,
+    LONGITUDE
+    ) %>%
+  rename(
+    unitid = UNITID,
+    borough = BORO,
+    x = LATITUDE,
+    y = LONGITUDE
+  )
+
+circles_tbl <-
+  tibble(
+    unitid = hydrant_to_circle$unitid
+  )
+
+for (i in 1:10) {
+ 
+  current_circle <- spCircle(
+  10, 
+  centerPoint = 
+    c(x = hydrant_to_circle$x[[i]], 
+      y = hydrant_to_circle$y[[i]])
+  )
+  circles_tbl$circle[[i]] <- current_circle
+}
+
+temp <- list() 
+for (i in 1:nrow(circles_tbl)) {
+temp[[i]] <- circles_tbl$circle[[i]]$spCircle
+}
+
+temp %>% unlist()
+
+SpatialPolygons(temp)
+
+over(pts, )
 ```
 
 

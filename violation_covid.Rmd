@@ -116,7 +116,7 @@ We will now perform a Granger-causality test to see if knowing the previous day'
 grangertest(total_violations ~ new_cases, order = 1, data = violation_covid)
 ```
 
-As the test's p-value is less than our predetermined significance level of 0.05, we reject the null hypothesis that 
+As the test's p-value is less than our predetermined significance level of 0.05, we reject the null hypothesis that  
 
 
 
