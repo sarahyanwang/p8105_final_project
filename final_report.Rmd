@@ -118,7 +118,7 @@ After conducting the exploratory analyses, we found that:
 
 * Average fine amount is **highest** in **Manhattan** and **lowest** in **Staten Island**. There is **significant difference** between fine amounts and at least 2 boroughs.
 
-
+* **Suburban(SUBN)** is the vehicle type that has the highest number of violation.
 
 
 
