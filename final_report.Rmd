@@ -107,7 +107,7 @@ We conduct a one-way anova test about the violation frequency to see if there is
 
 ### Discussion
 
-After conducting the exploratory analyses, we found that:
+Exploratory analyses foundings:
 
 * **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
 

@@ -334,10 +334,10 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="frequencyI.html">Violation Frequency </a>
+      <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline </a>
+      <a href="timeline-part.html">Violation Timeline</a>
     </li>
     <li>
       <a href="fine_amount.html">Fine Amount</a>
@@ -444,9 +444,11 @@ div.tocify {
 <p><a href="timeline-part.html">Violation Timeline</a></p>
 <p><a href="fines.html">Fine Amount</a></p>
 <p><a href="vehicle.html">Violation by Vehicle Type</a></p>
-<div id="visualization-over-time" class="section level4">
-<h4>Visualization over time</h4>
+<div id="visualization-on-the-map" class="section level4">
+<h4>Visualization on the map</h4>
+<p>First, we want to build the mapping for the distribution of parking violation spots.</p>
 <p>We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in <a href="https://kepler.gl/">kepler</a>. The shining points reveal the parking violation sites distribution.</p>
+<p>Then we focus on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.</p>
 </div>
 </div>
 <div id="statistical-analyses" class="section level3">
@@ -455,7 +457,7 @@ div.tocify {
 </div>
 <div id="discussion" class="section level3">
 <h3>Discussion</h3>
-<p>After conducting the exploratory analyses, we found that:</p>
+<p>Exploratory analyses foundings:</p>
 <ul>
 <li><p><strong>Brooklyn</strong> has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets.</p></li>
 <li><p>There is a sharp increase in number of tickets in <strong>October</strong> in all boroughs.</p></li>
