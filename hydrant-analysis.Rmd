@@ -1,7 +1,8 @@
 ---
-title: "hydrant_analysis"
+title: "fire hydrant analysis"
 output: github_document
 ---
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(httr)
@@ -55,42 +56,14 @@ x_crit
 Interpretation: The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, sp we reject the null hypothesis and conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
 
 
+### Proportion Test
 
-```{r}
-fire_hydrant = violation1 %>% filter(violation == "FIRE HYDRANT")
-
-fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>% 
-  select(issue_date, borough, violation, plate) %>% 
-  group_by(plate) %>% 
-  filter(n() > 1) %>% 
-  distinct(plate) %>% 
-  ungroup()
- 
- duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = "plate")
- 
- duplicate_hydrant %>% 
-  count(plate) %>% 
-   ggplot(aes(x = n)) + 
-   geom_histogram()
-   
-   violation %>% 
-     filter(plate == "JRA7539") %>% 
-     summarize(sum = sum(amount_due))
-```
-
-We want to know whether proportions of the population receives fire hydrant violations in each borough are equal. 
+We want to know whether proportions of the population receives fire hydrant violations in each borough are equal. We derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). 
 
 First, we will assume: 
 1) Each car has only one driver;
-2) Each car gets one fire hydrant violation in 2021
+2) Each car gets one fire hydrant violation in 2021. 
 
-We perform a t-test to see if the mean number of fire hydrant violations is 1. 
-
-```{r}
-
-```
-
-### prop.test
 ```{r}
 
 url = "https://www.citypopulation.de/en/usa/newyorkcity/"
@@ -124,4 +97,35 @@ prop.test(boro_population$n, boro_population$population)
 
 ```
 
-The proportions of people getting fire hydrant violations are different across boroughs.
+In conclusion, the proportions of people getting fire hydrant violations are different across boroughs. 
+
+### A Fun fact--The Love of Fire Hydrant 
+
+During our analysis process of fire hydrant violation, we found out a license plate `JRA7539` got 85 tickets due to fire hydrant in 2021. It's ridiculous! So we want to find what this car is doing in 2021. The result shows that `JRA7539` got a total of 221 violations with fine amount of $19130 this year. 
+
+```{r}
+fire_hydrant = violation1 %>% filter(violation == "FIRE HYDRANT")
+
+fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>% 
+  select(issue_date, borough, violation, plate) %>% 
+  group_by(plate) %>% 
+  filter(n() > 1) %>% 
+  distinct(plate) %>% 
+  ungroup()
+ 
+ duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = "plate")
+ 
+ duplicate_hydrant %>% 
+  count(plate) %>% 
+   ggplot(aes(x = n)) + 
+   geom_histogram()
+   
+  violation %>% 
+     filter(plate == "JRA7539") %>% 
+     count(violation) %>% 
+     summarize(sum = sum(n))
+ 
+   violation %>% 
+     filter(plate == "JRA7539") %>% 
+     summarize(fine = sum(amount_due))
+```
