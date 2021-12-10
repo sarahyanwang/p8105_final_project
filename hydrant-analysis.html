@@ -11,12 +11,12 @@
 
 
 
-<title>hydrant_analysis</title>
+<title>fire hydrant analysis</title>
 
 <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -217,7 +221,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -227,6 +297,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -260,15 +340,9 @@ $(document).ready(function () {
       <a href="timeline-part.html">Violation Timeline </a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle Body Types</a>
-    </li>
-    <li>
       <a href="fines.html">Fine Amount</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="statistical-analysis.html">Statistical Analyses</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -286,9 +360,17 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">hydrant_analysis</h1>
+
+<h1 class="title toc-ignore">fire hydrant analysis</h1>
 
 </div>
 
@@ -394,36 +476,11 @@ five_common_violation %&gt;%
 x_crit</code></pre>
 <pre><code>## [1] 26.29623</code></pre>
 <p>Interpretation: The result of chi-square shows that <span class="math inline">\(\chi^2 &gt; \chi_{crit}\)</span>, at significant level <span class="math inline">\(\alpha = 0.05\)</span>, sp we reject the null hypothesis and conclude that there does exist at least one borough’s proportion of violation amounts is different from others.</p>
-<pre class="r"><code>fire_hydrant = violation1 %&gt;% filter(violation == &quot;FIRE HYDRANT&quot;)
-
-fire_hydrant_id = violation1 %&gt;% filter(violation == &quot;FIRE HYDRANT&quot;) %&gt;% 
-  select(issue_date, borough, violation, plate) %&gt;% 
-  group_by(plate) %&gt;% 
-  filter(n() &gt; 1) %&gt;% 
-  distinct(plate) %&gt;% 
-  ungroup()
- 
- duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = &quot;plate&quot;)
- 
- duplicate_hydrant %&gt;% 
-  count(plate) %&gt;% 
-   ggplot(aes(x = n)) + 
-   geom_histogram()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="hydrant-analysis_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
-<pre class="r"><code>   violation %&gt;% 
-     filter(plate == &quot;JRA7539&quot;) %&gt;% 
-     summarize(sum = sum(amount_due))</code></pre>
-<pre><code>## # A tibble: 1 × 1
-##     sum
-##   &lt;dbl&gt;
-## 1 19130</code></pre>
-<p>We want to know whether proportions of the population receives fire hydrant violations in each borough are equal.</p>
-<p>First, we will assume: 1) Each car has only one driver; 2) Each car gets one fire hydrant violation in 2021</p>
-<p>We perform a t-test to see if the mean number of fire hydrant violations is 1.</p>
 </div>
-<div id="prop.test" class="section level3">
-<h3>prop.test</h3>
+<div id="proportion-test" class="section level3">
+<h3>Proportion Test</h3>
+<p>We want to know whether proportions of the population receives fire hydrant violations in each borough are equal. We derived the population of each borough from the most recent <a href="https://www.citypopulation.de/en/usa/newyorkcity/">census</a>.</p>
+<p>First, we will assume: 1) Each car has only one driver; 2) Each car gets one fire hydrant violation in 2021.</p>
 <pre class="r"><code>url = &quot;https://www.citypopulation.de/en/usa/newyorkcity/&quot;
 nyc_population_html = read_html(url)
 
@@ -498,11 +555,49 @@ boro_population = left_join(fire_hydrant, nyc_population)</code></pre>
 ## sample estimates:
 ##      prop 1      prop 2      prop 3      prop 4      prop 5 
 ## 0.012516178 0.010278962 0.012282123 0.009076004 0.003249641</code></pre>
-<p>The proportions of people getting fire hydrant violations are different across boroughs.</p>
+<p>In conclusion, the proportions of people getting fire hydrant violations are different across boroughs.</p>
+</div>
+<div id="a-fun-factthe-love-of-fire-hydrant" class="section level3">
+<h3>A Fun fact–The Love of Fire Hydrant</h3>
+<p>During our analysis process of fire hydrant violation, we found out a license plate <code>JRA7539</code> got 85 tickets due to fire hydrant in 2021. It’s ridiculous! So we want to find what this car is doing in 2021. The result shows that <code>JRA7539</code> got a total of 221 violations with fine amount of $19130 this year.</p>
+<pre class="r"><code>fire_hydrant = violation1 %&gt;% filter(violation == &quot;FIRE HYDRANT&quot;)
+
+fire_hydrant_id = violation1 %&gt;% filter(violation == &quot;FIRE HYDRANT&quot;) %&gt;% 
+  select(issue_date, borough, violation, plate) %&gt;% 
+  group_by(plate) %&gt;% 
+  filter(n() &gt; 1) %&gt;% 
+  distinct(plate) %&gt;% 
+  ungroup()
+ 
+ duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = &quot;plate&quot;)
+ 
+ duplicate_hydrant %&gt;% 
+  count(plate) %&gt;% 
+   ggplot(aes(x = n)) + 
+   geom_histogram()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="hydrant-analysis_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
+<pre class="r"><code>  violation %&gt;% 
+     filter(plate == &quot;JRA7539&quot;) %&gt;% 
+     count(violation) %&gt;% 
+     summarize(sum = sum(n))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##     sum
+##   &lt;int&gt;
+## 1   221</code></pre>
+<pre class="r"><code>   violation %&gt;% 
+     filter(plate == &quot;JRA7539&quot;) %&gt;% 
+     summarize(fine = sum(amount_due))</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##    fine
+##   &lt;dbl&gt;
+## 1 19130</code></pre>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -534,7 +629,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
