@@ -112,7 +112,7 @@ After conducting the exploratory analyses, we found that:
 
 * Top three types of violation: **No Parking-Street Cleaning**, **Inspection Sticker Expired/Missing**, **Fail to Display a muni-meter receipt**.
 
-* Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
+* **Saturday** has the lowest violation counts and **Friday** had the second lowest counts comparing to all other weekdays.
 
 * Violation increases from **6:00 AM** to **8:00 AM**, remains high in **8:00 AM** to **2:00 PM**, decrease from **2:00 PM** to **7:00 PM**.
 
