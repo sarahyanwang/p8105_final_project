@@ -95,8 +95,12 @@ We use the dataset to explored about the distribution of number of of violation 
 
 [Violation by Vehicle Type](vehicle.html)
 
-#### Visualization over time
+#### Visualization on the map
+First, we want to build the mapping for the distribution of parking violation spots.  
+
 We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
+
+Then we focus on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.
 
 ### Statistical Analyses
 We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we perform chi-squared test to test the homogeneity of violation types in five boroughs. Click the link see the details about [Statistical Analyses](statistical-analysis.html)
