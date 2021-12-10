@@ -1,8 +1,11 @@
 ---
 title: "hydrant"
-author: "Waveley Qiu (wq2162)"
-date: "2021-12-08"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+    theme: cosmo
 ---
 
 ```{r setup, include=FALSE}
