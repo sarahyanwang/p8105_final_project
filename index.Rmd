@@ -45,6 +45,10 @@ In hydrant mapping tab, you will find:
 
 * Mapping of hydrant tickets
 
+
+
+Visit the [Project Report](final_report.html) for the details of our project!
+
 &nbsp;
 
 ### Collaborators
