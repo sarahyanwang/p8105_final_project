@@ -119,80 +119,41 @@ library(sp)
 r = 0.000045
 d = sqrt(2)*r
  
- x = c(0.5, 0.5, 1.0, 1.5)
- y = c(1.5, 0.5, 0.5, 0.5)
+# need 5 points per square. points are: (x-d, y+d), (x+d, y+d), (x+d, y-d), (x-d, y-d), (x-d, y+d), (x-d, y+d)
+ 
+ working_fh <- hydrant_actual
+ 
+ square_coord <- function(xpt, ypt, dist = d){
+   x <- c(xpt - dist, xpt + dist, xpt + dist, xpt - dist, xpt - dist)
+   y <- c(ypt + dist, ypt + dist, ypt - dist, ypt - dist, ypt + dist)
+   out_mat <- cbind(x, y)
+   return(out_mat)
+ }
+ 
+ to_poly <- function(polymat, id){
+   poly <- Polygons(list(Polygon(polymat)), ID = id)
+   return(poly)
+ }
+
+first_step <- working_fh %>%
+  mutate(
+    sq = map2(LATITUDE, LONGITUDE, square_coord),
+    polys = map2(sq, UNITID, to_poly)
+  )  %>% 
+  select(polys) %>%
+  pull(polys)
+
+squares <- SpatialPolygons(first_step)
+
+# now, get points ready 
+ 
+ x = hydrant_actual %>% pull(LATITUDE)
+ y = hydrant_actual %>% pull(LONGITUDE)
  xy = cbind(x,y)
- dimnames(xy)[[1]] = c("a", "b", "c", "d")
+ dimnames(xy)[[1]] = hydrant_actual %>% pull(UNITID)
  pts = SpatialPoints(xy)
- 
- # need 5 points per square. points are: (x-d, y+d), (x+d, y+d), (x+d, y-d), (x-d, y-d), (x-d, y+d), (x-d, y+d)
- 
- 
- 
- xpol = c(0,1,1,0,0)
- ypol = c(0,0,1,1,0)
- 
- pol = SpatialPolygons(list(
- Polygons(list(Polygon(cbind(xpol-1.05,ypol))), ID="x1"),
- Polygons(list(Polygon(cbind(xpol,ypol))), ID="x2"),
- Polygons(list(Polygon(cbind(xpol,ypol - 1.0))), ID="x3"),
- Polygons(list(Polygon(cbind(xpol + 1.0, ypol))), ID="x4"),
- Polygons(list(Polygon(cbind(xpol+.4, ypol+.1))), ID="x5")
- ))
- 
- whatru <- list(
- Polygons(list(Polygon(cbind(xpol-1.05,ypol))), ID="x1"),
- Polygons(list(Polygon(cbind(xpol,ypol))), ID="x2"),
- Polygons(list(Polygon(cbind(xpol,ypol - 1.0))), ID="x3"),
- Polygons(list(Polygon(cbind(xpol + 1.0, ypol))), ID="x4"),
- Polygons(list(Polygon(cbind(xpol+.4, ypol+.1))), ID="x5")
- )
- 
-SpatialPolygons(whatru)
- 
-over(pts, pol)
- 
-hydrant_to_square <-
-  hydrant_actual %>%
-  select(
-    UNITID,
-    BORO,
-    LATITUDE,
-    LONGITUDE
-    ) %>%
-  rename(
-    unitid = UNITID,
-    borough = BORO,
-    x = LATITUDE,
-    y = LONGITUDE
-  )
 
-circles_tbl <-
-  tibble(
-    unitid = hydrant_to_circle$unitid
-  )
-
-for (i in 1:10) {
- 
-  current_circle <- spCircle(
-  10, 
-  centerPoint = 
-    c(x = hydrant_to_circle$x[[i]], 
-      y = hydrant_to_circle$y[[i]])
-  )
-  circles_tbl$circle[[i]] <- current_circle
-}
-
-temp <- list() 
-for (i in 1:nrow(circles_tbl)) {
-temp[[i]] <- circles_tbl$circle[[i]]$spCircle
-}
-
-temp %>% unlist()
-
-SpatialPolygons(temp)
-
-over(pts, )
+over(pts, squares)
 ```
 
 
