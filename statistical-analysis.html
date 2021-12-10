@@ -334,10 +334,10 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="frequencyI.html">Violation Frequency </a>
+      <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline </a>
+      <a href="timeline-part.html">Violation Timeline</a>
     </li>
     <li>
       <a href="fine_amount.html">Fine Amount</a>
@@ -384,9 +384,9 @@ div.tocify {
 </div>
 
 
-<div id="anova-test---whether-month-and-weekday-are-assiciated-with-parking-violation" class="section level3">
-<h3>ANOVA Test - whether month and weekday are assiciated with parking violation</h3>
-<p>As from the data visualization, we observe a pattern for the parking violation number over month and over weekday.In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month.</p>
+<div id="anova-test---whether-month-and-weekday-are-associated-with-parking-violation" class="section level3">
+<h3>ANOVA Test - whether month and weekday are associated with parking violation</h3>
+<p>As from the data visualization, we observe patterns for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month.</p>
 <p><span class="math inline">\(H_0\)</span>: The mean numbers of parking violation are not different across months and weekdays.</p>
 <p><span class="math inline">\(H_1\)</span>: The mean numbers of parking violation are different across months and weekdays.</p>
 <pre class="r"><code>fit_df = violation %&gt;%
@@ -563,8 +563,8 @@ x_crit</code></pre>
 <pre><code>## [1] 26.29623</code></pre>
 <p>Interpretation: The result of chi-square shows that <span class="math inline">\(\chi^2 &gt; \chi_{crit}\)</span>, at significant level <span class="math inline">\(\alpha = 0.05\)</span>, sp we reject the null hypothesis and conclude that there does exist at least one borough’s proportion of violation amounts is different from others.</p>
 </div>
-<div id="proportion-test---whether-proportions-of-the-population-receives-fire-hydrant-violations-in-each-borough-are-equal" class="section level3">
-<h3>Proportion Test - whether proportions of the population receives fire hydrant violations in each borough are equal</h3>
+<div id="proportion-test---whether-proportions-of-the-population-receiving-fire-hydrant-violations-in-each-borough-are-equal" class="section level3">
+<h3>Proportion Test - whether proportions of the population receiving fire hydrant violations in each borough are equal</h3>
 <p>We derived the population of each borough from the most recent <a href="https://www.citypopulation.de/en/usa/newyorkcity/">census</a>.</p>
 <p>First, we will assume: 1) Each car has only one driver; 2) Each car gets one fire hydrant violation in 2021.</p>
 <pre class="r"><code>url = &quot;https://www.citypopulation.de/en/usa/newyorkcity/&quot;
@@ -641,7 +641,7 @@ boro_population = left_join(fire_hydrant, nyc_population)</code></pre>
 ## sample estimates:
 ##      prop 1      prop 2      prop 3      prop 4      prop 5 
 ## 0.012516178 0.010278962 0.012282123 0.009076004 0.003249641</code></pre>
-<p>In conclusion, the proportions of people getting fire hydrant violations are different across boroughs.</p>
+<p>From the above results, we can say that the proportions of people getting fire hydrant violations are different across boroughs.</p>
 </div>
 
 
