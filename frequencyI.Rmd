@@ -82,7 +82,7 @@ violation1 %>%
          yaxis = list(title = "Number of Tickets in Each Month in 2021"))
 ```
 
-## Top 10 violations in MYC in 2021
+## Top 10 violations in NYC in 2021
 
 We want to know the most common ten violation types based on the total frequency in NYC in 2021. 
 
