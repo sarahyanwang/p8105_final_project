@@ -10,11 +10,13 @@ navbar:
       - text: "Violation Timeline "
         href: timeline-part.html
       - text: "Fine Amount"
-        href: fines.html
+        href: fine_amount.html
       - text: "Violation by Vehicle types"
         href: vehicle.html
     - text: "Statistical Analyses"
       href: statistical-analysis.html
+    - text: "Hydrant Mapping"
+      href: hydrant_mapping.html
     - text: "Project Report"
       href: final_report.html
     - icon: fa-github fa-lg

@@ -37,7 +37,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ### ANOVA Test - whether month and weekday are assiciated with parking violation
 
-As from the data visualization, we observe a pattern for the parking violation number over month and over weekday.In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month. 
+As from the data visualization, we observe a pattern for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month. 
 
 $H_0$: The mean numbers of parking violation are not different across months and weekdays.
 
