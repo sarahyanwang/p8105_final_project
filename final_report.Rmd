@@ -54,7 +54,7 @@ One of our group members' had the unfortunate experience of getting her car towe
 
 ### Data Processing and Cleaning
 
-We used two datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
+We used three datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
 * Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
@@ -88,7 +88,7 @@ This dataset contains the locations of all fire hydrants in NYC. After tidying t
 
 ### Exploratory analysis
 
-In order to have a better understanding of the data sets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
+In order to have a better understanding of the datasets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
 
 We first tried to explore the overall distribution of the parking violation frequency. Then, we tried to investigate how the number of parking violations distributed over month, week, time of the day and vehicle type. Finally, we looked at the distribution of fine amounts by boroughs.
 
