@@ -99,9 +99,285 @@ Then, we performed a chi-squared test to test the homogeneity of violation types
 Finally, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
 
 
-#### Mapping and Spatial Analysis
+### Mapping and Spatial Analysis
 
-Finally, we constructed a map of parking violations related to fire hydrants. we focused on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.
+We would like to create some maps of fire hydrant violations by borough. We also want to investigate whether we can find hydrants that are most frequently ticketed. 
+
+##### Geolocation (NYCGeoSearch)
+
+After trying several different geolocating methods, we found that NYCGeoSearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. This platform is advantageous as we can manipulate the search terms by altering the website's URL. After passing the website into the `fromJSON()` function from the `jsonlite` package, we can scrape the page for the data we are interested in (coordinates and borough). 
+
+```{r class.source = 'fold-show', warning=FALSE, eval=FALSE}
+hydrant <- 
+  violation %>% 
+  filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address)) 
+
+pb <- progress_bar$new(total = nrow(hydrant)) # adding progress bar for sanity
+
+get_coord <- function(url) {
+  pb$tick()
+  
+  json_output <- fromJSON(url(url))$features
+  
+  coord <- json_output$geometry[2]
+  borough <-  json_output$properties$borough
+  
+  out_df <- 
+    tibble(
+      coordinates = coord$coord,
+      mapped_borough = borough
+    )
+  return(out_df)
+}
+
+hydrant_lat_long <- 
+  hydrant %>%
+  mutate(
+  new_url = paste0("https://geosearch.planninglabs.nyc/v1/search?text=", geo_nyc_address, "&size=25"),
+  coord = map(new_url, get_coord)
+) %>%
+  unnest(coord) %>%
+  filter(mapped_borough == borough)
+```
+
+The address information provided in our raw data is not very complete and not standardized. as some observations are missing address components (such as house number or street name) and some observations have address components that are not recognizable by the platform (i.e. "30 feet west of Broadway"). As such, the platform produces many possible coordinates for some addresses while not being able to find any coordinates for other observations.
+
+We will work with only the observations that NYCGeoSearch was able to find location coordinates for. We will further restrict this dataset to only include coordinate results that were in the same borough as reported on the citation, and then select just the first coordinate results, if multiple exist. 
+
+Finally, we will process the resulting list column through a `for` loop to extract the latitude and longitudes from each coordinate to their own columns (named `lat` and `long`).
+
+```{r class.source = 'fold-show', warning=FALSE, eval=FALSE}
+hydrant_lat_long <-
+  hydrant_lat_long %>%
+  group_by(summons_number, geo_nyc_address) %>%
+  slice(1)
+
+for (i in 1:nrow(hydrant_lat_long)) {
+  hydrant_lat_long$lat[i] <- hydrant_lat_long$coordinates[[i]][2]
+  hydrant_lat_long$long[i] <- hydrant_lat_long$coordinates[[i]][1]
+}
+```
+
+
+Running through all previous code chunks up until here takes approximately 7 hours. We will go ahead and save the output from running this code in `hydrant_lat_long.csv` so that we can read the data from this file into R, instead of running the previous chunks. 
+
+```{r class.source = 'fold-show', warning=FALSE, eval=FALSE}
+write_csv(hydrant_lat_long, "hydrant_lat_long.csv")
+```
+
+We will also load a dataset containing locations of all fire hydrants in NYC, from a file named `Hydrants.csv`. After tidying and recoding some of the variables, we end up with a dataset where each record corresponds with a single fire hydrant. This dataset will contain the variables `borough` (borough the fire hydrant is located in), `unitid` (hydrant identifier),  and `lat` and `long` (hydrant lat/long coordinates). 
+
+```{r class.source = 'fold-show', message=FALSE}
+hydrant_lat_long <- read_csv("hydrant_lat_long.csv") %>% select(-coordinates)
+
+hydrant_lat_long <- hydrant_lat_long %>% mutate(textlab = paste0("Summons Number: ", summons_number, "\nFine Amount: $", fine_amount))
+
+hydrant_actual <- read_csv("Hydrants.csv")
+
+hydrant_actual <- 
+  hydrant_actual %>%
+  mutate(borough = case_when(
+    BORO == 1 ~ "Manhattan",
+    BORO == 2 ~ "Bronx",
+    BORO == 3 ~ "Brooklyn",
+    BORO == 4 ~ "Queens",
+    BORO == 5 ~ "Staten Island"
+  )) %>%
+  rename(
+    lat = LATITUDE,
+    long = LONGITUDE,
+    unitid = UNITID
+  )
+```
+
+##### Mapping of Fire Hydrant Violation Locations and Fire Hydrants
+
+We will now plot all the points that we have produced to get a sense of how the fire hydrants are distributed across NYC and where fire hydrant violations occurred in the city.
+
+```{r, message=FALSE}
+hydrant_violation_plot <- 
+  hydrant_lat_long %>% 
+  plot_ly(
+    lat = ~lat, 
+    lon = ~long, 
+    type = "scattermapbox", 
+    mode = "markers", 
+    alpha = 0.2,
+    color = ~borough) %>% 
+  layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7)))
+
+hydrant_violation_location_plot <- 
+  hydrant_violation_plot %>% 
+  add_trace(
+  data = hydrant_actual %>% mutate(borough = "Fire Hydrant"),
+  lat = ~lat,
+  lon = ~long,
+  type = "scattermapbox",
+  mode = "markers",
+  alpha = 0.02,
+  color = ~borough
+  ) %>% 
+  layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7)),
+    title = "<b> Parking Violation and Hydrant Location </b>",
+     legend = list(title = list(text = "Borough of Violation or Hydrant"),
+                    orientation = "h"))
+
+hydrant_violation_location_plot
+```
+
+This map produces points as expected. We see there are more fire hydrant violations in higher-density areas, particularly regions closer to (or in) Manhattan. We see a similar pattern in the distribution of fire hydrants throughout NYC. If we look a little closer at Manhattan, we can observe some distinct regions of higher fire hydrant violations throughout the borough -- notably, around SoHo/downtown, Midtown, around the perimeter of Central Park, and around the Upper East Side.
+
+##### Commonly Ticketed Fire Hydrants
+
+Finally, we want to find the hydrants that are most commonly ticketed. 
+
+According to NYC regulations, cars (or, drivers) are ticketed if they park within 15 feet of a hydrant. We will try to associate violation location points with the fire hydrant that caused the violation by constructing hitboxes of approximately 15 feet in radius around each hydrant and see how many violation points are within those boxes. We will double this radius to somewhat adjust for a lack of precision in the violation coordinates we have obtained. Towards this end, we will construct square hitboxes around our hydrant points such that each side of the square is 60 feet wide.
+
+We will use the function `destPoint()` from the package `geosphere` to calculate this. This function takes a latitude and longitude coordinate, a bearing (measured from North), and a distance in meters. We will use this function to obtain the coordinates of the vertices of a square centered around the position of the fire hydrant, 35 feet (10 meters) in radius (measured from center to edge).
+
+After we have done so, we will utilize a few functions from the `sp` package. First, we will use `SpatialPolygons` (and associated function `Polygons`) to construct the squares around each hydrant. Then, the function `over` will tell us which violation location points land within the hydrant hitboxes we have created.
+
+```{r, warning=FALSE, message=FALSE}
+# distance in meters
+d = 10
+ 
+square_coord <- function(lat, long, dist = 5){
+ 
+ point_init <- destPoint(c(long, lat), b = 0, d = dist)
+ point1 <- destPoint(point_init, b = 270, d = dist) %>% as.data.frame()
+ point2 <- destPoint(point1, b = 180, d = dist*2) %>% as.data.frame()
+ point3 <- destPoint(point2, b = 90, d = dist*2) %>% as.data.frame()
+ point4 <- destPoint(point3, b = 0, d = dist*2) %>% as.data.frame()
+ 
+ sq <- bind_rows(point1, point2, point3, point4, point1)
+ 
+ x <- sq %>% pull(lat)
+ y <- sq %>% pull(lon)
+ 
+ out_mat <- cbind(x, y)
+ 
+ return(out_mat)
+}
+
+to_poly <- function(polymat, id){
+ poly <- Polygons(list(Polygon(polymat)), ID = id)
+ return(poly)
+}
+
+first_step <- hydrant_actual %>%
+mutate(
+  sq = map2(.x = lat, .y = long, ~square_coord(lat = .x, long = .y, dist = d)),
+  polys = map2(sq, unitid, to_poly)
+)  %>% 
+select(polys) %>%
+pull(polys)
+
+squares <- SpatialPolygons(first_step)
+
+# now, get points ready 
+
+x = hydrant_lat_long %>% pull(lat)
+y = hydrant_lat_long %>% pull(long)
+xy = cbind(x,y)
+
+dimnames(xy)[[1]] = hydrant_lat_long %>% pull(summons_number)
+pts = SpatialPoints(xy)
+  
+# check if drawn squares have points in them
+hits <- over(squares, pts, returnList = TRUE)
+
+
+hit_hydrants <- tibble(id = names(hits), hits = hits)
+hit_hydrants1 <- hit_hydrants %>% unnest(hits)
+hit_hydrants2 <- hit_hydrants1 %>% group_by(id) %>% summarise(num_hits = n()) %>% arrange(-num_hits)
+
+isolated_hydrants <- inner_join(hydrant_actual, hit_hydrants2, by = c("unitid" = "id")) 
+```
+
+We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. We will first reverse geocode the hydrant coordinates to allow the output to be more useful to the human user. We will use the `revgeo` function from the `revgeo` package and use Google's reverse geocode API to get the addresses. Since using Google's API is not exactly free, we will perform this once and save the addresses in a CSV file.
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+
+hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pull(lat), provider = "google", API = "API")
+
+address <- hydrant_loc %>% unlist()
+hydrant_loc <- bind_cols(isolated_hydrants, address = address)
+
+write_csv(hydrant_loc, "isolated_hydrant_loc.csv")
+```
+
+Let's now create our plot!
+
+```{r, warning=FALSE, message=FALSE}
+isolated_hydrants <- read_csv("isolated_hydrant_loc.csv")
+
+isolated_hydrants_plot <- 
+  isolated_hydrants %>%
+  mutate(
+    borough = "Hydrant",
+    textlab = paste0("Number of Associated Violations: ", num_hits, "\nAddress: ", address)
+    ) 
+
+hydrant_plot <- 
+  hydrant_lat_long %>% 
+  plot_ly(
+    lat = ~lat, 
+    lon = ~long, 
+    type = "scattermapbox", 
+    mode = "markers", 
+    alpha = 0.01,
+    color = ~borough,
+    text = ~textlab,
+    colors = "viridis")
+
+plot <- hydrant_plot %>% add_trace(
+  data = isolated_hydrants_plot,
+  lat = ~lat,
+  lon = ~long,
+  type = "scattermapbox",
+  mode = "markers",
+  size = ~num_hits,
+  text = ~textlab,
+  color = ~borough,
+  marker = list(
+    color = "red"
+    ),
+  alpha = 0.5
+  )
+
+plot %>% layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 9,
+      center = list(lon = -73.9, lat = 40.7)),
+      title = "<b> Most Frequently Ticketed Hydrants</b>",
+      legend = list(title = list(text = "Borough of Violation or Hydrant")
+                    ))
+```
+
+Interestingly, it seems that the hydrant whose hitbox intersected the most violation points is located in Queens. The following table shows the ten most frequently ticketed hydrants:
+
+```{r}
+hydrants_table <- 
+  isolated_hydrants %>% 
+  arrange(-num_hits) %>% 
+  filter(row_number() <= 10) %>%
+  select(unitid, address, num_hits) %>%
+  rename(
+    c("Hydrant ID" = "unitid", "Hydrant Address" = "address", "Number of Tickets" = "num_hits")
+  )
+  
+```
+
+It is important to note that the above spatial analysis will only be as precise as the geocoded violation coordinates will be.
 
 &nbsp;
 
