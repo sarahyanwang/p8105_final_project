@@ -23,7 +23,7 @@ source("code/formatting.R")
 
 knitr::opts_chunk$set(
   fig.width = 6,
-  fig.asp = .7,
+  fig.asp = .6,
   out.width = "90%"
 )
 
