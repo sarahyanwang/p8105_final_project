@@ -12,6 +12,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(tidytext)  
 library(ggplot2)
 library(httr)
 library(rvest)
@@ -158,107 +159,25 @@ violation_type = violation1 %>%
   mutate(
     violation = fct_reorder(violation, n),
     index = min_rank(desc(n))) %>% 
-  filter(index <= 5) 
+  filter(index <= 5)  %>%
+  arrange(borough, index)
 ```
 
-### Bronx
+### Frequency Bar Chart of Top 5 Violations by Borough
 
 ```{r}
-bronx_vio_type = 
-  violation_type %>% 
-  filter(borough == "Bronx") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+violation_type %>% 
+  ggplot(aes(reorder_within(violation, index, borough), y = n, group = borough, fill = violation)) + 
   geom_bar(stat = "identity") + 
+  scale_x_reordered() +
   labs(
     title = "Frequency of Violation Type in Bronx in 2021", 
     x = "Violation Type", 
-    y = "Number of tickets") +
+    y = "Number of Tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(bronx_vio_type)
-```
-
-### Brooklyn
-
-```{r}
-brooklyn_vio_type = 
-  violation_type %>% 
-  filter(borough == "Brooklyn") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
-  geom_bar(stat = "identity") + 
-  labs(
-    title = "Frequency of Violation Type in Brooklyn in 2021", 
-    x = "Violation Type", 
-    y = "Number of tickets") +
-  theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(brooklyn_vio_type)
-```
-
-### Manhattan
-
-```{r}
-manhattan_vio_type = 
-  violation_type %>% 
-  filter(borough == "Manhattan") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
-  geom_bar(stat = "identity") + 
-  labs(
-    title = "Frequency of Violation Type in Manhattan in 2021", 
-    x = "Violation Type", 
-    y = "Number of tickets") +
-  theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(manhattan_vio_type)
-```
-
-### Queens
-
-```{r}
-queens_vio_type = 
-  violation_type %>% 
-  filter(borough == "Queens") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
-  geom_bar(stat = "identity") + 
-  labs(
-    title = "Frequency of Violation Type in Queens in 2021", 
-    x = "Violation Type", 
-    y = "Number of tickets") +
-  theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(queens_vio_type)
-```
-
-### Staten Island
-
-```{r}
-si_vio_type = 
-  violation_type %>% 
-  filter(borough == "Staten Island") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
-  geom_bar(stat = "identity") + 
-  labs(
-    title = "Frequency of Violation Type in Staten Island in 2021", 
-    x = "Violation Type", 
-    y = "Number of tickets") +
-  theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(si_vio_type)
+    axis.text.x = element_text(angle = 60, vjust = 1.1, hjust = 1, size = 8),
+    legend.position = "none"
+  ) + facet_grid(.~borough, scales = "free_x") 
 ```
 
 [Violation Frequency](frequencyI.html)
