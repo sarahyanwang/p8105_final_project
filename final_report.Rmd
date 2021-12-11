@@ -47,7 +47,7 @@ Moreover, One of our group members' had the unfortunate experience of getting he
 
 &nbsp;
 
-### Questions
+### Questions and planned analyses
 1. Which borough had the most violations? Which borough paid the most in fines?
 2. What did the distribution of violations look like over other variables in the dataset borough, date, vehicle type? 
 3. Were the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
@@ -264,11 +264,11 @@ ggplotly(si_vio_type)
 [Violation Frequency](frequencyI.html)
 
 
-#### Violation timeline
+#### Violation timeline {.tabset}
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-##### Violation frequency vs. month for each borough
+##### Month for each borough in Violation frequency
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -287,7 +287,7 @@ violation %>%
 
 The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
 
-##### Violation frequency vs. day for each month
+##### Day for each month
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -306,7 +306,7 @@ violation %>%
 
 After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.
 
-##### Violation frequency vs. weekday for each borough
+##### Weekday for each borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>% 
@@ -325,7 +325,7 @@ violation %>%
 
 In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
 
-##### Violation frequency vs.hour of the day for each borough
+##### Hour of the day for each borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
