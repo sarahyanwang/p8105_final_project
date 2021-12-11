@@ -28,7 +28,10 @@ knitr::opts_chunk$set(
   out.width = "90%"
 )
 
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
+theme_set(theme_minimal() + theme(legend.position = "bottom",
+                                  legend.text = element_text(size = 8),
+                                  legend.title = element_text(size = 9),
+                                  legend.key.size = unit(.5,"line")))
 
 options(
   ggplot2.continuous.colour = "viridis",
@@ -61,9 +64,9 @@ We used three datasets from NYC OpenData to construct our main dataset for analy
 
 a) Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
+>The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
 
-For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
+>For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
 
 After the data cleaning, here are the variables that we will be focused on:
 
@@ -103,8 +106,9 @@ violation1 <-
 
 b) Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
-The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
-Then we combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
+>The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
+
+> We then combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
 
 * `summons_number`: unique violation identifier, used to join dataset with the Open Parking dataset
 * `geo_nyc_address`: combination of a few address components in the raw data, passed into NYCGeoSearch in mapping analysis
@@ -166,30 +170,37 @@ This dataset contains the locations of all fire hydrants in NYC. After tidying t
 * `unitid`: unique hydrant identifier
 * `lat` and `long`: latitude and longitude coordinates of the hydrant
 
-
 ### Exploratory analysis
 
 In order to have a better understanding of the datasets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
 
 We first tried to explore the overall distribution of the parking violation frequency. Then, we tried to investigate how the number of parking violations distributed over month, week, time of the day and vehicle type. Finally, we looked at the distribution of fine amounts by boroughs.
 
-#### Violation frequency
+#### Violation Frequency
 
-##### Distribution of parking violation 
+We first want to get a feel for the distribution of violations across the five boroughs. We will construct a bar chart tabulating the number of parking violations incurred in each of the five boroughs.
 
-We first Distribution of number of parking violation in five boroughs (Manhattan, Kings, Bronx, Queens, and Staten Island). This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
+##### Distribution of Parking Violation 
 
 ```{r, warning=FALSE, message=FALSE}
 violation1 %>% 
   count(borough) %>% 
   mutate(
-    borough = fct_reorder(borough, n)) %>% 
-  plot_ly(x = ~borough, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>% 
-  layout(title = "Frequency of Tickets in Boroughs in 2021",
-         xaxis = list(title = "Borough"),
-         yaxis = list(title = "Number of Tickets"))
+    borough = fct_reorder(borough, n)
+    ) %>% 
+  ggplot(aes(x = borough, y = n, fill = borough)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Tickets by Borough",
+    x = "Borough",
+    y = "Number of Tickets",
+    fill = "Borough") +
+  theme(
+    axis.text.x = element_blank()
+  )
 ```
-
+Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
+ 
 The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. The distribution of number of tickets are similar from January to October across Borough. Brooklyn has the highest number of tickets, while State Island has the least number of tickets. There is large increase in number of tickets in October in all boroughs except Staten Island.
 
 ```{r, warning=FALSE, message=FALSE}
@@ -198,13 +209,17 @@ violation1 %>%
   count(month) %>% 
   mutate(month = month.abb[as.numeric(month)],
          month = fct_relevel(month, c("Jan", "Feb", "Mar", "Apr","May","Jun", "Jul", "Aug", "Sep", "Oct"))) %>% 
-      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>%
-  layout(title = "Frequency of Tickets in Boroughs in 2021",
-         xaxis = list(title = "Borough"),
-         yaxis = list(title = "Number of Tickets in Each Month in 2021"))
+  ggplot(aes(x = month, y = n, fill = borough)) +
+  geom_bar(stat = "identity",
+           position = "dodge") +
+  labs(
+    title = "Frequency of Tickets in Boroughs",
+    x = "Month",
+    y = "Number of Tickets in Each Month",
+    fill = "Borough")
 ```
 
-##### Top 10 violations in NYC in 2021
+##### Top 10 Violations in NYC in 2021
 
 We want to know the most common ten violation types based on the total frequency in NYC in 2021. 
 
@@ -219,13 +234,18 @@ total_violation = violation1 %>%
   arrange(n)
 
 total_violation %>% 
-  plot_ly(x = ~violation, y = ~n, type = "bar") %>% 
-  layout(title = "10 Most Common Violations in Total in NYC in 2021",
-         xaxis = list(title = "Violation"),
-         yaxis = list(title = "Number of Tickets in Total"))
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") +
+  labs(title = "10 Most Common Violations",
+       x = "Violation",
+       y = "Number of Tickets",
+       fill = "Violation") + coord_flip() +
+  theme(legend.position = "none"
+        ) 
 ```
 
-##### 5 common violation types in five boroughs {.tabset}
+
+#### Top 5 Violation Types Across Boroughs {.tabset}
 
 We want to find the top five common violation types in each borough, and see whether there exists difference among boroughs. We found that the most common 5 reasons of getting a violation tickets in NYC among all five boroughs are: 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
 
@@ -340,15 +360,17 @@ si_vio_type =
 si_vio_type
 ```
 
+#### ------------------------------
+
 
 [Violation Frequency](frequencyI.html)
 
 
-#### Violation timeline {.tabset}
+#### Violation Timeline {.tabset}
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-##### Month for boroughs
+##### Monthly Ticket Totals by Borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -361,32 +383,34 @@ violation %>%
   ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = "The observation of parking violations of each month \n in 2021 for each borough") + facet_wrap(~ borough, nrow = 1)
-
+  labs(
+    title = "Total Parking Violations by Month and Borough",
+    x = "Month",
+    y = "Total Violations"
+    ) +
+  facet_wrap(~ borough, nrow = 1)
 ```
 
 The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
 
-##### Day for months
+##### Ticket Time Series by Borough
 
-```{r, message=FALSE, warning=FALSE}
+```{r}
 violation %>%
-  mutate(month = month.name[as.numeric(month)]) %>%
-  mutate(month = as.factor(month),
-         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
-  relocate(month) %>%
-  group_by(month, day) %>%
+  group_by(borough, issue_date) %>%
   summarize(n_obs = n()) %>%
-  ggplot(aes(x = day, y = n_obs, group = 1, color = month)) + 
-  geom_point(size = 0.5) + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = "The observation of parking violations of day in each \n month in 2021") + facet_wrap(~ month, nrow = 3)
-
+  ggplot(aes(x = issue_date, y = n_obs, color = borough)) + 
+  geom_line() + 
+  labs(title = "Total Parking Violations Time Series by Borough",
+       x = "Issue Date",
+       y = "Total Violations",
+       color = "Borough") +
+  facet_wrap(~ borough, nrow = 5, scales = "free_y") 
 ```
 
-After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.
+After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month by borough. We see there is a pattern in the fluctuation of total tickets day by day.
 
-##### Weekday for boroughs
+##### Cumulative Weekday Ticket Analysis by Borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>% 
@@ -399,13 +423,17 @@ violation %>%
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
   facet_wrap(~ borough, nrow = 1) +
-  labs(title = "The observation of parking violations vs. weekday in each \n borough in 2021")
-
+  labs(
+    title = "Total Parking Violations by Weekday and Borough",
+    x = "Weekday",
+    y = "Total Violations",
+    color = "Borough"
+    )
 ```
 
 In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
 
-##### Hour for boroughs
+##### Cumulative Hourly Ticket Analysis by Borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -422,13 +450,14 @@ Furthermore, we also try to explore the 24-hour violation pattern within a day. 
 
 [Violation Timeline](timeline-part.html)
 
+#### ------------------------------
 
 #### Violations by Vehicle Body Type
 
 The following plot describes the frequency of violation by vehicle body types. There are mainly top 5 types of vehicle body at the top 5 ranking(unknown type excluded), which are SDN, PICK, 2DSD, 4DSD, SUBN. The type abbreviations are the exact match of the body type listed on the vehicle registration. The law defines a suburban(SUBN) as a vehicle that can be used to carry passengers and cargo. Other common body types and codes for vehicles registered in the passenger vehicle class are sedan (SDN), a two-door sedan (2DSD) and a four-door sedan (4DSD), pick-up trucks (PICK). 
 
 ```{r, warning=FALSE, message=FALSE}
-violation_df = 
+gg_vio_bt = 
   violation %>%
   count(vehicle_body_type) %>% 
   mutate(
@@ -443,11 +472,12 @@ violation_df =
   labs(
     title = "Frequency of Violation by Vehicle Body Type",
     x = "Vehicle Body Types",
-    y = "Numbers"
+    y = "Count", 
+    fill = "Vehicle Body Type"
   ) +
   geom_text(aes(label = n), position = position_dodge(width = 0.9), vjust = -0.25)
-violation_df
 
+gg_vio_bt
 ```
 
 
@@ -458,7 +488,16 @@ violation_df
 
 ###### Payment Amount by Borough
 
-```{r}
+```{r plotly_setup, warning=FALSE, message=FALSE, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 10,
+  fig.asp = .2,
+  out.width = "90%",
+  dpi = 300
+)
+```
+
+```{r, warning=FALSE, message=FALSE}
 payment_by_borough <- violation %>% filter(payment_amount != 0)
 fig1 <- plot_ly(payment_by_borough, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
 fig1 %>% layout(yaxis = list(showticklabels = FALSE),
