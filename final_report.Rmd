@@ -16,6 +16,28 @@ library(ggplot2)
 library(httr)
 library(lubridate)
 library(plotly)
+<<<<<<< HEAD
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+=======
+>>>>>>> a69040eb743de561dc10ba0c032dd1b2e5e0bbf4
 ```
 
 &nbsp;
@@ -67,19 +89,368 @@ This dataset contains the locations of all fire hydrants in NYC. After tidying t
 * `lat` and `long`: latitude and longitude coordinates of the hydrant
 
 
-### Exploratory Data Analyses
+### Exploratory analysis
 
-We performed a few initial analyses to better understand the trends parking violations in the city may follow. 
+In order to have a better understanding of the data sets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
 
-We first conducted a frequency analysis to investigate trends in counts of parking violations. 
+We first tried to explore the overall distribution of the parking violation frequency. Then, we tried to investigate how the number of parking violations distributed over month, week, time of the day and vehicle type. Finally, we looked at the distribution of fine amounts by boroughs.
 
-Afterwards, we investigated the distribution of number of violation over a day and in each weekday and by vehicle types. Finally, we looked at the distribution of fine amounts by boroughs.
+#### Violation frequency
+
+##### Distribution of parking violation 
+
+We first Distribution of number of parking violation in five boroughs (Manhattan, Kings, Bronx, Queens, and Staten Island). This bar graph shows the frequency of tickets in five boroughs in 2021. Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
+
+```{r}
+violation1 %>% 
+  count(borough) %>% 
+  mutate(
+    borough = fct_reorder(borough, n)) %>% 
+  plot_ly(x = ~borough, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>% 
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
+         xaxis = list(title = "Borough"),
+         yaxis = list(title = "Number of Tickets"))
+```
+
+The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. The distribution of number of tickets are similar from January to October across Borough. Brooklyn has the highest number of tickets, while State Island has the least number of tickets. There is large increase in number of tickets in October in all boroughs except Staten Island.
+
+```{r}
+violation1 %>% 
+  group_by(borough) %>%
+  count(month) %>% 
+  mutate(month = month.abb[as.numeric(month)],
+         month = fct_relevel(month, c("Jan", "Feb", "Mar", "Apr","May","Jun", "Jul", "Aug", "Sep", "Oct"))) %>% 
+      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis")%>%
+  layout(title = "Frequency of Tickets in Boroughs in 2021",
+         xaxis = list(title = "Borough"),
+         yaxis = list(title = "Number of Tickets in Each Month in 2021"))
+```
+
+##### Top 10 violations in NYC in 2021
+
+We want to know the most common ten violation types based on the total frequency in NYC in 2021. 
+
+```{r}
+total_violation = violation1 %>% 
+  count(violation) %>% 
+  mutate(
+    violation = fct_reorder(violation, n),
+    ranking = min_rank(desc(n))
+  ) %>% 
+  filter(ranking <= 10) %>% 
+  arrange(n)
+
+total_violation %>% 
+  plot_ly(x = ~violation, y = ~n, type = "bar") %>% 
+  layout(title = "10 Most Common Violations in Total in NYC in 2021",
+         xaxis = list(title = "Violation"),
+         yaxis = list(title = "Number of Tickets in Total"))
+```
+
+##### 5 common violation types in five boroughs {.tabset}
+
+We want to find the top five common violation types in each borough, and see whether there exists difference among boroughs. We found that the most common 5 reasons of getting a violation tickets in NYC among all five boroughs are: 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
+
+```{r}
+## top 5 reasons of violation tickets
+violation_type = violation1 %>% 
+  group_by(borough) %>% 
+  count(violation) %>% 
+  mutate(
+    violation = fct_reorder(violation, n),
+    index = min_rank(desc(n))) %>% 
+  filter(index <= 5) 
+```
+
+### Bronx
+
+```{r}
+bronx_vio_type = 
+  violation_type %>% 
+  filter(borough == "Bronx") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Bronx in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(bronx_vio_type)
+```
+
+### Brooklyn
+
+```{r}
+brooklyn_vio_type = 
+  violation_type %>% 
+  filter(borough == "Brooklyn") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Brooklyn in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(brooklyn_vio_type)
+```
+
+### Manhattan
+
+```{r}
+manhattan_vio_type = 
+  violation_type %>% 
+  filter(borough == "Manhattan") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Manhattan in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(manhattan_vio_type)
+```
+
+### Queens
+
+```{r}
+queens_vio_type = 
+  violation_type %>% 
+  filter(borough == "Queens") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Queens in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(queens_vio_type)
+```
+
+### Staten Island
+
+```{r}
+si_vio_type = 
+  violation_type %>% 
+  filter(borough == "Staten Island") %>% 
+  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Staten Island in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
+    legend.text = element_text(size = 5)
+  )
+
+ggplotly(si_vio_type)
+```
 
 [Violation Frequency](frequencyI.html)
 
+
+#### Violation timeline
+
+For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
+
+###### Violation frequency vs. month for each borough
+
+```{r, message=FALSE, warning=FALSE}
+violation %>%
+  mutate(month = month.name[as.numeric(month)]) %>%
+  mutate(month = as.factor(month),
+         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October")) %>%
+  relocate(month) %>%
+  group_by(borough, month) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
+  labs(title = "The observation of parking violations of each month \n in 2021 for each borough") + facet_wrap(~ borough, nrow = 1)
+
+```
+
+The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
+
+##### Violation frequency vs. day for each month
+
+```{r, message=FALSE, warning=FALSE}
+violation %>%
+  mutate(month = month.name[as.numeric(month)]) %>%
+  mutate(month = as.factor(month),
+         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")) %>%
+  relocate(month) %>%
+  group_by(month, day) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = day, y = n_obs, group = 1, color = month)) + 
+  geom_point(size = 0.5) + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
+  labs(title = "The observation of parking violations of day in each \n month in 2021") + facet_wrap(~ month, nrow = 3)
+
+```
+
+After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.
+
+##### Violation frequency vs. weekday for each borough
+
+```{r, message=FALSE, warning=FALSE}
+violation %>% 
+  mutate(weekday = as.factor(weekday)) %>%
+  mutate(weekday = fct_relevel(weekday, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) %>%
+  relocate(weekday) %>%
+  group_by(borough, weekday) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = weekday, y = n_obs, group = 1, color = borough)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
+  facet_wrap(~ borough, nrow = 1) +
+  labs(title = "The observation of parking violations vs. weekday in each \n borough in 2021")
+
+```
+
+In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
+
+##### Violation frequency vs.hour of the day for each borough
+
+```{r, message=FALSE, warning=FALSE}
+violation %>%
+  mutate(hour = as.numeric(hour)) %>%
+  group_by(borough, hour) %>%
+  summarize(n_obs = n()) %>%
+  filter(hour <= 24) %>%
+  ggplot(aes(x = hour, y = n_obs, color = borough)) + geom_point() + geom_line() +
+  labs(title = "The total number of violations during 24 hours \n of a day in 2021 for each borough") +
+  facet_wrap(~ borough, nrow = 2) 
+```
+
+Furthermore, we also try to explore the 24-hour violation pattern within a day. From the above plot, all boroughs also show a similar daily pattern. The number of violations tends to increase from 6:00 AM to 8:00 AM, remain high in 8:00 AM to 2:00 PM, decrease from 2:00PM to 7:00 PM, and remain low from 7:00 PM to 5:00 AM.
+
 [Violation Timeline](timeline-part.html)
 
+
+#### Violations by Vehicle Body Type
+
+The following plot describes the frequency of violation by vehicle body types. There are mainly top 5 types of vehicle body at the top 5 ranking(unknown type excluded), which are SDN, PICK, 2DSD, 4DSD, SUBN. The type abbreviations are the exact match of the body type listed on the vehicle registration. The law defines a suburban(SUBN) as a vehicle that can be used to carry passengers and cargo. Other common body types and codes for vehicles registered in the passenger vehicle class are sedan (SDN), a two-door sedan (2DSD) and a four-door sedan (4DSD), pick-up trucks (PICK). 
+
+```{r, warning=FALSE, message=FALSE}
+violation_df = 
+  violation %>%
+  count(vehicle_body_type) %>% 
+  mutate(
+    vehicle_body_type = fct_reorder(vehicle_body_type, n) 
+  ) %>% 
+  filter(
+    vehicle_body_type !="NA",
+    n > 10000
+  ) %>% 
+  ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Frequency of Violation by Vehicle Body Type",
+    x = "Vehicle Body Types",
+    y = "Numbers"
+  ) +
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
+violation_df
+
+```
+
+
 [Violation by Vehicle Type](vehicle.html)
+
+
+#### Fine amount
+
+##### Mean Fine Amount Across Boroughs
+
+First, let us compute the average fine amounts across the different boroughs:
+
+```{r}
+violation %>%
+  group_by(borough) %>%
+  summarise(
+    average_fine = mean(fine_amount)
+  )%>%
+  knitr::kable(caption = "Average fine amounts across the different boroughs") 
+```
+
+We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.
+
+```{r}
+violation %>% group_by(borough) %>% 
+  ggplot(aes(x = fine_amount, fill = borough)) + 
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = "Fine Amount",
+    fill = "Borough",
+    title = "Fine Amount Across Boroughs")
+```
+
+To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.
+
+```{r}
+violation_reg <- lm(fine_amount~borough, data = violation)
+anova(violation_reg)
+```
+
+There appear to be differences between fine amounts and at least 2 boroughs. 
+
+
+##### Which borough tends to pay the most in excess fees?
+
+Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.
+
+```{r}
+violation %>%
+  select(borough, contains("amount")) %>%
+  mutate(
+    net_total_amount = fine_amount + penalty_amount + interest_amount - reduction_amount,
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %>%
+  group_by(borough) %>%
+  summarise(
+    avg_excess_amount = mean(excess_amount),
+    avg_net_total_amount = mean(net_total_amount),
+    avg_total_amount = mean(fine_amount)
+  ) %>% 
+  knitr::kable(caption = "Amounts paid in excess of the baseline fine amount")
+```
+
+It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.
+
+```{r}
+violation %>%
+  select(borough, contains("amount")) %>%
+  mutate(
+    excess_amount = penalty_amount + interest_amount - reduction_amount
+  ) %>%
+  filter(excess_amount !=  0) %>%
+  
+  ggplot(aes(x = excess_amount, fill = borough)) +
+  geom_boxplot(alpha = 0.3) +
+  labs(
+    x = "Fine Adjustment Amount",
+    fill = "Borough",
+    title = "Fine Adjustments by Borough"
+  )
+
+```
 
 [Fine Amount](fines.html)
 
