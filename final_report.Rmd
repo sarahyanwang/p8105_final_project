@@ -131,7 +131,5 @@ Statistical Analysis Findings:
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
-Spatial Analysis Findings:
-
 
 
