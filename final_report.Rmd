@@ -17,6 +17,7 @@ library(httr)
 library(lubridate)
 library(plotly)
 
+
 ```
 
 &nbsp;
@@ -106,6 +107,37 @@ We would like to create some maps of fire hydrant violations by borough. We also
 ##### Geolocation (NYCGeoSearch)
 
 After trying several different geolocating methods, we found that NYCGeoSearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. This platform is advantageous as we can manipulate the search terms by altering the website's URL. After passing the website into the `fromJSON()` function from the `jsonlite` package, we can scrape the page for the data we are interested in (coordinates and borough). 
+
+```{r map-setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# uncomment the following three package calls if you want to run e v e r y t h i n g
+# library(httr)
+# library(progress) 
+# library(jsonlite)
+
+library(tidyverse)
+library(plotly)
+
+# creates polygons
+library(sp)
+
+# produces coordinates
+library(geosphere)
+
+# reverse geocode
+library(revgeo)
+
+source("code/data_cleaning.R")
+source("code/formatting.R")
+
+knitr::opts_chunk$set(
+  fig.width = 10,
+  fig.asp = .2,
+  out.width = "90%",
+  dpi = 300
+)
+```
 
 ```{r class.source = 'fold-show', warning=FALSE, eval=FALSE}
 hydrant <- 
@@ -227,8 +259,9 @@ hydrant_violation_location_plot <-
       zoom = 9,
       center = list(lon = -73.9, lat = 40.7)),
     title = "<b> Parking Violation and Hydrant Location </b>",
-     legend = list(title = list(text = "Borough of Violation or Hydrant"),
-                    orientation = "h"))
+     legend = list(title = list(text = "Borough of Violation or Hydrant", size = 9),
+                    orientation = "h",
+                   font = list(size = 9)))
 
 hydrant_violation_location_plot
 ```
@@ -359,8 +392,9 @@ plot %>% layout(
       zoom = 9,
       center = list(lon = -73.9, lat = 40.7)),
       title = "<b> Most Frequently Ticketed Hydrants</b>",
-      legend = list(title = list(text = "Borough of Violation or Hydrant")
-                    ))
+     legend = list(title = list(text = "Borough of Violation or Hydrant", size = 9),
+                    orientation = "h",
+                   font = list(size = 9)))
 ```
 
 Interestingly, it seems that the hydrant whose hitbox intersected the most violation points is located in Queens. The following table shows the ten most frequently ticketed hydrants:
