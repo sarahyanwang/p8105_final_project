@@ -41,15 +41,16 @@ scale_fill_discrete = scale_fill_viridis_d
 &nbsp;
 
 ### Motivation
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021. Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021, with a particular interest in fire hydrant parking violations. 
+The [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers attracted our eyes. It predicted the most likely places to get a parking ticket in NYC based on the data from [SpotAngels](https://www.spotangels.com/blog/nyc-parking-tickets-where-youre-likely-to-get-one-and-how-spotangels-can-pay-for-it/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021.
+
+Moreover, One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
 
 &nbsp;
 
 ### Questions
-1. When and where are parking violations in NYC most likely to be found? 
-2. Which borough had the most violations? Which borough paid the most in fines?
-3. What does the distribution of violations look like over other variables in the dataset borough, date, vehicle type)? 
-4. Are the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
+1. Which borough had the most violations? Which borough paid the most in fines?
+2. What did the distribution of violations look like over other variables in the dataset borough, date, vehicle type? 
+3. Were the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
 
 &nbsp;
 
