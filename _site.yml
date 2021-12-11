@@ -13,6 +13,8 @@ navbar:
         href: fine_amount.html
       - text: 'Violation by Vehicle types'
         href: vehicle.html
+      - text: 'Fire Hydrant Violations'
+        href: hydrant-EDA.html
     - text: 'Statistical Analyses'
       href: statistical-analysis.html
     - text: 'Hydrant Mapping'
