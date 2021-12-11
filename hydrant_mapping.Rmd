@@ -312,7 +312,7 @@ hydrants_table <-
   rename(
     c("Hydrant ID" = "unitid", "Hydrant Address" = "address", "Number of Tickets" = "num_hits")
   )
-  
+  hydrants_table %>% knitr::kable()
 ```
 
 It is important to note that the above spatial analysis will only be as precise as the geocoded violation coordinates will be.
