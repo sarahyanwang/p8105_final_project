@@ -12,6 +12,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(tidytext)  
 library(ggplot2)
 library(httr)
 library(rvest)
@@ -58,9 +59,13 @@ Moreover, One of our group members' had the unfortunate experience of getting he
 
 We used three datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
-* Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
+#### Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. After importing the dataset into R and tidying the dataset, we were ultimately interested in the following variables:
+The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
+
+For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
+
+After the data cleaning, here are the variables that we will be focused on:
 
 * `summons_number`: unique violation identifier
 * `borough`: borough violation was issued in
@@ -68,17 +73,91 @@ The Open Parking and Camera Violations dataset hosted online contains data on 73
 * `weekday`: day of the week violation was issued
 * `hour` and `min`: time violation was issued
 
-* Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
+```{r}
+violation1 <-
+  read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
+  janitor::clean_names() %>%
+  rename(borough = county) %>%  # rename county to borough
+  mutate(
+    borough = case_when(
+      borough %in% c("BK","K", "Kings") ~ "Brooklyn",
+      borough %in% c("BX", "Bronx") ~ "Bronx",
+      borough %in% c("Q", "QN", "Qns") ~ "Queens",
+      borough %in% c("ST", "R", "Rich", "RICH") ~ "Staten Island",
+      borough %in% c("NY", "MN") ~ "Manhattan"),
+      issue_date = as.Date(issue_date, format = "%m/%d/%Y"),
+      weekday = weekdays(issue_date),
+      year = year(issue_date),
+      month = month(issue_date),
+      day = day(issue_date)
+  )  %>%  # make the borough the same 
+  filter(borough != "A", 
+         weekday != "NA",
+         month != "11",
+         month != "12") %>%
+  separate(violation_time, c("hour", "min"), ":") %>%
+  mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
+  mutate(hour = as.numeric(hour))
+```
 
-The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. We mostly made use of the following variables in the dataset:
+
+#### Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
+
+The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
+Then we combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
 
 * `summons_number`: unique violation identifier, used to join dataset with the Open Parking dataset
 * `geo_nyc_address`: combination of a few address components in the raw data, passed into NYCGeoSearch in mapping analysis
 * `vehicle_body_type`: type of vehicle the violation was issued to
 * `vehicle_year`: year of the vehicle
 
+```{r}
+violation2 <- 
+  read_csv("./Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
+  janitor::clean_names() %>%
+  rename(borough = violation_county) %>%
+  select(house_number,
+         street_name,
+         intersecting_street,
+         summons_number, 
+         vehicle_body_type, 
+         vehicle_year)
+violation <-
+  violation1 %>% left_join(violation2, by = "summons_number") %>%
+  mutate(
+    house_street = ifelse(is.na(street_name), NA, ifelse(is.na(house_number), paste("0", street_name), paste(house_number, street_name))),
+    geo_nyc_address = paste(house_street[!is.na(house_street)], 
+                            intersecting_street[!is.na(intersecting_street)], 
+                            paste(toupper(borough), "COUNTY"),
+                            "NEW YORK, NY",
+                            sep = ","),
+    google_address = paste(house_street[!is.na(house_street)], 
+                           intersecting_street[!is.na(intersecting_street)], 
+                           toupper(borough), 
+                           "New York, NY",
+                           sep = ",")
+  ) %>%
+  select(-house_number, -street_name, -intersecting_street)
 
-* Hydrants in NYC
+address_std <- function(ad){
+  address <- 
+    toupper(ad) %>%
+    str_replace(" PKY,", " PARKWAY, ") %>%
+    str_replace(" BLVD,", " BOULEVARD, ") %>%
+    str_replace(" BL,", "BOULEVARD, ") %>%
+    str_replace(" AVE,", " AVENUE, ") %>%
+    str_replace(" AV,", "AVENUE, ") %>%
+    str_replace(" ST,", " STREET, ") %>%
+    str_replace(" PL,", " PLACE, ") %>%
+    str_replace(" HWY,", "HIGHWAY, ") %>%
+    str_replace(" DR,", "DRIVE, ")
+  return(address)
+}
+
+violation <- violation  %>% mutate(geo_nyc_address = geo_nyc_address %>% address_std())
+```
+
+#### Hydrants in NYC
 [(dataset)](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
 
 This dataset contains the locations of all fire hydrants in NYC. After tidying the dataset and recoding some columns, we are most interested in the following variables: 
@@ -158,8 +237,10 @@ violation_type = violation1 %>%
   mutate(
     violation = fct_reorder(violation, n),
     index = min_rank(desc(n))) %>% 
-  filter(index <= 5) 
+  filter(index <= 5)  %>%
+  arrange(index)
 ```
+
 
 ###### Bronx
 
@@ -167,18 +248,15 @@ violation_type = violation1 %>%
 bronx_vio_type = 
   violation_type %>% 
   filter(borough == "Bronx") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
     title = "Frequency of Violation Type in Bronx in 2021", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
-
-ggplotly(bronx_vio_type)
+    axis.text.x = element_blank()  )
+bronx_vio_type
 ```
 
 ###### Brooklyn
@@ -187,18 +265,16 @@ ggplotly(bronx_vio_type)
 brooklyn_vio_type = 
   violation_type %>% 
   filter(borough == "Brooklyn") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
     title = "Frequency of Violation Type in Brooklyn in 2021", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
+    axis.text.x = element_blank()  )
 
-ggplotly(brooklyn_vio_type)
+brooklyn_vio_type
 ```
 
 ###### Manhattan
@@ -207,18 +283,16 @@ ggplotly(brooklyn_vio_type)
 manhattan_vio_type = 
   violation_type %>% 
   filter(borough == "Manhattan") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
     title = "Frequency of Violation Type in Manhattan in 2021", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
+    axis.text.x = element_blank()  )
 
-ggplotly(manhattan_vio_type)
+manhattan_vio_type
 ```
 
 ###### Queens
@@ -227,18 +301,16 @@ ggplotly(manhattan_vio_type)
 queens_vio_type = 
   violation_type %>% 
   filter(borough == "Queens") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
     title = "Frequency of Violation Type in Queens in 2021", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
-  )
+    axis.text.x = element_blank()  )
 
-ggplotly(queens_vio_type)
+queens_vio_type
 ```
 
 ###### Staten Island
@@ -247,19 +319,19 @@ ggplotly(queens_vio_type)
 si_vio_type = 
   violation_type %>% 
   filter(borough == "Staten Island") %>% 
-  ggplot(aes(x = violation, y = n, fill = violation)) + 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
     title = "Frequency of Violation Type in Staten Island in 2021", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = .5, hjust = 1),
-    legend.text = element_text(size = 5)
+    axis.text.x = element_blank(),
   )
 
-ggplotly(si_vio_type)
+si_vio_type
 ```
+
 
 [Violation Frequency](frequencyI.html)
 
