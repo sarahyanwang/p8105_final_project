@@ -392,7 +392,7 @@ plot %>% layout(
                    font = list(size = 9)))
 ```
 
-Interestingly, it seems that the hydrant whose hitbox intersected the most violation points is located in Queens. The following table shows the ten most frequently ticketed hydrants:
+Interestingly, it seems that the hydrant whose hitbox intersected the most violation points is located in Brooklyn. The following table shows the ten most frequently ticketed hydrants:
 
 ```{r}
 hydrants_table <- 
