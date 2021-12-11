@@ -1002,5 +1002,50 @@ Statistical Analysis Findings:
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
+There are also several limitations for our project. The major challenge would be the data cleaning process, especially for our first dataset - Open Parking and Camera Violations. As the dataset is too large to download and run in R, we only focused in 2021. Also, there are some future observations after the date we downloaded the dataset which should not be there, so we just excluded these observations in the data cleaning process. We noticed that this dataset is keeping updated every few months, if we want to expore more of this dataset, maybe we can keep tracking for the update and download it right after it's last update, then check if the dataset's date is consistent with the data update date.
 
+
+
+
+
+
+
+
+
+
+### Influence-Feasible Application
+
+Our project can make an impact on the community. To be more specific, if merging our findings of fire hydrants locations in NYC to [Google map](https://www.google.com/maps), and generating an alert when parking within the safe range (15 feet) of fire hydrants. It could benefit the drivers to follow the parking regulation and avoid getting fire hydrant violations tickets. 
+
+
+### A Fun fact--The Poorest Guy 
+
+During our analysis process of fire hydrant violation, we found out a license plate `JRA7539` got 85 tickets due to fire hydrant in 2021. It's ridiculous! So we want to find what this car is doing in 2021. The result shows that `JRA7539` got a total of 221 violations with fine amount of $19130 this year. 
+
+```{r}
+fire_hydrant = violation1 %>% filter(violation == "FIRE HYDRANT")
+
+fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>% 
+  select(issue_date, borough, violation, plate) %>% 
+  group_by(plate) %>% 
+  filter(n() > 1) %>% 
+  distinct(plate) %>% 
+  ungroup()
+ 
+ duplicate_hydrant = inner_join(fire_hydrant_id, fire_hydrant, by = "plate")
+ 
+ duplicate_hydrant %>% 
+  count(plate) %>% 
+   ggplot(aes(x = n)) + 
+   geom_histogram()
+   
+  violation %>% 
+     filter(plate == "JRA7539") %>% 
+     count(violation) %>% 
+     summarize(sum = sum(n))
+ 
+   violation %>% 
+     filter(plate == "JRA7539") %>% 
+     summarize(fine = sum(amount_due))
+```
 
