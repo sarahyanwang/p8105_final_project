@@ -244,7 +244,7 @@ We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. We w
 
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
 
-hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pull(lat), provider = "google", API = "API")
+hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pull(lat), provider = "google", API = "API") # API key has been removed
 
 address <- hydrant_loc %>% unlist()
 hydrant_loc <- bind_cols(isolated_hydrants, address = address)
@@ -312,7 +312,7 @@ hydrants_table <-
   rename(
     c("Hydrant ID" = "unitid", "Hydrant Address" = "address", "Number of Tickets" = "num_hits")
   )
-  
+  hydrants_table %>% knitr::kable()
 ```
 
 It is important to note that the above spatial analysis will only be as precise as the geocoded violation coordinates will be.
