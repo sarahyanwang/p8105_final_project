@@ -58,7 +58,11 @@ We used three datasets from NYC OpenData to construct our main dataset for analy
 
 * Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. After importing the dataset into R and tidying the dataset, we were ultimately interested in the following variables:
+The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
+
+For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
+
+After the data cleaning, here are the variables that we will be focused on:
 
 * `summons_number`: unique violation identifier
 * `borough`: borough violation was issued in
