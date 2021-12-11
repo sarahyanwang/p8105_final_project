@@ -340,7 +340,7 @@ si_vio_type
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-##### Month for each borough in Violation frequency
+##### Month for each borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
