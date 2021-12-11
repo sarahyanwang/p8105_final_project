@@ -348,7 +348,7 @@ si_vio_type
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-##### Month for each borough
+##### Month for boroughs
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -367,7 +367,7 @@ violation %>%
 
 The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
 
-##### Day for each month
+##### Day for months
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
@@ -386,7 +386,7 @@ violation %>%
 
 After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.
 
-##### Weekday for each borough
+##### Weekday for boroughs
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>% 
@@ -405,7 +405,7 @@ violation %>%
 
 In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
 
-##### Hour of the day for each borough
+##### Hour for boroughs
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%
