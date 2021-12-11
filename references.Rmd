@@ -1,14 +1,16 @@
 ---
 title: "references"
-author: "Waveley Qiu (wq2162)"
-date: "12/10/2021"
+date: "2021-12-11"
 output: html_document
 ---
 
-### Hydrant Mapping
+### Motivating Article
+[NY Post Worst Parking Spots](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/)
 
-Geosphere Package:
-https://cran.r-project.org/web/packages/geosphere/geosphere.pdf
+### Mapping
 
-Map Overlay:
-https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
+[Geosphere Package](https://cran.r-project.org/web/packages/geosphere/geosphere.pdf)
+
+[Map Overlay](https://cran.r-project.org/web/packages/sp/vignettes/over.pdf)
+
+[Reverse Geocoding](https://cran.r-project.org/web/packages/revgeo/revgeo.pdf)

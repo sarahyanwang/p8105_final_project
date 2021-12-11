@@ -16,14 +16,12 @@ library(ggplot2)
 library(httr)
 library(lubridate)
 library(plotly)
-
-
 ```
 
 &nbsp;
 
 ### Motivation
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021, with a particular interest in fire hydrant parking violations. 
+One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021. Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021, with a particular interest in fire hydrant parking violations. 
 
 &nbsp;
 
@@ -39,8 +37,7 @@ One of our group members' had the unfortunate experience of getting her car towe
 
 We used two datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
-* Open Parking and Camera Violations 
-[-Link](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
+* Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
 The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. After importing the dataset into R and tidying the dataset, we were ultimately interested in the following variables:
 
@@ -50,8 +47,7 @@ The Open Parking and Camera Violations dataset hosted online contains data on 73
 * `weekday`: day of the week violation was issued
 * `hour` and `min`: time violation was issued
 
-* Parking Violations Issued - Fiscal Year 2021
-[-Link](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
+* Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
 The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. We mostly made use of the following variables in the dataset:
 
@@ -62,7 +58,7 @@ The Parking Violations Issued - Fiscal Year 2021 dataset provides information ab
 
 
 * Hydrants in NYC
-[-Link](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
+[(dataset)](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
 
 This dataset contains the locations of all fire hydrants in NYC. After tidying the dataset and recoding some columns, we are most interested in the following variables: 
 
@@ -172,7 +168,7 @@ hydrant_lat_long <-
   filter(mapped_borough == borough)
 ```
 
-The address information provided in our raw data is not very complete and not standardized. as some observations are missing address components (such as house number or street name) and some observations have address components that are not recognizable by the platform (i.e. "30 feet west of Broadway"). As such, the platform produces many possible coordinates for some addresses while not being able to find any coordinates for other observations.
+The address information provided in our raw data is not very complete and not standardized, as some observations are missing address components (such as house number or street name) and some observations have address components that are not recognizable by the platform (i.e. "30 feet west of Broadway"). As such, the platform produces many possible coordinates for some addresses while not being able to find any coordinates for other observations.
 
 We will work with only the observations that NYCGeoSearch was able to find location coordinates for. We will further restrict this dataset to only include coordinate results that were in the same borough as reported on the citation, and then select just the first coordinate results, if multiple exist. 
 
@@ -189,7 +185,6 @@ for (i in 1:nrow(hydrant_lat_long)) {
   hydrant_lat_long$long[i] <- hydrant_lat_long$coordinates[[i]][1]
 }
 ```
-
 
 Running through all previous code chunks up until here takes approximately 7 hours. We will go ahead and save the output from running this code in `hydrant_lat_long.csv` so that we can read the data from this file into R, instead of running the previous chunks. 
 
@@ -339,7 +334,7 @@ We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. We w
 
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
 
-hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pull(lat), provider = "google", API = "API")
+hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pull(lat), provider = "google", API = "API") # API key has been removed
 
 address <- hydrant_loc %>% unlist()
 hydrant_loc <- bind_cols(isolated_hydrants, address = address)
