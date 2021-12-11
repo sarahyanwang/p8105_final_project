@@ -446,82 +446,42 @@ violation_df
 [Violation by Vehicle Type](vehicle.html)
 
 
-#### Fine amount
+##### Fine Amount {.tabset}
 
-##### Mean Fine Amount Across Boroughs
-
-First, let us compute the average fine amounts across the different boroughs:
+###### Payment Amount by Borough
 
 ```{r}
-violation %>%
-  group_by(borough) %>%
-  summarise(
-    average_fine = mean(fine_amount)
-  ) %>%
-  knitr::kable(caption = "Average fine amounts across the different boroughs") 
+payment_by_borough <- violation %>% filter(payment_amount != 0)
+fig1 <- plot_ly(payment_by_borough, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
+fig1 %>% layout(yaxis = list(showticklabels = FALSE),
+               title = "<b>Payment by Borough</b>",
+                xaxis = list(title = "Payment Amount"))
 ```
 
-We observe that the average fine amount is highest in Manhattan and lowest in Staten Island.
+We see that the median payment amount is approximately the same across the five boroughs, around $60-65. However, it seems that the payment amount distributions in the Bronx, Brooklyn, and Manhattan all have a significant right skew. This likely just indicates that the violation types that are more frequent than others are different across the boroughs.
+
+###### Payment Amount by Violation
 
 ```{r}
-violation %>% group_by(borough) %>% 
-  ggplot(aes(x = fine_amount, fill = borough)) + 
-  geom_boxplot(alpha = 0.3) +
-  labs(
-    x = "Fine Amount",
-    fill = "Borough",
-    title = "Fine Amount Across Boroughs")
+payment_by_violation <- violation %>% filter(payment_amount != 0)
+fig2 <- plot_ly(payment_by_violation, x = ~payment_amount, color = ~violation, type = "box", colors = "viridis")
+fig2 %>% layout(yaxis = list(showticklabels = FALSE),
+                title = "<b>Payment Amount by Violation Type</b>",
+                xaxis = list(title = "Payment Amount"))
 ```
 
-To see if fine amounts do differ significantly across boroughs, we will conduct a simple one-way ANOVA on these two variables.
+We see that the distribution of payment amounts can vary significantly between violation types.
 
+###### Fire Hydrant Violation Payment Amount by Borough
 ```{r}
-violation_reg <- lm(fine_amount~borough, data = violation)
-anova(violation_reg)
+fire_hydrant_violation_payment <- violation %>% filter(payment_amount != 0, violation == "FIRE HYDRANT")
+fig3 <- plot_ly(temp, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
+fig3 %>% layout(yaxis = list(showticklabels = FALSE),
+                title = "<b>Fire Hydrant Payment Amount by Borough</b>",
+                xaxis = list(title = "Payment Amount"))
 ```
 
-There appear to be differences between fine amounts and at least 2 boroughs. 
-
-
-##### Which borough tends to pay the most in excess fees?
-
-Now, we will investigate tendencies in amounts paid in excess of the baseline fine amount.
-
-```{r}
-violation %>%
-  select(borough, contains("amount")) %>%
-  mutate(
-    net_total_amount = fine_amount + penalty_amount + interest_amount - reduction_amount,
-    excess_amount = penalty_amount + interest_amount - reduction_amount
-  ) %>%
-  group_by(borough) %>%
-  summarise(
-    avg_excess_amount = mean(excess_amount),
-    avg_net_total_amount = mean(net_total_amount),
-    avg_total_amount = mean(fine_amount)
-  ) %>% 
-  knitr::kable(caption = "Amounts paid in excess of the baseline fine amount")
-```
-
-It seems that parking violation fine adjustments are typically reduced, not increased, if the fine is adjusted.
-
-```{r}
-violation %>%
-  select(borough, contains("amount")) %>%
-  mutate(
-    excess_amount = penalty_amount + interest_amount - reduction_amount
-  ) %>%
-  filter(excess_amount !=  0) %>%
-  
-  ggplot(aes(x = excess_amount, fill = borough)) +
-  geom_boxplot(alpha = 0.3) +
-  labs(
-    x = "Fine Adjustment Amount",
-    fill = "Borough",
-    title = "Fine Adjustments by Borough"
-  )
-
-```
+Finally, we see here that the distribution of fire hydrant payment amounts is about the same across the five boroughs. It appears that most recipients of this violation will pay at most $115.
 
 [Fine Amount](fines.html)
 
@@ -653,6 +613,7 @@ From the above results, p-values are small and so we we can say that the proport
 ### Mapping and Spatial Analysis
 
 We would like to create some maps of fire hydrant violations by borough. We also want to investigate whether we can find hydrants that are most frequently ticketed. 
+
 
 ##### Geolocation (NYCGeoSearch)
 
