@@ -1,18 +1,21 @@
 ---
-title: "references"
-date: "2021-12-11"
+title: "References"
 output: html_document
 ---
 
-### Motivating Article
-[NY Post Worst Parking Spots](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/)
+Here are some resources we found helpful over the course of our project.
 
-### Mapping
+#### **Motivating Article**
+[NY Post Worst Parking Spots](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/): identifies streets in NYC incurring the most parking tickets.
 
-[Geosphere Package](https://cran.r-project.org/web/packages/geosphere/geosphere.pdf)
+#### **Mapping Packages**
 
-[Map Overlay](https://cran.r-project.org/web/packages/sp/vignettes/over.pdf)
+[Geosphere Package](https://cran.r-project.org/web/packages/geosphere/geosphere.pdf): includes documentation regarding the use of the `destPoint` function. 
 
-[Reverse Geocoding](https://cran.r-project.org/web/packages/revgeo/revgeo.pdf)
+[Map Overlay](https://cran.r-project.org/web/packages/sp/vignettes/over.pdf): discusses how to use the `over` function to determine whether points are within a polygon.
 
-[NY State Fire Code](https://codes.iccsafe.org/content/NYFC2015UP/appendix-c-fire-hydrant-locations-and-distribution)
+[Reverse Geocoding](https://cran.r-project.org/web/packages/revgeo/revgeo.pdf): documentation on using the `revgeo` function to obtain a street address from a set of coordinates.
+
+#### **Miscellaneous Resources**
+
+[NY State Fire Code](https://codes.iccsafe.org/content/NYFC2015UP/appendix-c-fire-hydrant-locations-and-distribution): describes the requirements for fire hydrant placing in NY state. 
