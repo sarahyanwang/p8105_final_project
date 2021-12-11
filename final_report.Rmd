@@ -64,9 +64,9 @@ We used three datasets from NYC OpenData to construct our main dataset for analy
 
 a) Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
->The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
+    The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
 
->For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
+    For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
 
 After the data cleaning, here are the variables that we will be focused on:
 
@@ -106,9 +106,9 @@ violation1 <-
 
 b) Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
->The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
+    The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
 
-> We then combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
+    We then combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
 
 * `summons_number`: unique violation identifier, used to join dataset with the Open Parking dataset
 * `geo_nyc_address`: combination of a few address components in the raw data, passed into NYCGeoSearch in mapping analysis
@@ -261,7 +261,7 @@ violation_type = violation1 %>%
   arrange(index)
 ```
 
-###### Bronx
+##### Bronx
 
 ```{r, warning=FALSE, message=FALSE}
 bronx_vio_type = 
@@ -280,7 +280,7 @@ bronx_vio_type =
 bronx_vio_type
 ```
 
-###### Brooklyn
+##### Brooklyn
 
 ```{r, warning=FALSE, message=FALSE}
 brooklyn_vio_type = 
@@ -300,7 +300,7 @@ brooklyn_vio_type =
 brooklyn_vio_type
 ```
 
-###### Manhattan
+##### Manhattan
 
 ```{r, warning=FALSE, message=FALSE}
 manhattan_vio_type = 
@@ -320,7 +320,7 @@ manhattan_vio_type =
 manhattan_vio_type
 ```
 
-###### Queens
+##### Queens
 
 ```{r, warning=FALSE, message=FALSE}
 queens_vio_type = 
@@ -340,7 +340,7 @@ queens_vio_type =
 queens_vio_type
 ```
 
-###### Staten Island
+##### Staten Island
 
 ```{r, warning=FALSE, message=FALSE}
 si_vio_type = 
