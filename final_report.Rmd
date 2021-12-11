@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(httr)
+library(rvest)
 library(lubridate)
 library(plotly)
 
@@ -22,7 +23,7 @@ source("code/formatting.R")
 
 knitr::opts_chunk$set(
   fig.width = 6,
-  fig.asp = .6,
+  fig.asp = .7,
   out.width = "90%"
 )
 
