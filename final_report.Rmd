@@ -54,7 +54,7 @@ One of our group members' had the unfortunate experience of getting her car towe
 
 ### Data Processing and Cleaning
 
-We used two datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
+We used three datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
 * Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
@@ -88,7 +88,7 @@ This dataset contains the locations of all fire hydrants in NYC. After tidying t
 
 ### Exploratory analysis
 
-In order to have a better understanding of the data sets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
+In order to have a better understanding of the datasets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
 
 We first tried to explore the overall distribution of the parking violation frequency. Then, we tried to investigate how the number of parking violations distributed over month, week, time of the day and vehicle type. Finally, we looked at the distribution of fine amounts by boroughs.
 
@@ -117,7 +117,7 @@ violation1 %>%
   count(month) %>% 
   mutate(month = month.abb[as.numeric(month)],
          month = fct_relevel(month, c("Jan", "Feb", "Mar", "Apr","May","Jun", "Jul", "Aug", "Sep", "Oct"))) %>% 
-      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis")%>%
+      plot_ly(x = ~month, y = ~n, color = ~borough, type = "bar", colors = "viridis") %>%
   layout(title = "Frequency of Tickets in Boroughs in 2021",
          xaxis = list(title = "Borough"),
          yaxis = list(title = "Number of Tickets in Each Month in 2021"))
@@ -353,7 +353,7 @@ violation_df =
     vehicle_body_type = fct_reorder(vehicle_body_type, n) 
   ) %>% 
   filter(
-    vehicle_body_type !="NA",
+    vehicle_body_type != "NA",
     n > 10000
   ) %>% 
   ggplot(aes(x = vehicle_body_type, y = n, fill = vehicle_body_type)) +
@@ -363,7 +363,7 @@ violation_df =
     x = "Vehicle Body Types",
     y = "Numbers"
   ) +
-  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
+  geom_text(aes(label = n), position = position_dodge(width = 0.9), vjust = -0.25)
 violation_df
 
 ```
@@ -383,7 +383,7 @@ violation %>%
   group_by(borough) %>%
   summarise(
     average_fine = mean(fine_amount)
-  )%>%
+  ) %>%
   knitr::kable(caption = "Average fine amounts across the different boroughs") 
 ```
 
@@ -455,14 +455,126 @@ violation %>%
 
 ### Statistical Analyses
 
-We conducted a number of statistical tests to test if the trends we observed were significant.
+To answer the research questions, we conducted a number of statistical tests to test if the trends we observed were significant.
 
-First, We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see if there is significant difference within the groups of time. 
+First, We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see whether there is significant differences within the groups of time. 
 
-Then, we performed a chi-squared test to test the homogeneity of violation types in five boroughs. 
+#### ANOVA Test 
+*whether month and weekday are associated with parking violation*
 
-Finally, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
+As from the data visualization, we observed patterns for the parking violation number over month and over weekday. In order to discuss further about how month and weekday are associated with the frequency of parking violation, we try to use an ANOVA test for weekday and month. 
 
+$H_0$: The mean numbers of parking violation are not different across months and weekdays.
+
+$H_1$: The mean numbers of parking violation are different across months and weekdays.
+
+```{r, message=FALSE, warning=FALSE}
+fit_df = violation %>%
+  mutate(month = as.factor(month)) %>%
+  group_by(month, weekday, day) %>%
+  summarize(n_obs = n())
+
+fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
+anova(fit_model_weekday) %>% knitr::kable(caption = "One way anova of violation frequency and weekday")
+
+fit_model_month = lm(n_obs ~ month, data = fit_df)
+anova(fit_model_month) %>% knitr::kable(caption = "One way anova of violation frequency and month")
+```
+
+From the above results, both p-values are very small, so we can say that the parking violation counts are associated with month and weekday. 
+
+#### Chi-square Test 
+*whether the violation types vary among boroughs*
+
+Now, we want to know whether there is difference in proportions of ticket amounts in violation types in different boroughs, and we perform a chi-squared test to test the homogeneity of violation types across boroughs.
+
+$H_0:$ the proportions of tickets of violation type in five boroughs are equal; 
+
+$H_1:$ there exists at least one borough's proportion of tickets is different. 
+
+```{r}
+## 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
+
+five_common_violation = 
+  violation1 %>%
+  select(borough, violation) %>% 
+  filter(violation %in%
+           c("NO PARKING-STREET CLEANING",
+             "FAIL TO DSPLY MUNI METER RECPT",
+             "INSP. STICKER-EXPIRED/MISSING",
+             "REG. STICKER-EXPIRED/MISSING",
+             "FIRE HYDRANT")) %>%
+  count(violation, borough) %>% 
+  pivot_wider(
+    names_from = "violation",
+    values_from = "n"
+  ) %>% 
+  data.matrix() %>% 
+  subset(select = -c(borough))
+
+rownames(five_common_violation) <- c("Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")
+
+five_common_violation %>% 
+  knitr::kable(caption = "Results Table")
+
+chisq.test(five_common_violation)
+
+x_crit = qchisq(0.95, 16)
+x_crit
+```
+
+The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, so our result is statistically significant and we can conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
+
+
+#### Proportion Test 
+*whether proportions of the population receiving fire hydrant parking violations in each borough are equal*
+
+Finally, since the population vary from boroughs, we want to standardize the population to assure the accuracy of former test results. We first derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). Next, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
+
+Besides, we will assume: 
+1) Each car has only one driver;
+2) Each car gets one fire hydrant violation in 2021. 
+
+$H_0:$ The proportions of the population getting tickets of fire hydrant in each borough is equal;
+
+$H_1:$ At least one proportion of the population getting fire hydrant violation in a borough is different from other boroughs. 
+
+```{r}
+
+url = "https://www.citypopulation.de/en/usa/newyorkcity/"
+nyc_population_html = read_html(url)
+
+population = nyc_population_html %>% 
+  html_elements(".rname .prio1") %>% 
+  html_text()
+
+boro = nyc_population_html %>% 
+  html_elements(".rname a span") %>% 
+  html_text()
+
+nyc_population = tibble(
+  borough = boro,
+  population = population %>% str_remove_all(",") %>% as.numeric()
+) 
+  
+fire_hydrant = violation1 %>%
+  select(borough, violation, plate) %>% 
+  filter(violation == "FIRE HYDRANT") %>%
+  distinct(plate, borough) %>% 
+  count(borough) 
+
+boro_population = left_join(fire_hydrant, nyc_population)
+
+boro_population %>% 
+  knitr::kable(caption = "Results Table")
+
+prop.test(boro_population$n, boro_population$population)
+
+```
+
+From the above results, p-values are small and so we we can say that the proportions of people getting fire hydrant violations are different across boroughs. 
+
+&nbsp;
 
 ### Mapping and Spatial Analysis
 
