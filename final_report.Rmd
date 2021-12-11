@@ -16,7 +16,6 @@ library(ggplot2)
 library(httr)
 library(lubridate)
 library(plotly)
-<<<<<<< HEAD
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
@@ -36,8 +35,6 @@ options(
 
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
-=======
->>>>>>> a69040eb743de561dc10ba0c032dd1b2e5e0bbf4
 ```
 
 &nbsp;
