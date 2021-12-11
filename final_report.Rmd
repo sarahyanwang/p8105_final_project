@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(httr)
+library(rvest)
 library(lubridate)
 library(plotly)
 
@@ -40,15 +41,16 @@ scale_fill_discrete = scale_fill_viridis_d
 &nbsp;
 
 ### Motivation
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021. Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021, with a particular interest in fire hydrant parking violations. 
+The [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers attracted our eyes. It predicted the most likely places to get a parking ticket in NYC based on the data from [SpotAngels](https://www.spotangels.com/blog/nyc-parking-tickets-where-youre-likely-to-get-one-and-how-spotangels-can-pay-for-it/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021.
+
+Moreover, One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
 
 &nbsp;
 
 ### Questions
-1. When and where are parking violations in NYC most likely to be found? 
-2. Which borough had the most violations? Which borough paid the most in fines?
-3. What does the distribution of violations look like over other variables in the dataset borough, date, vehicle type)? 
-4. Are the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
+1. Which borough had the most violations? Which borough paid the most in fines?
+2. What did the distribution of violations look like over other variables in the dataset borough, date, vehicle type? 
+3. Were the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
 
 &nbsp;
 
@@ -163,7 +165,7 @@ violation_type = violation1 %>%
   filter(index <= 5) 
 ```
 
-### Bronx
+###### Bronx
 
 ```{r}
 bronx_vio_type = 
@@ -183,7 +185,7 @@ bronx_vio_type =
 ggplotly(bronx_vio_type)
 ```
 
-### Brooklyn
+###### Brooklyn
 
 ```{r}
 brooklyn_vio_type = 
@@ -203,7 +205,7 @@ brooklyn_vio_type =
 ggplotly(brooklyn_vio_type)
 ```
 
-### Manhattan
+###### Manhattan
 
 ```{r}
 manhattan_vio_type = 
@@ -223,7 +225,7 @@ manhattan_vio_type =
 ggplotly(manhattan_vio_type)
 ```
 
-### Queens
+###### Queens
 
 ```{r}
 queens_vio_type = 
@@ -243,7 +245,7 @@ queens_vio_type =
 ggplotly(queens_vio_type)
 ```
 
-### Staten Island
+###### Staten Island
 
 ```{r}
 si_vio_type = 
@@ -270,7 +272,7 @@ ggplotly(si_vio_type)
 
 For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
 
-###### Violation frequency vs. month for each borough
+##### Violation frequency vs. month for each borough
 
 ```{r, message=FALSE, warning=FALSE}
 violation %>%

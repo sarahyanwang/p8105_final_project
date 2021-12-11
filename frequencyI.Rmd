@@ -17,7 +17,7 @@ library(plotly)
 
 knitr::opts_chunk$set(
   fig.width = 6,
-  fig.asp = .6,
+  fig.asp = .7,
   out.width = "90%"
 )
 
