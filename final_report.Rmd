@@ -990,5 +990,15 @@ Statistical Analysis Findings:
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
+There are also several limitations for our project. The major challenge would be the data cleaning process, especially for our first dataset - Open Parking and Camera Violations. As the dataset is too large to download and run in R, we only focused in 2021. Also, there are some future observations after the date we downloaded the dataset which should not be there, so we just excluded these observations in the data cleaning process. We noticed that this dataset is keeping updated every few months, if we want to expore more of this dataset, maybe we can keep tracking for the update and download it right after it's last update, then check if the dataset's date is consistent with the data update date.
+
+
+
+
+
+
+
+
+
 
 
