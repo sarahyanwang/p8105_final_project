@@ -28,6 +28,7 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
+## Fire Hydrants Violation{.tabset}
 ```{r, message=FALSE, warning=FALSE}
 hydrant <- 
   violation %>% 
@@ -35,6 +36,8 @@ hydrant <-
 ```
 
 As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed cross each borough and over the time.
+
+### Violations in boroughs
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
@@ -53,6 +56,9 @@ hydrant %>%
 ```
 
 From the above bar charts, we can see that Staten Island has the fewest number of fire hydrant violations and Brooklyn has the highest number of fire hydrant violations, which is consistent with the total violations across boroughs we found before.
+
+### Violations in month
+
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
