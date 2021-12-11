@@ -59,7 +59,7 @@ Moreover, One of our group members' had the unfortunate experience of getting he
 
 We used three datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
-#### Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
+a) Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
 The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. 
 
@@ -101,7 +101,7 @@ violation1 <-
 ```
 
 
-#### Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
+b) Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
 The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. 
 Then we combined this dataset with the first dataset by the summons_number. These are the variables that we are interested in for further analysis:
@@ -964,9 +964,20 @@ It is important to note that the above spatial analysis will only be as precise 
 
 &nbsp;
 
-### Discussion
+### Steps and Discussion 
 
-EDA Findings:
+At first, We are interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one in 2021, as stated in the proposal. Therefore we investigated the boroughs that had the most violations, the borough paid the most in fines and other general topics. 
+
+Further, we narrowed down the range of the topic focus. We did research on the distribution of violations in other variables such as the dataset borough, date, vehicle type, nearby fire hydrants. The most curious factor was the fire hydrants. Were the number of parking violations related to fire hydrants the same across the five boroughs? Following the question, we decided to find the hydrants that seem to be ticketed the most commonly.
+
+To start with, we wanted to build the mapping for the distribution of parking violation spots.  We exported the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder made getting data from geocoding services easy. We imported the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtained the csv file containing latitudes and longitudes of parking violation address. Then we adopted the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points revealed the parking violation sites distribution.
+
+However, the speed of data analysis severely depended on WIFI speed because we relied on the Google API to get the file containing latitudes and longitudes for parking violation address. So we dropped the thought and searched for more practical methods.
+
+Soon, we found that NYCGeoSearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. This platform is advantageous as we can manipulate the search terms by altering the website's URL. After passing the website into the `fromJSON()` function from the `jsonlite` package, we can scrape the page for the data we are interested in (coordinates and borough). Then we painted the graphic of the distribution of suspicious hydrants that may cause the violation tickets and performed the mapping and data analysis. 
+
+
+### Findings and Summary
 
 * **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
 
@@ -990,15 +1001,8 @@ Statistical Analysis Findings:
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
+### Limitations and Reflections
 There are also several limitations for our project. The major challenge would be the data cleaning process, especially for our first dataset - Open Parking and Camera Violations. As the dataset is too large to download and run in R, we only focused in 2021. Also, there are some future observations after the date we downloaded the dataset which should not be there, so we just excluded these observations in the data cleaning process. We noticed that this dataset is keeping updated every few months, if we want to expore more of this dataset, maybe we can keep tracking for the update and download it right after it's last update, then check if the dataset's date is consistent with the data update date.
-
-
-
-
-
-
-
-
 
 
 ### Influence-Feasible Application
