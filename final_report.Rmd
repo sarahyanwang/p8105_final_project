@@ -238,25 +238,98 @@ violation_type = violation1 %>%
     violation = fct_reorder(violation, n),
     index = min_rank(desc(n))) %>% 
   filter(index <= 5)  %>%
-  arrange(borough, index)
+  arrange(index)
 ```
 
-### Frequency Bar Chart of Top 5 Violations by Borough
+
+###### Bronx
 
 ```{r}
-violation_type %>% 
-  ggplot(aes(reorder_within(violation, index, borough), y = n, group = borough, fill = violation)) + 
+bronx_vio_type = 
+  violation_type %>% 
+  filter(borough == "Bronx") %>% 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
-  scale_x_reordered() +
   labs(
     title = "Frequency of Violation Type in Bronx in 2021", 
     x = "Violation Type", 
-    y = "Number of Tickets") +
+    y = "Number of tickets") +
   theme(
-    axis.text.x = element_text(angle = 60, vjust = 1.1, hjust = 1, size = 8),
-    legend.position = "none"
-  ) + facet_grid(.~borough, scales = "free_x") 
+    axis.text.x = element_blank()  )
+bronx_vio_type
+```
 
+###### Brooklyn
+
+```{r}
+brooklyn_vio_type = 
+  violation_type %>% 
+  filter(borough == "Brooklyn") %>% 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Brooklyn in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_blank()  )
+
+brooklyn_vio_type
+```
+
+###### Manhattan
+
+```{r}
+manhattan_vio_type = 
+  violation_type %>% 
+  filter(borough == "Manhattan") %>% 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Manhattan in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_blank()  )
+
+manhattan_vio_type
+```
+
+###### Queens
+
+```{r}
+queens_vio_type = 
+  violation_type %>% 
+  filter(borough == "Queens") %>% 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Queens in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_blank()  )
+
+queens_vio_type
+```
+
+###### Staten Island
+
+```{r}
+si_vio_type = 
+  violation_type %>% 
+  filter(borough == "Staten Island") %>% 
+  ggplot(aes(x = index, y = n, fill = violation)) + 
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Frequency of Violation Type in Staten Island in 2021", 
+    x = "Violation Type", 
+    y = "Number of tickets") +
+  theme(
+    axis.text.x = element_blank(),
+  )
+
+si_vio_type
 ```
 
 
