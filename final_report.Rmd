@@ -22,100 +22,92 @@ library(plotly)
 &nbsp;
 
 ### Motivation
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). We were intrigued by the potential of investigating the parking violation in NYC in 2021. 
+One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021, with a particular interest in fire hydrant parking violations. 
 
 &nbsp;
 
 ### Questions
-1. When and where a parking ticket in NYC is most likely to be found?
-2. What other possible factors are associated with the violation tickets? Does the date associated with the parking violation counts? What about the frequency of vehicle type? 
-3. Back to the starting point, what's the suspicious hydrant's distribution that possibly causes the parking violation? How to prevent the violation when parking next to the hydrant the next time?
+1. When and where are parking violations in NYC most likely to be found? 
+2. Which borough had the most violations? Which borough paid the most in fines?
+3. What does the distribution of violations look like over other variables in the dataset borough, date, vehicle type)? 
+4. Are the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
 
 &nbsp;
 
 ### Data Processing and Cleaning
-We used two datasets from NYC OpenData in our project:
+
+We used two datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
 * Open Parking and Camera Violations 
 [-Link](https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89)
 
-The Open Parking and Camera Violations contains violations from 2016 to 2021 and have 73.6 millions of rows. Since we only focus on year 2021 from January to October, we filter the dataset on the website page to remove redundant information and download the dataset after filtering. The dataset we used was too large to store in github. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. The original variable `county` renamed as `borough` and names are aligned. We separated the `issue_date` into `month`, `date`, and `year` and apply function to find the weekday of the date. We further broke down the `violation_time` into `hour` and `min` for plotting the violation over a day.
+The Open Parking and Camera Violations dataset hosted online contains data on 73.6 million parking violations from 2016 to 2021. We filtered the dataset on the website page to remove redundant information and downloaded the dataset after filtering, as it was too large to download outright. We stored the dataset in a Google Drive folder, as it exceeded the size limits for GitHub. We are interested in parking violation in five boroughs, Manhattan, Kings, The Bronx, State Island, and Queens. After importing the dataset into R and tidying the dataset, we were ultimately interested in the following variables:
 
+* `summons_number`: unique violation identifier
+* `borough`: borough violation was issued in
+* `issue_date` (also split into `month`, `date`, `year`): date violation was issued on
+* `weekday`: day of the week violation was issued
+* `hour` and `min`: time violation was issued
 
 * Parking Violations Issued - Fiscal Year 2021
 [-Link](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
-The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. We extract the information about the location where parking violation issused in 2021. The variables we count on are `House Number`, `Street Name`, `Intersecting Street`. We would combine the contents from those columns and draw the complete address where violation happened. These addresses would occur as a data point in the map for data visualization. 
+The Parking Violations Issued - Fiscal Year 2021 dataset provides information about the violations issued during the respective fiscal year. This dataset provides us with approximate locations where each parking violation was issued. In addition, this dataset also provides us with information about the car type. We mostly made use of the following variables in the dataset:
 
-After data cleaning, the two datasets are joined by `summons_number` finally.
+* `summons_number`: unique violation identifier, used to join dataset with the Open Parking dataset
+* `geo_nyc_address`: combination of a few address components in the raw data, passed into NYCGeoSearch in mapping analysis
+* `vehicle_body_type`: type of vehicle the violation was issued to
+* `vehicle_year`: year of the vehicle
+
 
 * Hydrants in NYC
 [-Link](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
 
-&nbsp;
+This dataset contains the locations of all fire hydrants in NYC. After tidying the dataset and recoding some columns, we are most interested in the following variables: 
 
-### Variable of Interests
-
-__Open Parking and Camera Violations__
-
-* `plate`
-
-* `issue_date`
-
-* `violation_time`
-
-* `violation` : type of violation
-
-* `fine_amount`
-
-* `borough`
-
-* `weekday`
-
-__The Parking Violations Issued - Fiscal Year 2021__
-
-The key variables that we used in our analysis include for mapping
-
-* `House Number`
-
-* `Street Name`
-
-* `Intersecting Street` 
+* `borough`: borough the hydrant is located in
+* `unitid`: unique hydrant identifier
+* `lat` and `long`: latitude and longitude coordinates of the hydrant
 
 
-&nbsp;
+### Exploratory Data Analyses
 
-### Exploratory Analyses
+We performed a few initial analyses to better understand the trends parking violations in the city may follow. 
 
-**Open Parking and Camera Violations**
+We first conducted a frequency analysis to investigate trends in counts of parking violations. 
 
-We use the dataset to explored about the distribution of number of of violation and violation types in five boroughs to understand the trend of violation in NYC. Then, we explored the distribution of number of violation over a day and in each weekday and by vehicle types, and fine amounts in boroughs.
+Afterwards, we investigated the distribution of number of violation over a day and in each weekday and by vehicle types. Finally, we looked at the distribution of fine amounts by boroughs.
 
 [Violation Frequency](frequencyI.html)
 
 [Violation Timeline](timeline-part.html)
 
-[Fine Amount](fines.html)
-
 [Violation by Vehicle Type](vehicle.html)
 
-#### Visualization on the map
-First, we want to build the mapping for the distribution of parking violation spots.  
-
-We export the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder makes getting data from geocoding services easy. We import the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtain the csv file containing latitudes and longitudes of parking violation address. Then we adopt the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points reveal the parking violation sites distribution.
-
-Then we focus on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.
+[Fine Amount](fines.html)
 
 &nbsp;
 
 ### Statistical Analyses
-We conduct a one-way anova test about the violation frequency to see if there is significant difference between weekdays and month. In addition, we performed a chi-squared test to test the homogeneity of violation types in five boroughs. Next, we performed a proportion test to examine whether the proportion of fire hydrant violation is associated with the population of each borough. Click the link see the details about [Statistical Analyses](statistical-analysis.html). 
+
+We conducted a number of statistical tests to test if the trends we observed were significant.
+
+First, We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see if there is significant difference within the groups of time. 
+
+Then, we performed a chi-squared test to test the homogeneity of violation types in five boroughs. 
+
+Finally, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
+
+
+#### Mapping and Spatial Analysis
+
+Finally, we constructed a map of parking violations related to fire hydrants. we focused on the distribution of suspicious hydrants distribution that may cause the violation tickets. The basic layer represents the various borough in colors. The red points is the hydrants location which some cars had encountered the violation nearby.
 
 &nbsp;
 
 ### Discussion
 
-Exploratory analyses foundings:
+EDA Findings:
 
 * **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
 
@@ -131,10 +123,15 @@ Exploratory analyses foundings:
 
 * **Suburban(SUBN)** is the vehicle type that has the highest number of violation.
 
-Our statistical analyses findings: 
+Statistical Analysis Findings:
 
 * **ANOVA test**: the parking violation counts are associated with **month** and **weekday**. 
 
 * **Chi-square test**: the proportions of violation amounts is **different** among boroughs. 
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
+
+Spatial Analysis Findings:
+
+
+
