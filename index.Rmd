@@ -13,7 +13,8 @@ output:
 &nbsp;
 
 ### Introduction
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. A news report published by New York Post about locations drivers were most likely to get a parking ticket in NYC between October 2020 and September 2021 [-Link]( https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/). We were intrigued by the potential of investigating the parking violation in NYC in 2021. 
+
+One of our group members' had the unfortunate experience of getting her car towed last year due to parking near a fire hydrant. Inspired by this sad circumstance, we wanted to investigate parking violations in NYC. In this project, we will first conduct exploratory data analysis in order to better understand the different factors parking violations are associated with, after which we will briefly investigate the potential impact the COVID-19 pandemic has had on parking violation counts. We will then construct a map to display the locations at which fire hydrant violations were issued.
 
 &nbsp;
 
@@ -28,10 +29,8 @@ In the exploratory analyses section, you will find:
 
 * Violation by vehicle types
 
-* Map showing the location of violation and number of violation in each county
 
-
-In the statistical analyses section, you will find:
+In the statistical analyses tab, you will find:
 
 * Anova Test - Whether month and weekday are associated with parking violations
 
@@ -39,8 +38,9 @@ In the statistical analyses section, you will find:
 
 * Proportion Test - whether proportions of the population receiving fire hydrant violations in each borough are equal
 
+* COVID-19's Associations with Parking Violations - an investigation into whether COVID-19 case counts are associated with parking violation counts
 
-In hydrant mapping tab, you will find:
+In Mapping tab, you will find:
 
 * Mapping of hydrant 
 

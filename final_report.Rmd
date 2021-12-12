@@ -5,6 +5,7 @@ output:
     code_folding: hide
     toc: true
     toc_float: true
+    toc_depth: 4
     theme: cosmo
 ---
 
@@ -18,6 +19,8 @@ library(httr)
 library(rvest)
 library(lubridate)
 library(plotly)
+library(patchwork)
+library(lmtest)
 
 source("code/data_cleaning.R")
 source("code/formatting.R")
@@ -44,21 +47,22 @@ scale_fill_discrete = scale_fill_viridis_d
 
 &nbsp;
 
-### Motivation
+## Motivation
 The [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers attracted our eyes. It predicted the most likely places to get a parking ticket in NYC based on the data from [SpotAngels](https://www.spotangels.com/blog/nyc-parking-tickets-where-youre-likely-to-get-one-and-how-spotangels-can-pay-for-it/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021.
 
 Moreover, One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
 
 &nbsp;
 
-### Questions and planned analyses
+## Questions and Planned Analyses
+
 1. Which borough had the most violations? Which borough paid the most in fines?
 2. What did the distribution of violations look like over other variables in the dataset borough, date, vehicle type? 
 3. Were the number of parking violations related to fire hydrants the same across the five boroughs? Can we find the hydrants that seem to be ticketed the most commonly?
 
 &nbsp;
 
-### Data Processing and Cleaning
+## Data Processing and Cleaning
 
 We used three datasets from NYC OpenData to construct our main dataset for analysis and also utilized a few other datasets (both available online and scraped from the internet) to supplement our analysis
 
@@ -68,7 +72,7 @@ a) Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/
 
     For the process of data cleaning, we first organized all locations into the five boroughs that we are interested, Manhattan, Kings, The Bronx, State Island, and Queens. Then we changed the format of the issue_date, and separate it into month, date and year, and separated the time of the day into hour and min for further analysis. Furthermore, we found out that the data size for November and December is much smaller comparing to the other months, and we downloaded this dataset in November where the December data should not be there at that time. So we decided to only keep the data from January 1st to October 31th. Finally, we filtered out all the missing values.
 
-After the data cleaning, here are the variables that we will be focused on:
+    After the data cleaning, here are the variables that we will be focused on:
 
 * `summons_number`: unique violation identifier
 * `borough`: borough violation was issued in
@@ -102,7 +106,6 @@ violation1 <-
   mutate(hour = ifelse(substr(min, 3, 3) == "P", as.numeric(hour) + 12, hour)) %>%
   mutate(hour = as.numeric(hour))
 ```
-
 
 b) Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2021/kvfd-bves)
 
@@ -143,7 +146,7 @@ violation <-
   ) %>%
   select(-house_number, -street_name, -intersecting_street)
 
-address_std <- function(ad){
+ address_std <- function(ad){
   address <- 
     toupper(ad) %>%
     str_replace(" PKY,", " PARKWAY, ") %>%
@@ -161,26 +164,36 @@ address_std <- function(ad){
 violation <- violation  %>% mutate(geo_nyc_address = geo_nyc_address %>% address_std())
 ```
 
-#### Hydrants in NYC
+c) Hydrants in NYC
 [(dataset)](https://data.cityofnewyork.us/Environment/NYCDEP-Citywide-Hydrants/6pui-xhxz)
 
-This dataset contains the locations of all fire hydrants in NYC. After tidying the dataset and recoding some columns, we are most interested in the following variables: 
+    This dataset contains the locations of all fire hydrants in NYC. After tidying the dataset and recoding some columns, we are most interested in the following variables: 
 
 * `borough`: borough the hydrant is located in
 * `unitid`: unique hydrant identifier
 * `lat` and `long`: latitude and longitude coordinates of the hydrant
 
-### Exploratory analysis
+d) NYC COVID-19 Case Counts
+[(dataset)](https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv)
+
+    This dataset contains non-cumulative daily counts of COVID-19 cases across the five boroughs in NYC. After importing and tidying the dataset, we are interested in the following variables:
+    
+* `borough`: borough of interest/measurement
+* `new_Cases`: count of daily new COVID_19 cases
+* `date_of_interest`: the date the case count is associated with
+
+
+## EDA
 
 In order to have a better understanding of the datasets and trends of parking violations in the city may follow, we conducted some exploration mainly through visualization.
 
 We first tried to explore the overall distribution of the parking violation frequency. Then, we tried to investigate how the number of parking violations distributed over month, week, time of the day and vehicle type. Finally, we looked at the distribution of fine amounts by boroughs.
 
-#### Violation Frequency
+### Violation Frequency
 
 We first want to get a feel for the distribution of violations across the five boroughs. We will construct a bar chart tabulating the number of parking violations incurred in each of the five boroughs.
 
-##### Distribution of Parking Violation 
+#### Distribution of Parking Violation 
 
 ```{r, warning=FALSE, message=FALSE}
 violation1 %>% 
@@ -199,6 +212,7 @@ violation1 %>%
     axis.text.x = element_blank()
   )
 ```
+
 Brooklyn has the greatest number of tickets among five boroughs. Staten Island has the lowest number of tickets in 2021.
  
 The bar graph further break down the number of tickets in five borough from January to October in 2021. There is sharp increasing of number of tickets in October. The distribution of number of tickets are similar from January to October across Borough. Brooklyn has the highest number of tickets, while State Island has the least number of tickets. There is large increase in number of tickets in October in all boroughs except Staten Island.
@@ -219,7 +233,7 @@ violation1 %>%
     fill = "Borough")
 ```
 
-##### Top 10 Violations in NYC in 2021
+### Top 10 Violations in NYC in 2021
 
 We want to know the most common ten violation types based on the total frequency in NYC in 2021. 
 
@@ -245,7 +259,7 @@ total_violation %>%
 ```
 
 
-#### Top 5 Violation Types Across Boroughs {.tabset}
+### Top 5 Violation Types Across Boroughs {.tabset}
 
 We want to find the top five common violation types in each borough, and see whether there exists difference among boroughs. We found that the most common 5 reasons of getting a violation tickets in NYC among all five boroughs are: 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
 
@@ -261,7 +275,7 @@ violation_type = violation1 %>%
   arrange(index)
 ```
 
-##### Bronx
+#### Bronx
 
 ```{r, warning=FALSE, message=FALSE}
 bronx_vio_type = 
@@ -280,7 +294,7 @@ bronx_vio_type =
 bronx_vio_type
 ```
 
-##### Brooklyn
+#### Brooklyn
 
 ```{r, warning=FALSE, message=FALSE}
 brooklyn_vio_type = 
@@ -300,7 +314,7 @@ brooklyn_vio_type =
 brooklyn_vio_type
 ```
 
-##### Manhattan
+#### Manhattan
 
 ```{r, warning=FALSE, message=FALSE}
 manhattan_vio_type = 
@@ -320,7 +334,7 @@ manhattan_vio_type =
 manhattan_vio_type
 ```
 
-##### Queens
+#### Queens
 
 ```{r, warning=FALSE, message=FALSE}
 queens_vio_type = 
@@ -340,7 +354,7 @@ queens_vio_type =
 queens_vio_type
 ```
 
-##### Staten Island
+#### Staten Island
 
 ```{r, warning=FALSE, message=FALSE}
 si_vio_type = 
@@ -360,99 +374,8 @@ si_vio_type =
 si_vio_type
 ```
 
-#### ------------------------------
 
-
-[Violation Frequency](frequencyI.html)
-
-
-#### Violation Timeline {.tabset}
-
-For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
-
-##### Monthly Ticket Totals by Borough
-
-```{r, message=FALSE, warning=FALSE}
-violation %>%
-  mutate(month = month.name[as.numeric(month)]) %>%
-  mutate(month = as.factor(month),
-         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October")) %>%
-  relocate(month) %>%
-  group_by(borough, month) %>%
-  summarize(n_obs = n()) %>%
-  ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
-  geom_point() + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(
-    title = "Total Parking Violations by Month and Borough",
-    x = "Month",
-    y = "Total Violations"
-    ) +
-  facet_wrap(~ borough, nrow = 1)
-```
-
-The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
-
-##### Ticket Time Series by Borough
-
-```{r}
-violation %>%
-  group_by(borough, issue_date) %>%
-  summarize(n_obs = n()) %>%
-  ggplot(aes(x = issue_date, y = n_obs, color = borough)) + 
-  geom_line() + 
-  labs(title = "Total Parking Violations Time Series by Borough",
-       x = "Issue Date",
-       y = "Total Violations",
-       color = "Borough") +
-  facet_wrap(~ borough, nrow = 5, scales = "free_y") 
-```
-
-After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month by borough. We see there is a pattern in the fluctuation of total tickets day by day.
-
-##### Cumulative Weekday Ticket Analysis by Borough
-
-```{r, message=FALSE, warning=FALSE}
-violation %>% 
-  mutate(weekday = as.factor(weekday)) %>%
-  mutate(weekday = fct_relevel(weekday, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) %>%
-  relocate(weekday) %>%
-  group_by(borough, weekday) %>%
-  summarize(n_obs = n()) %>%
-  ggplot(aes(x = weekday, y = n_obs, group = 1, color = borough)) + 
-  geom_point() + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
-  facet_wrap(~ borough, nrow = 1) +
-  labs(
-    title = "Total Parking Violations by Weekday and Borough",
-    x = "Weekday",
-    y = "Total Violations",
-    color = "Borough"
-    )
-```
-
-In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
-
-##### Cumulative Hourly Ticket Analysis by Borough
-
-```{r, message=FALSE, warning=FALSE}
-violation %>%
-  mutate(hour = as.numeric(hour)) %>%
-  group_by(borough, hour) %>%
-  summarize(n_obs = n()) %>%
-  filter(hour <= 24) %>%
-  ggplot(aes(x = hour, y = n_obs, color = borough)) + geom_point() + geom_line() +
-  labs(title = "The total number of violations during 24 hours \n of a day in 2021 for each borough") +
-  facet_wrap(~ borough, nrow = 2) 
-```
-
-Furthermore, we also try to explore the 24-hour violation pattern within a day. From the above plot, all boroughs also show a similar daily pattern. The number of violations tends to increase from 6:00 AM to 8:00 AM, remain high in 8:00 AM to 2:00 PM, decrease from 2:00PM to 7:00 PM, and remain low from 7:00 PM to 5:00 AM.
-
-[Violation Timeline](timeline-part.html)
-
-#### ------------------------------
-
-#### Violations by Vehicle Body Type
+### Violations by Vehicle Body Type
 
 The following plot describes the frequency of violation by vehicle body types. There are mainly top 5 types of vehicle body at the top 5 ranking(unknown type excluded), which are SDN, PICK, 2DSD, 4DSD, SUBN. The type abbreviations are the exact match of the body type listed on the vehicle registration. The law defines a suburban(SUBN) as a vehicle that can be used to carry passengers and cargo. Other common body types and codes for vehicles registered in the passenger vehicle class are sedan (SDN), a two-door sedan (2DSD) and a four-door sedan (4DSD), pick-up trucks (PICK). 
 
@@ -480,13 +403,12 @@ gg_vio_bt =
 gg_vio_bt
 ```
 
-
 [Violation by Vehicle Type](vehicle.html)
 
 
-##### Fine Amount {.tabset}
 
-###### Payment Amount by Borough
+### Fine Amount {.tabset}
+#### Payment Amount by Borough
 
 ```{r plotly_setup, warning=FALSE, message=FALSE, include=FALSE}
 knitr::opts_chunk$set(
@@ -507,7 +429,7 @@ fig1 %>% layout(yaxis = list(showticklabels = FALSE),
 
 We see that the median payment amount is approximately the same across the five boroughs, around $60-65. However, it seems that the payment amount distributions in the Bronx, Brooklyn, and Manhattan all have a significant right skew. This likely just indicates that the distribution of violation types differ across the five boroughs.
 
-###### Payment Amount by Violation
+#### Payment Amount by Violation
 
 ```{r}
 payment_by_violation <- violation %>% filter(payment_amount != 0)
@@ -519,7 +441,7 @@ fig2 %>% layout(yaxis = list(showticklabels = FALSE),
 
 We see that the distribution of payment amounts can vary significantly between violation types.
 
-###### Fire Hydrant Violation Payment Amount by Borough
+#### Fire Hydrant Violation Payment Amount by Borough
 ```{r}
 fire_hydrant_violation_payment <- violation %>% filter(payment_amount != 0, violation == "FIRE HYDRANT")
 fig3 <- plot_ly(fire_hydrant_violation_payment, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
@@ -532,8 +454,97 @@ Finally, we see here that the distribution of fire hydrant payment amounts is ab
 
 [Fine Amount](fines.html)
 
+### Violation Timeline {.tabset}
 
-#### Fire Hydrants Violation{.tabset}
+Now, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
+#### Monthly Ticket Totals by Borough
+
+```{r, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+violation %>%
+  mutate(month = month.name[as.numeric(month)]) %>%
+  mutate(month = as.factor(month),
+         month = fct_relevel(month, "January", "February", "March", "April", "May", "June", "July", "August", "September", "October")) %>%
+  relocate(month) %>%
+  group_by(borough, month) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
+  labs(
+    title = "Total Parking Violations by Month and Borough",
+    x = "Month",
+    y = "Total Violations"
+    ) +
+  facet_wrap(~ borough, nrow = 1)
+```
+
+The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.
+
+#### Ticket Time Series by Borough
+
+```{r, warning=FALSE, message=FALSE}
+violation %>%
+  group_by(borough, issue_date) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = issue_date, y = n_obs, color = borough)) + 
+  geom_line() + 
+  labs(title = "Total Parking Violations Time Series by Borough",
+       x = "Issue Date",
+       y = "Total Violations",
+       color = "Borough") +
+  facet_wrap(~ borough, nrow = 5, scales = "free_y") 
+```
+
+After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month by borough. We see there is a pattern in the fluctuation of total tickets day by day.
+
+#### Cumulative Weekday Ticket Analysis by Borough
+
+```{r, message=FALSE, warning=FALSE}
+violation %>% 
+  mutate(weekday = as.factor(weekday)) %>%
+  mutate(weekday = fct_relevel(weekday, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) %>%
+  relocate(weekday) %>%
+  group_by(borough, weekday) %>%
+  summarize(n_obs = n()) %>%
+  ggplot(aes(x = weekday, y = n_obs, group = 1, color = borough)) + 
+  geom_point() + geom_line() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
+  facet_wrap(~ borough, nrow = 1) +
+  labs(
+    title = "Total Parking Violations by Weekday and Borough",
+    x = "Weekday",
+    y = "Total Violations",
+    color = "Borough"
+    )
+```
+
+In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.
+
+#### Cumulative Hourly Ticket Analysis by Borough
+
+```{r, message=FALSE, warning=FALSE}
+violation %>%
+  mutate(hour = as.numeric(hour)) %>%
+  group_by(borough, hour) %>%
+  summarize(n_obs = n()) %>%
+  filter(hour <= 24) %>%
+  ggplot(aes(x = hour, y = n_obs, color = borough)) + geom_point() + geom_line() +
+  labs(title = "The total number of violations during 24 hours \n of a day in 2021 for each borough") +
+  facet_wrap(~ borough, nrow = 2) 
+```
+
+Furthermore, we also try to explore the 24-hour violation pattern within a day. From the above plot, all boroughs also show a similar daily pattern. The number of violations tends to increase from 6:00 AM to 8:00 AM, remain high in 8:00 AM to 2:00 PM, decrease from 2:00PM to 7:00 PM, and remain low from 7:00 PM to 5:00 AM.
+
+[Violation Timeline](timeline-part.html)
+
+
+### Fire Hydrants Violation
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant <- 
@@ -541,9 +552,9 @@ hydrant <-
   filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address)) 
 ```
 
-As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed cross each borough and over the time.
+As one of our group members has suffered personal loss as a result of parking near a fire hydrant, we want to do more exploration on fire hydrant violations. We want to see how the number of fire hydrant violations are distributed across each borough and over time in NYC (to help her avoid being a part of such statistics).
 
-##### Violations in boroughs
+#### Hydrant Violations by Borough
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
@@ -554,16 +565,16 @@ hydrant %>%
   ) %>% 
   ggplot(aes(x = borough, y = n_obs, fill = borough)) + geom_bar(stat = "identity") +
   labs(
-    title = "Frequency of Violation of parking by fire hydrants",
-    x = "borough",
-    y = "number of violation"
-  ) +
-  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25)
+    title = "Frequency of Fire Hydrant Violations by Borough",
+    x = "Borough",
+    y = "Number of Violations"  ) +
+  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25) +
+  theme(legend.position = "none")
 ```
 
 From the above bar charts, we can see that Staten Island has the fewest number of fire hydrant violations and Brooklyn has the highest number of fire hydrant violations, which is consistent with the total violations across boroughs we found before.
 
-##### Violations in month
+#### Hydrant Violations by Month
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
@@ -576,7 +587,11 @@ hydrant %>%
   ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = "The number of violations of parking by hydrants of each month in 2021") + facet_wrap(~ borough, nrow = 1)
+  labs(title = "Fire Hydrant Violations by Month and Borough",
+       color = "Borough",
+       y = "Number of Violations",
+       x = "Month"
+       ) + facet_wrap(~ borough, nrow = 1)
 ```
 
 This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It's also quite consistent with the pattern we found for the total number of violations above.
@@ -585,20 +600,23 @@ This plot shows the number of fire hydrant violations within each month for diff
 
 &nbsp;
 
-### Statistical Analyses
 
-To answer the research questions, we conducted a number of statistical tests to test if the trends we observed were significant.
 
-First, We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see whether there is significant differences within the groups of time. 
 
-#### ANOVA Test 
-*whether month and weekday are associated with parking violation*
 
-As from the data visualization, we observed patterns for the parking violation number over month and over weekday. In order to discuss further about how month and weekday are associated with the frequency of parking violation, we try to use an ANOVA test for weekday and month. 
+## Statistical Analysis
 
-$H_0$: The mean numbers of parking violation are not different across months and weekdays.
+### Does the total daily number of parking violations issued vary over the year?
 
-$H_1$: The mean numbers of parking violation are different across months and weekdays.
+We have seen that it seems that time is associated with the parking violations that are issued, as it seems that the number of violations issued varies over the course of the year. We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see whether there is significant differences within the groups of time. 
+
+#### ANOVA Test
+
+As from the data visualization, we observed patterns for the parking violation number over the year. In order to discuss further about how the total number of parking violations vary over the year, we will conduct a one-way ANOVA test to see if the average number of parking violations varies significantly over the months represented in this dataset. 
+
+$H_0$: The mean numbers of parking violation are not different across months
+
+$H_1$: The mean numbers of parking violation are different across months
 
 ```{r, message=FALSE, warning=FALSE}
 fit_df = violation %>%
@@ -606,25 +624,127 @@ fit_df = violation %>%
   group_by(month, weekday, day) %>%
   summarize(n_obs = n())
 
-fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
-anova(fit_model_weekday) %>% knitr::kable(caption = "One way anova of violation frequency and weekday")
-
 fit_model_month = lm(n_obs ~ month, data = fit_df)
-anova(fit_model_month) %>% knitr::kable(caption = "One way anova of violation frequency and month")
+anova(fit_model_month) %>% knitr::kable(caption = "One way ANOVA of violation frequency and month")
 ```
 
-From the above results, both p-values are very small, so we can say that the parking violation counts are associated with month and weekday. 
+The p-value is very small in the above test. Thus, we reject the null hypothesis that the mean number of parking violations are constant across the months. There is evidence that indicates that the average number of parking violations varies across months.
+
+#### COVID-19's Association with Parking Violations
+
+We recognize that results produced by the ANOVA test confounded by the COVID-19 pandemic, however, as the pandemic has certainly has caused disruptions in many spheres of everyday life. We will investigate whether the daily number of COVID-19 cases over the past year is associated with the number of parking violations.
+
+```{r, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+url <- "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv"
+
+covid <- 
+  read_csv(url(url)) %>%
+  janitor::clean_names() %>%
+  select(date_of_interest, bx_case_count, mn_case_count, si_case_count, qn_case_count, bk_case_count) %>%
+  pivot_longer(
+    cols = bx_case_count:bk_case_count,
+    names_to = "borough",
+    values_to = "new_cases"
+  ) %>%
+  mutate(
+    borough_abbr = str_replace(borough, "_case_count", ""),
+    borough = 
+      case_when(
+      borough_abbr == "bx" ~ "Bronx",
+      borough_abbr == "bk" ~ "Brooklyn",
+      borough_abbr == "mn" ~ "Manhattan",
+      borough_abbr == "qn" ~ "Queens",
+      borough_abbr == "si" ~ "Staten Island"
+    ),
+    date_of_interest = as.Date(date_of_interest, "%m/%d/%Y")
+  ) 
+
+violation_covid <-
+  violation %>% 
+  count(issue_date, borough) %>%
+  rename(total_violations = n) %>%
+  left_join(covid, by = c("issue_date" = "date_of_interest", "borough"))  %>%
+  filter(!is.na(new_cases))
+```
+
+First, we will construct a scatter plot of new COVID-19 cases against total violations, colored by borough:
+
+```{r, message=FALSE, warning=FALSE}
+violation_covid %>%
+  ggplot(aes(x = new_cases, y = total_violations)) +
+  geom_point(alpha = 0.15, aes(col = borough)) +
+  geom_smooth(se = FALSE, col = "red") +
+  labs(
+    x = "New COVID-19 Cases",
+    y = "Total Violations",
+    col = "Borough",
+    title = "Total Violations vs. New COVID-19 Cases (2021)",
+    caption = "Note: each point represents a single day of observation"
+  )
+```
+
+It appears that the greatest range in number of violations given out occurs when there are fewer than about 300 COVID-19 cases a day.
+
+```{r, message=FALSE, warning=FALSE}
+violation_covid_long <-
+  violation_covid %>% 
+  pivot_longer(
+    cols = total_violations:new_cases,
+    names_to = "parameter",
+    values_to = "value"
+  ) %>%
+  mutate(
+    parameter = if_else(parameter == "total_violations", "Total Violations", if_else(parameter == "new_cases", "Total New COVID-19 Cases", ""))
+  )
+
+gg_violation_covid <- 
+  violation_covid_long %>% 
+  ggplot(aes(x = issue_date, y = value, col = parameter)) +
+  geom_line(alpha = 0.2) + 
+  geom_smooth(se = FALSE) +
+  xlim(c(as.Date("01-01-2021", "%m/%d/%Y"), as.Date("11-21-2021", "%m/%d/%Y"))) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(
+    x = "Date",
+    y  = "Count",
+    col = "Parameter"
+  )
+
+(gg_violation_covid + 
+    labs(title = "Total Parking Violations and New COVID-19 Cases Over Time\n(2021)") +
+    theme(legend.position = "none")) / 
+(gg_violation_covid  
+   + facet_grid(. ~ borough))
+```
+
+We will now perform a Granger-causality test to see if knowing the previous day's number of COVID-19 cases is helpful in predicting the number of parking violations given out. We will perform this test at an $\alpha = 0.05$ significance level. 
+
+```{r, message=FALSE, warning=FALSE}
+grangertest(total_violations ~ new_cases, order = 1, data = violation_covid)
+```
+
+As the test's p-value is less than our predetermined significance level of 0.05, we reject the null hypothesis that a model only based on the total violations time series performs as well or out performs a model that is based on both the total violations time series and COVID-19 case count time series. Thus, there is at least some predictive causality between the daily count of COVID-19 cases and the total daily parking violations over the past year.
+
+
+
+### Is the distribution of violation types different across boroughs?
+
+We are also interested in knowing whether there is difference in proportions of ticket amounts in violation types in different boroughs. To do this, we perform a chi-squared test to test the homogeneity of violation types across boroughs in the top 5 violation types overall.
 
 #### Chi-square Test 
 *whether the violation types vary among boroughs*
-
-Now, we want to know whether there is difference in proportions of ticket amounts in violation types in different boroughs, and we perform a chi-squared test to test the homogeneity of violation types across boroughs.
 
 $H_0:$ the proportions of tickets of violation type in five boroughs are equal; 
 
 $H_1:$ there exists at least one borough's proportion of tickets is different. 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 ## 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
 
 five_common_violation = 
@@ -655,15 +775,17 @@ x_crit = qchisq(0.95, 16)
 x_crit
 ```
 
-The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, so our result is statistically significant and we can conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
+The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, so our result is statistically significant and we can conclude that there does exist at least one borough's proportion of violation amounts in the top 5 violation types is different from others.  
 
+### Do equal proportions of the population in each borough receive fire hydrant parking violations?
+
+Now, we want to see whether receiving a fire hydrant violation is am equally common occurrence within each borough. To do this, we will conduct a proportion test.
 
 #### Proportion Test 
-*whether proportions of the population receiving fire hydrant parking violations in each borough are equal*
 
-Finally, since the population vary from boroughs, we want to standardize the population to assure the accuracy of former test results. We first derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). Next, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
+Since the population vary from boroughs, we want to standardize the population to assure the accuracy of former test results. We first derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). Next, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
 
-Besides, we will assume: 
+We will also assume: 
 1) Each car has only one driver;
 2) Each car gets one fire hydrant violation in 2021. 
 
@@ -671,7 +793,7 @@ $H_0:$ The proportions of the population getting tickets of fire hydrant in each
 
 $H_1:$ At least one proportion of the population getting fire hydrant violation in a borough is different from other boroughs. 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 
 url = "https://www.citypopulation.de/en/usa/newyorkcity/"
 nyc_population_html = read_html(url)
@@ -708,12 +830,12 @@ From the above results, p-values are small and so we we can say that the proport
 
 &nbsp;
 
-### Mapping and Spatial Analysis
 
-We would like to create some maps of fire hydrant violations by borough. We also want to investigate whether we can find hydrants that are most frequently ticketed. 
+## Mapping and Spatial Analysis
 
+Finally, we would like to create some maps of fire hydrant violations by borough. We also want to investigate whether we can find hydrants that are most frequently ticketed. 
 
-##### Geolocation (NYCGeoSearch)
+#### Geolocation (NYCGeoSearch)
 
 After trying several different geolocating methods, we found that NYCGeoSearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. This platform is advantageous as we can manipulate the search terms by altering the website's URL. After passing the website into the `fromJSON()` function from the `jsonlite` package, we can scrape the page for the data we are interested in (coordinates and borough). 
 
@@ -830,7 +952,7 @@ hydrant_actual <-
   )
 ```
 
-##### Mapping of Fire Hydrant Violation Locations and Fire Hydrants
+#### Mapping of Fire Hydrant Violation Locations and Fire Hydrants
 
 We will now plot all the points that we have produced to get a sense of how the fire hydrants are distributed across NYC and where fire hydrant violations occurred in the city.
 
@@ -1023,7 +1145,9 @@ It is important to note that the above spatial analysis will only be as precise 
 
 &nbsp;
 
-### Steps and Discussion 
+
+
+## Next Steps and Discussion 
 
 At first, We are interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one in 2021, as stated in the proposal. Therefore we investigated the boroughs that had the most violations, the borough paid the most in fines and other general topics. 
 
@@ -1036,7 +1160,7 @@ However, the speed of data analysis severely depended on WIFI speed because we r
 Soon, we found that NYCGeoSearch provides the best platform to obtain geographical coordinates (latitude, longitude) from the street addresses we were provided. This platform is advantageous as we can manipulate the search terms by altering the website's URL. After passing the website into the `fromJSON()` function from the `jsonlite` package, we can scrape the page for the data we are interested in (coordinates and borough). Then we painted the graphic of the distribution of suspicious hydrants that may cause the violation tickets and performed the mapping and data analysis. 
 
 
-### Findings and Summary
+## Findings and Summary
 
 * **Brooklyn** has the highest number of tickets among five boroughs. Manhattan and Queens have approximately the same number of tickets. 
 
@@ -1060,20 +1184,20 @@ Statistical Analysis Findings:
 
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
-### Limitations and Reflections
+## Limitations and Reflections
 There are also several limitations for our project. The major challenge would be the data cleaning process, especially for our first dataset - Open Parking and Camera Violations. As the dataset is too large to download and run in R, we only focused in 2021. Also, there are some future observations after the date we downloaded the dataset which should not be there, so we just excluded these observations in the data cleaning process. We noticed that this dataset is keeping updated every few months, if we want to explore more of this dataset, maybe we can keep tracking for the update and download it right after it's last update, then check if the dataset's date is consistent with the data update date.
 
 
-### Influence-Feasible Application
+## Influence - Feasible Application
 
 Our project can make an impact on the community. To be more specific, if merging our findings of fire hydrants locations in NYC to [Google map](https://www.google.com/maps), and generating an alert when parking within the safe range (15 feet) of fire hydrants. It could benefit the drivers to follow the parking regulation and avoid getting fire hydrant violations tickets. 
 
 
-### A Fun fact -- The Poorest Guy 
+## A Fun fact -- The Poorest Guy 
 
 During our analysis process of fire hydrant violation, we found out a license plate `JRA7539` got 85 tickets due to fire hydrant in 2021. It's ridiculous! So we want to find what this car is doing in 2021. The result shows that `JRA7539` got a total of 221 violations with fine amount of $19130 this year. 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 fire_hydrant = violation1 %>% filter(violation == "FIRE HYDRANT")
 
 fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>% 
@@ -1099,4 +1223,10 @@ fire_hydrant_id = violation1 %>% filter(violation == "FIRE HYDRANT") %>%
      filter(plate == "JRA7539") %>% 
      summarize(fine = sum(amount_due))
 ```
+
+
+
+
+
+
 

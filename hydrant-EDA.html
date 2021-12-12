@@ -13,8 +13,8 @@
 
 <title>Fire Hydrants Violation</title>
 
-<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -345,6 +345,9 @@ div.tocify {
     <li>
       <a href="vehicle.html">Violation by Vehicle types</a>
     </li>
+    <li>
+      <a href="hydrant-EDA.html">Fire Hydrant Violations</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -387,10 +390,14 @@ div.tocify {
 </div>
 
 
+<div id="fire-hydrants-violation" class="section level2">
+<h2>Fire Hydrants Violation</h2>
 <pre class="r"><code>hydrant &lt;- 
   violation %&gt;% 
   filter(violation %in% c(&quot;FIRE HYDRANT&quot;), !is.na(geo_nyc_address)) </code></pre>
 <p>As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed cross each borough and over the time.</p>
+<div id="violations-in-boroughs" class="section level3">
+<h3>Violations in boroughs</h3>
 <pre class="r"><code>hydrant %&gt;%
   group_by(borough) %&gt;%
   summarise(n_obs = n()) %&gt;%
@@ -406,6 +413,9 @@ div.tocify {
   geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25)</code></pre>
 <p><img src="hydrant-EDA_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
 <p>From the above bar charts, we can see that Staten Island has the fewest number of fire hydrant violations and Brooklyn has the highest number of fire hydrant violations, which is consistent with the total violations across boroughs we found before.</p>
+</div>
+<div id="violations-in-month" class="section level3">
+<h3>Violations in month</h3>
 <pre class="r"><code>hydrant %&gt;%
   mutate(month = month.name[as.numeric(month)]) %&gt;%
   mutate(month = as.factor(month),
@@ -419,6 +429,11 @@ div.tocify {
   labs(title = &quot;The number of violations of parking by hydrants of each month in 2021&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
 <p><img src="hydrant-EDA_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It’s also quite consistent with the pattern we found for the total number of violations above.</p>
+<center>
+center test
+</center>
+</div>
+</div>
 
 
 

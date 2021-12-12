@@ -11,13 +11,17 @@ navbar:
         href: timeline-part.html
       - text: 'Fine Amount'
         href: fine_amount.html
-      - text: 'Violation by Vehicle types'
+      - text: 'Violations by Vehicle types'
         href: vehicle.html
       - text: 'Fire Hydrant Violations'
         href: hydrant-EDA.html
     - text: 'Statistical Analyses'
-      href: statistical-analysis.html
-    - text: 'Hydrant Mapping'
+      menu:
+      - text: "Statistical Tests"
+        href:  statistical-analysis.html
+      - text: "COVID-19 Association with Parking Violations"
+        href: violation_covid.html
+    - text: 'Mapping'
       href: hydrant_mapping.html
     - text: 'Project Report'
       href: final_report.html
