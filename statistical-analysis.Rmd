@@ -35,13 +35,13 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 
-### ANOVA Test - whether month and weekday are associated with parking violation
+### ANOVA Test - Month and Violations
 
-As from the data visualization, we observe patterns for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test for weekday and month. 
+As from the data visualization, we observe patterns for the parking violation number over month and over weekday. In order to go more about how month and weekday are associated with the frequency of parking violation. We try to use an ANOVA test across months. 
 
-$H_0$: The mean numbers of parking violation are not different across months and weekdays.
+$H_0$: The mean number of parking violation are not different across months
 
-$H_1$: The mean numbers of parking violation are different across months and weekdays.
+$H_1$: The mean number of parking violation are different across months
 
 ```{r, message=FALSE, warning=FALSE}
 fit_df = violation %>%
@@ -49,22 +49,21 @@ fit_df = violation %>%
   group_by(month, weekday, day) %>%
   summarize(n_obs = n())
 
-fit_model_weekday = lm(n_obs ~ weekday, data = fit_df)
-anova(fit_model_weekday) %>% knitr::kable(caption = "One way anova of violation frequency and weekday")
 
 fit_model_month = lm(n_obs ~ month, data = fit_df)
 anova(fit_model_month) %>% knitr::kable(caption = "One way anova of violation frequency and month")
 ```
 
-From the above results, both the p-values are very small, so we can say that the parking violation counts are associated with month and weekday.
+The p-value is very small in the above test. Thus, we reject the null hypothesis that the mean number of parking violations are constant across the months. There is evidence that indicates that the average number of parking violations varies across months.
 
 
-### Chi-square Test - whether the violation types vary among boroughs
+### Chi-square Test - Top 5 Violation Types and Boroughs
 
-We predicted that there is no difference in ticket amounts proportions in violation types in different boroughs, and we perform the chi-square test to verify our assumption. 
+We predicted that there is no difference in ticket amounts proportions in the top five violation types in NYC across the five boroughs. We will perform the chi-square test to verify our assumption. 
 
-$H_0:$ the proportions of tickets of violation type in five boroughs are equal; 
-$H_1:$ there exists at least one borough is different. 
+$H_0:$ the expected counts in each violation type category are the same across all boroughs.
+
+$H_1:$ the expected counts in each violation type category are not same across all boroughs.
 
 
 ```{r}
@@ -101,18 +100,23 @@ x_crit
 Interpretation: The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, so we reject the null hypothesis and conclude that there does exist at least one borough's proportion of violation amounts is different from others.  
 
 
-### Proportion Test - whether proportions of the population receiving fire hydrant parking violations in each borough are equal
+### Proportion Test
+
+Now, we want to see whether receiving a fire hydrant violation is am equally common occurrence within the residents of each borough. To do this, we will conduct a proportion test.
 
 We derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). 
 
 First, we will assume: 
-1) Each car has only one driver;
-2) Each car gets one fire hydrant violation in 2021. 
 
-$H_0:$ The proportions of the population getting tickets of fire hydrant in each borough is equal. 
-$H_1:$ At least one proportion of the population getting fire hydrant violation in a borough is different from other boroughs. 
+  1) Each car has only one driver;
 
-```{r}
+  2) Each car gets one fire hydrant violation in 2021. 
+  
+$H_0:$ The proportion of the individuals who experienced getting a fire hydrant is the same across all boroughs. 
+
+$H_1:$ The proportion of the individuals who experienced getting a fire hydrant is not the same across all boroughs. 
+
+```{r, warning=FALSE, message=FALSE}
 
 url = "https://www.citypopulation.de/en/usa/newyorkcity/"
 nyc_population_html = read_html(url)

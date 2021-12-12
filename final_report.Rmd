@@ -49,7 +49,9 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ## Motivation
 
-One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
+One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations and caused us to want to investigate parking violations at large. 
+
+We are curious to know about where fire hydrant parking violations are most common in the city (perhaps to help our friend to be cautious in such areas), but we also understand that these specific violations are only a subset of all parking violations. We hope to first answer some basic questions (that may lead to other questions) about parking violations in the city and then focus in on fire hydrant parking violations specifically.
 
 &nbsp;
 
@@ -81,7 +83,7 @@ a) Open Parking and Camera Violations [(dataset)](https://data.cityofnewyork.us/
 
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
 violation1 <-
-  read_csv("./Open_Parking_and_Camera_Violations.csv") %>% 
+  read_csv("data/Open_Parking_and_Camera_Violations.csv") %>% 
   janitor::clean_names() %>%
   rename(borough = county) %>%  # rename county to borough
   mutate(
@@ -119,7 +121,7 @@ b) Parking Violations Issued - Fiscal Year 2021 [(dataset)](https://data.cityofn
 
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
 violation2 <- 
-  read_csv("./Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
+  read_csv("data/Parking_Violations_Issued_-_Fiscal_Year_2022.csv") %>%
   janitor::clean_names() %>%
   rename(borough = violation_county) %>%
   select(house_number,
@@ -615,13 +617,13 @@ This plot shows the number of fire hydrant violations within each month for diff
 
 We have seen that it seems that time is associated with the parking violations that are issued, as it seems that the number of violations issued varies over the course of the year. We performed a one-way ANOVA test across the weekdays and months parking violations occurred in to see whether there is significant differences within the groups of time. 
 
-#### ANOVA Test
+#### ANOVA Test - Month and Violations
 
 As from the data visualization, we observed patterns for the parking violation number over the year. In order to discuss further about how the total number of parking violations vary over the year, we will conduct a one-way ANOVA test to see if the average number of parking violations varies significantly over the months represented in this dataset. 
 
-$H_0$: The mean numbers of parking violation are not different across months
+$H_0$: The mean number of parking violation are not different across months
 
-$H_1$: The mean numbers of parking violation are different across months
+$H_1$: The mean number of parking violation are different across months
 
 ```{r, message=FALSE, warning=FALSE}
 fit_df = violation %>%
@@ -637,7 +639,7 @@ The p-value is very small in the above test. Thus, we reject the null hypothesis
 
 #### COVID-19's Association with Parking Violations
 
-We recognize that results produced by the ANOVA test confounded by the COVID-19 pandemic, however, as the pandemic has certainly has caused disruptions in many spheres of everyday life. We will investigate whether the daily number of COVID-19 cases over the past year is associated with the number of parking violations.
+We recognize that results produced by the ANOVA test confounded by the COVID-19 pandemic, as the pandemic has certainly has caused disruptions in many spheres of everyday life. We will investigate whether the daily number of COVID-19 cases over the past year is associated with the number of parking violations.
 
 ```{r, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(
@@ -740,14 +742,13 @@ As the test's p-value is less than our predetermined significance level of 0.05,
 
 ### Is the distribution of violation types different across boroughs?
 
-We are also interested in knowing whether there is difference in proportions of ticket amounts in violation types in different boroughs. To do this, we perform a chi-squared test to test the homogeneity of violation types across boroughs in the top 5 violation types overall.
+We are also interested in knowing whether there is difference in the counts of ticket amounts in the city-wide top 5 violation types in different boroughs. To do this, we perform a chi-squared test to test the homogeneity of violation types across boroughs in the top 5 violation types overall.
 
-#### Chi-square Test 
-*whether the violation types vary among boroughs*
+#### Chi-square Test - Top 5 Violation Types and Boroughs
 
-$H_0:$ the proportions of tickets of violation type in five boroughs are equal; 
+$H_0:$ the expected counts in each violation type category are the same across all boroughs.
 
-$H_1:$ there exists at least one borough's proportion of tickets is different. 
+$H_1:$ the expected counts in each violation type category are not same across all boroughs.
 
 ```{r, warning=FALSE, message=FALSE}
 ## 1) No parking-street cleaning, 2) Failure to display a muni-meter receipt, 3) Inspection sticker-expired/missing, 4) Registration sticker-expired /missing, and 5) Fire hydrant. 
@@ -782,21 +783,23 @@ x_crit
 
 The result of chi-square shows that $\chi^2 > \chi_{crit}$, at significant level $\alpha = 0.05$, so our result is statistically significant and we can conclude that there does exist at least one borough's proportion of violation amounts in the top 5 violation types is different from others.  
 
-### Do equal proportions of the population in each borough receive fire hydrant parking violations?
+### Did equal proportions of the population in each borough receive fire hydrant parking violations in the past year?
 
-Now, we want to see whether receiving a fire hydrant violation is am equally common occurrence within each borough. To do this, we will conduct a proportion test.
+Now, we want to see whether receiving a fire hydrant violation is am equally common occurrence within the residents of each borough. To do this, we will conduct a proportion test.
 
 #### Proportion Test 
 
 Since the population vary from boroughs, we want to standardize the population to assure the accuracy of former test results. We first derived the population of each borough from the most recent [census](https://www.citypopulation.de/en/usa/newyorkcity/). Next, we performed a proportion test to examine whether the proportion of fire hydrant violations (against the total population in each borough) differs across boroughs. 
 
 We will also assume: 
-1) Each car has only one driver;
-2) Each car gets one fire hydrant violation in 2021. 
 
-$H_0:$ The proportions of the population getting tickets of fire hydrant in each borough is equal;
+  1) Each car has only one driver;
+  
+  2) Each car gets one fire hydrant violation in 2021. 
 
-$H_1:$ At least one proportion of the population getting fire hydrant violation in a borough is different from other boroughs. 
+$H_0:$ The proportion of the individuals who experienced getting a fire hydrant is the same across all boroughs. 
+
+$H_1:$ The proportion of the individuals who experienced getting a fire hydrant is not the same across all boroughs.
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -929,17 +932,17 @@ for (i in 1:nrow(hydrant_lat_long)) {
 Running through all previous code chunks up until here takes approximately 7 hours. We will go ahead and save the output from running this code in `hydrant_lat_long.csv` so that we can read the data from this file into R, instead of running the previous chunks. 
 
 ```{r class.source = 'fold-show', warning=FALSE, eval=FALSE}
-write_csv(hydrant_lat_long, "hydrant_lat_long.csv")
+write_csv(hydrant_lat_long, "data/hydrant_lat_long.csv")
 ```
 
 We will also load a dataset containing locations of all fire hydrants in NYC, from a file named `Hydrants.csv`. After tidying and recoding some of the variables, we end up with a dataset where each record corresponds with a single fire hydrant. This dataset will contain the variables `borough` (borough the fire hydrant is located in), `unitid` (hydrant identifier),  and `lat` and `long` (hydrant lat/long coordinates). 
 
 ```{r class.source = 'fold-show', message=FALSE}
-hydrant_lat_long <- read_csv("hydrant_lat_long.csv") %>% select(-coordinates)
+hydrant_lat_long <- read_csv("data/hydrant_lat_long.csv") %>% select(-coordinates)
 
 hydrant_lat_long <- hydrant_lat_long %>% mutate(textlab = paste0("Summons Number: ", summons_number, "\nFine Amount: $", fine_amount))
 
-hydrant_actual <- read_csv("Hydrants.csv")
+hydrant_actual <- read_csv("data/Hydrants.csv")
 
 hydrant_actual <- 
   hydrant_actual %>%
@@ -1079,13 +1082,13 @@ hydrant_loc <- revgeo(isolated_hydrants %>% pull(long), isolated_hydrants %>% pu
 address <- hydrant_loc %>% unlist()
 hydrant_loc <- bind_cols(isolated_hydrants, address = address)
 
-write_csv(hydrant_loc, "isolated_hydrant_loc.csv")
+write_csv(hydrant_loc, "data/isolated_hydrant_loc.csv")
 ```
 
 Let's now create our plot!
 
 ```{r, warning=FALSE, message=FALSE}
-isolated_hydrants <- read_csv("isolated_hydrant_loc.csv")
+isolated_hydrants <- read_csv("data/isolated_hydrant_loc.csv")
 
 isolated_hydrants_plot <- 
   isolated_hydrants %>%
@@ -1190,8 +1193,10 @@ Statistical Analysis Findings:
 * **Proportion test**: the proportions of people getting fire hydrant violations are **different** across boroughs. 
 
 ## Limitations and Reflections
+
 There are also several limitations for our project. The major challenge would be the data cleaning process, especially for our first dataset - Open Parking and Camera Violations. As the dataset is too large to download and run in R, we only focused in 2021. Also, there are some future observations after the date we downloaded the dataset which should not be there, so we just excluded these observations in the data cleaning process. We noticed that this dataset is keeping updated every few months, if we want to explore more of this dataset, maybe we can keep tracking for the update and download it right after it's last update, then check if the dataset's date is consistent with the data update date.
 
+Additionally, the maps we have produced are limited by the quality of street location data we have been provided. Though it would be best for the data quality itself to improve, if a more precise map is desired and resources are available, we would recommend using a more sophisticated API to geocode street locations to coordinates. 
 
 ## Influence - Feasible Application
 
