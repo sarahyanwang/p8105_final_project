@@ -165,8 +165,9 @@ hydrant_violation_location_plot <-
       zoom = 9,
       center = list(lon = -73.9, lat = 40.7)),
     title = "<b> Parking Violation and Hydrant Location </b>",
-     legend = list(title = list(text = "Borough of Violation or Hydrant"),
-                    orientation = "h"))
+      legend = list(title = list(text = "Borough of Violation or Hydrant", size = 9),
+                    orientation = "h",
+                   font = list(size = 9)))
 
 hydrant_violation_location_plot
 ```
@@ -297,8 +298,9 @@ plot %>% layout(
       zoom = 9,
       center = list(lon = -73.9, lat = 40.7)),
       title = "<b> Most Frequently Ticketed Hydrants</b>",
-      legend = list(title = list(text = "Borough of Violation or Hydrant")
-                    ))
+      legend = list(title = list(text = "Borough of Violation or Hydrant", size = 9),
+                    orientation = "h",
+                   font = list(size = 9)))
 ```
 
 Interestingly, it seems that the hydrant whose hitbox intersected the most violation points is located in Queens. The following table shows the ten most frequently ticketed hydrants:

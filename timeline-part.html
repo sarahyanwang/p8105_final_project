@@ -11,10 +11,10 @@
 
 
 
-<title>Violation Timeline</title>
+<title>Violations over Time</title>
 
-<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -337,24 +337,45 @@ div.tocify {
       <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline</a>
+      <a href="timeline-part.html">Violation over Time</a>
     </li>
     <li>
       <a href="fine_amount.html">Fine Amount</a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle types</a>
+      <a href="vehicle.html">Violations by Vehicle types</a>
+    </li>
+    <li>
+      <a href="hydrant-EDA.html">Fire Hydrant Violations</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Statistical Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="statistical-analysis.html">Statistical Tests</a>
+    </li>
+    <li>
+      <a href="violation_covid.html">COVID-19 Association with Parking Violations</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="statistical-analysis.html">Statistical Analyses</a>
-</li>
-<li>
-  <a href="hydrant_mapping.html">Hydrant Mapping</a>
+  <a href="hydrant_mapping.html">Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://youtu.be/QbPegpn8rK4">Screencast</a>
+</li>
+<li>
+  <a href="references.html">References</a>
 </li>
 <li>
   <a href="https://github.com/sarahyanwang/parking_violation.github.io">
@@ -379,15 +400,21 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Violation Timeline</h1>
+<h1 class="title toc-ignore">Violations over Time</h1>
 
 </div>
 
 
 <p>For this part of data exploratory, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.</p>
-<div id="violation-frequency-vs.-month-for-each-borough" class="section level3">
-<h3>Violation frequency vs. month for each borough</h3>
-<pre class="r"><code>violation %&gt;%
+<div id="monthly-ticket-totals-by-borough" class="section level4">
+<h4>Monthly Ticket Totals by Borough</h4>
+<pre class="r"><code>knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = &quot;90%&quot;
+)
+
+violation %&gt;%
   mutate(month = month.name[as.numeric(month)]) %&gt;%
   mutate(month = as.factor(month),
          month = fct_relevel(month, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;)) %&gt;%
@@ -397,28 +424,32 @@ div.tocify {
   ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = &quot;The observation of parking violations of each month \n in 2021 for each borough&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
+  labs(
+    title = &quot;Total Parking Violations by Month and Borough&quot;,
+    x = &quot;Month&quot;,
+    y = &quot;Total Violations&quot;
+    ) +
+  facet_wrap(~ borough, nrow = 1)</code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
 <p>The above plot shows the total number of parking violation within each month for different boroughs. From the plot we can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. We can also see that total violation count in Staten Island is much more lower than the other four boroughs.</p>
 </div>
-<div id="violation-frequency-vs.-day-for-each-month" class="section level3">
-<h3>Violation frequency vs. day for each month</h3>
+<div id="ticket-time-series-by-borough" class="section level4">
+<h4>Ticket Time Series by Borough</h4>
 <pre class="r"><code>violation %&gt;%
-  mutate(month = month.name[as.numeric(month)]) %&gt;%
-  mutate(month = as.factor(month),
-         month = fct_relevel(month, &quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;)) %&gt;%
-  relocate(month) %&gt;%
-  group_by(month, day) %&gt;%
+  group_by(borough, issue_date) %&gt;%
   summarize(n_obs = n()) %&gt;%
-  ggplot(aes(x = day, y = n_obs, group = 1, color = month)) + 
-  geom_point(size = 0.5) + geom_line() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1) ) +
-  labs(title = &quot;The observation of parking violations of day in each \n month in 2021&quot;) + facet_wrap(~ month, nrow = 3)</code></pre>
+  ggplot(aes(x = issue_date, y = n_obs, color = borough)) + 
+  geom_line() + 
+  labs(title = &quot;Total Parking Violations Time Series by Borough&quot;,
+       x = &quot;Issue Date&quot;,
+       y = &quot;Total Violations&quot;,
+       color = &quot;Borough&quot;) +
+  facet_wrap(~ borough, nrow = 5, scales = &quot;free_y&quot;) </code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
-<p>After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month, and we can observe a weekly pattern here.</p>
+<p>After visualizing the monthly pattern, we also want to know if there is any pattern within each month. The above plot shows the total daily parking violation counts for each month by borough. We see there is a pattern in the fluctuation of total tickets day by day.</p>
 </div>
-<div id="violation-frequency-vs.-weekday-for-each-borough" class="section level3">
-<h3>Violation frequency vs. weekday for each borough</h3>
+<div id="cumulative-weekday-ticket-analysis-by-borough" class="section level4">
+<h4>Cumulative Weekday Ticket Analysis by Borough</h4>
 <pre class="r"><code>violation %&gt;% 
   mutate(weekday = as.factor(weekday)) %&gt;%
   mutate(weekday = fct_relevel(weekday, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) %&gt;%
@@ -429,12 +460,17 @@ div.tocify {
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1) ) + 
   facet_wrap(~ borough, nrow = 1) +
-  labs(title = &quot;The observation of parking violations vs. weekday in each \n borough in 2021&quot;)</code></pre>
+  labs(
+    title = &quot;Total Parking Violations by Weekday and Borough&quot;,
+    x = &quot;Weekday&quot;,
+    y = &quot;Total Violations&quot;,
+    color = &quot;Borough&quot;
+    )</code></pre>
 <p><img src="timeline-part_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>In order to explore more of the weekly parking violation pattern, we plot the violation counts of each weekday for every borough. We can see that all boroughs have a similar pattern, where Saturday has the lowest violation counts and Friday had the second lowest counts comparing to all other weekdays.</p>
 </div>
-<div id="violation-frequency-vs.hour-of-the-day-for-each-borough" class="section level3">
-<h3>Violation frequency vs.hour of the day for each borough</h3>
+<div id="cumulative-hourly-ticket-analysis-by-borough" class="section level4">
+<h4>Cumulative Hourly Ticket Analysis by Borough</h4>
 <pre class="r"><code>violation %&gt;%
   mutate(hour = as.numeric(hour)) %&gt;%
   group_by(borough, hour) %&gt;%

@@ -337,7 +337,7 @@ div.tocify {
       <a href="frequencyI.html">Violation Frequency</a>
     </li>
     <li>
-      <a href="timeline-part.html">Violation Timeline</a>
+      <a href="timeline-part.html">Violation over Time</a>
     </li>
     <li>
       <a href="fine_amount.html">Fine Amount</a>
@@ -370,6 +370,9 @@ div.tocify {
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
+</li>
+<li>
+  <a href="https://youtu.be/QbPegpn8rK4">Screencast</a>
 </li>
 <li>
   <a href="references.html">References</a>
@@ -407,9 +410,9 @@ div.tocify {
 <pre class="r"><code>hydrant &lt;- 
   violation %&gt;% 
   filter(violation %in% c(&quot;FIRE HYDRANT&quot;), !is.na(geo_nyc_address)) </code></pre>
-<p>As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed cross each borough and over the time.</p>
-<div id="violations-in-boroughs" class="section level3">
-<h3>Violations in boroughs</h3>
+<p>As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed across each borough and over the time.</p>
+<div id="hydrant-violations-by-borough" class="section level4">
+<h4>Hydrant Violations by Borough</h4>
 <pre class="r"><code>hydrant %&gt;%
   group_by(borough) %&gt;%
   summarise(n_obs = n()) %&gt;%
@@ -418,16 +421,16 @@ div.tocify {
   ) %&gt;% 
   ggplot(aes(x = borough, y = n_obs, fill = borough)) + geom_bar(stat = &quot;identity&quot;) +
   labs(
-    title = &quot;Frequency of Violation of parking by fire hydrants&quot;,
-    x = &quot;borough&quot;,
-    y = &quot;number of violation&quot;
-  ) +
-  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25)</code></pre>
+    title = &quot;Frequency of Fire Hydrant Violations by Borough&quot;,
+    x = &quot;Borough&quot;,
+    y = &quot;Number of Violations&quot;  ) +
+  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust = -0.25) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
 <p><img src="hydrant-EDA_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
 <p>From the above bar charts, we can see that Staten Island has the fewest number of fire hydrant violations and Brooklyn has the highest number of fire hydrant violations, which is consistent with the total violations across boroughs we found before.</p>
 </div>
-<div id="violations-in-month" class="section level3">
-<h3>Violations in month</h3>
+<div id="hydrant-violations-by-month" class="section level4">
+<h4>Hydrant Violations by Month</h4>
 <pre class="r"><code>hydrant %&gt;%
   mutate(month = month.name[as.numeric(month)]) %&gt;%
   mutate(month = as.factor(month),
@@ -438,7 +441,11 @@ div.tocify {
   ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = &quot;The number of violations of parking by hydrants of each month in 2021&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
+  labs(title = &quot;Fire Hydrant Violations by Month and Borough&quot;,
+       color = &quot;Borough&quot;,
+       y = &quot;Number of Violations&quot;,
+       x = &quot;Month&quot;
+       ) + facet_wrap(~ borough, nrow = 1)</code></pre>
 <p><img src="hydrant-EDA_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It’s also quite consistent with the pattern we found for the total number of violations above.</p>
 </div>
