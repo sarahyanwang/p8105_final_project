@@ -13,8 +13,8 @@
 
 <title>fire hydrant analysis</title>
 
-<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -343,18 +343,36 @@ div.tocify {
       <a href="fine_amount.html">Fine Amount</a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle types</a>
+      <a href="vehicle.html">Violations by Vehicle types</a>
+    </li>
+    <li>
+      <a href="hydrant-EDA.html">Fire Hydrant Violations</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Statistical Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="statistical-analysis.html">Statistical Tests</a>
+    </li>
+    <li>
+      <a href="violation_covid.html">COVID-19 Association with Parking Violations</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="statistical-analysis.html">Statistical Analyses</a>
-</li>
-<li>
-  <a href="hydrant_mapping.html">Hydrant Mapping</a>
+  <a href="hydrant_mapping.html">Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
+</li>
+<li>
+  <a href="references.html">References</a>
 </li>
 <li>
   <a href="https://github.com/sarahyanwang/parking_violation.github.io">
@@ -590,14 +608,14 @@ fire_hydrant_id = violation1 %&gt;% filter(violation == &quot;FIRE HYDRANT&quot;
      filter(plate == &quot;JRA7539&quot;) %&gt;% 
      count(violation) %&gt;% 
      summarize(sum = sum(n))</code></pre>
-<pre><code>## # A tibble: 1 × 1
+<pre><code>## # A tibble: 1 x 1
 ##     sum
 ##   &lt;int&gt;
 ## 1   221</code></pre>
 <pre class="r"><code>   violation %&gt;% 
      filter(plate == &quot;JRA7539&quot;) %&gt;% 
      summarize(fine = sum(amount_due))</code></pre>
-<pre><code>## # A tibble: 1 × 1
+<pre><code>## # A tibble: 1 x 1
 ##    fine
 ##   &lt;dbl&gt;
 ## 1 19130</code></pre>

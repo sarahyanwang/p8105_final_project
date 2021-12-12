@@ -77,9 +77,3 @@ hydrant %>%
 This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It's also quite consistent with the pattern we found for the total number of violations above.
 
 
-<center>
-center test
-</center>
-
-
-

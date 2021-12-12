@@ -44,7 +44,7 @@ We see that the distribution of payment amounts can vary significantly between v
 ###### Fire Hydrant Violation Payment Amount by Borough
 ```{r}
 fire_hydrant_violation_payment <- violation %>% filter(payment_amount != 0, violation == "FIRE HYDRANT")
-fig3 <- plot_ly(temp, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
+fig3 <- plot_ly(fire_hydrant_violation_payment, x = ~payment_amount, color = ~borough, type = "box", colors = "viridis")
 fig3 %>% layout(yaxis = list(showticklabels = FALSE),
                 title = "<b>Fire Hydrant Payment Amount by Borough</b>",
                 xaxis = list(title = "Payment Amount"))

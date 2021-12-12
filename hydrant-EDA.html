@@ -343,18 +343,30 @@ div.tocify {
       <a href="fine_amount.html">Fine Amount</a>
     </li>
     <li>
-      <a href="vehicle.html">Violation by Vehicle types</a>
+      <a href="vehicle.html">Violations by Vehicle types</a>
     </li>
     <li>
       <a href="hydrant-EDA.html">Fire Hydrant Violations</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="statistical-analysis.html">Statistical Analyses</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Statistical Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="statistical-analysis.html">Statistical Tests</a>
+    </li>
+    <li>
+      <a href="violation_covid.html">COVID-19 Association with Parking Violations</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="hydrant_mapping.html">Hydrant Mapping</a>
+  <a href="hydrant_mapping.html">Mapping</a>
 </li>
 <li>
   <a href="final_report.html">Project Report</a>
@@ -429,9 +441,6 @@ div.tocify {
   labs(title = &quot;The number of violations of parking by hydrants of each month in 2021&quot;) + facet_wrap(~ borough, nrow = 1)</code></pre>
 <p><img src="hydrant-EDA_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
 <p>This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It’s also quite consistent with the pattern we found for the total number of violations above.</p>
-<center>
-center test
-</center>
 </div>
 </div>
 
