@@ -40,7 +40,7 @@ violation_df =
   labs(
     title = "Frequency of Violation by Vehicle Body Type",
     x = "Vehicle Body Types",
-    y = "Numbers"
+    y = "Counts"
   ) +
   geom_text(aes(label = n), position = position_dodge(width=0.9), vjust=-0.25)
 violation_df

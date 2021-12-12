@@ -36,9 +36,9 @@ hydrant <-
   filter(violation %in% c("FIRE HYDRANT"), !is.na(geo_nyc_address)) 
 ```
 
-As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed cross each borough and over the time.
+As our primary focus is on fire hydrant violations, we want to do more exploration particularly on fire hydrant violations. We want know how the number of fire hydrant violations distributed across each borough and over the time.
 
-### Violations in boroughs
+#### Hydrant Violations by Borough
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
@@ -49,16 +49,16 @@ hydrant %>%
   ) %>% 
   ggplot(aes(x = borough, y = n_obs, fill = borough)) + geom_bar(stat = "identity") +
   labs(
-    title = "Frequency of Violation of parking by fire hydrants",
-    x = "borough",
-    y = "number of violation"
-  ) +
-  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25)
+    title = "Frequency of Fire Hydrant Violations by Borough",
+    x = "Borough",
+    y = "Number of Violations"  ) +
+  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust = -0.25) +
+  theme(legend.position = "none")
 ```
 
 From the above bar charts, we can see that Staten Island has the fewest number of fire hydrant violations and Brooklyn has the highest number of fire hydrant violations, which is consistent with the total violations across boroughs we found before.
 
-### Violations in month
+#### Hydrant Violations by Month
 
 ```{r, message=FALSE, warning=FALSE}
 hydrant %>%
@@ -71,9 +71,11 @@ hydrant %>%
   ggplot(aes(x = month, y = n_obs, group = 1, color = borough)) + 
   geom_point() + geom_line() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 5) ) +
-  labs(title = "The number of violations of parking by hydrants of each month in 2021") + facet_wrap(~ borough, nrow = 1)
+  labs(title = "Fire Hydrant Violations by Month and Borough",
+       color = "Borough",
+       y = "Number of Violations",
+       x = "Month"
+       ) + facet_wrap(~ borough, nrow = 1)
 ```
 
 This plot shows the number of fire hydrant violations within each month for different boroughs. We can see that all boroughs have a similar pattern, the total violation counts in February is lower, and the total violation counts in October is higher comparing to other months. It's also quite consistent with the pattern we found for the total number of violations above.
-
-

@@ -48,9 +48,8 @@ scale_fill_discrete = scale_fill_viridis_d
 &nbsp;
 
 ## Motivation
-The [news report](https://nypost.com/2021/11/18/these-are-the-worst-nyc-streets-for-getting-a-parking-ticket/) published by New York Post about locations drivers attracted our eyes. It predicted the most likely places to get a parking ticket in NYC based on the data from [SpotAngels](https://www.spotangels.com/blog/nyc-parking-tickets-where-youre-likely-to-get-one-and-how-spotangels-can-pay-for-it/). Thus, we were intrigued by the potential of investigating parking violations in NYC in 2021.
 
-Moreover, One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
+One of our group members' had the unfortunate experience of getting her car towed last year, due to parking near by a fire hydrant in Minnesota. It sparked our particular interest in the fire hydrant parking violations. 
 
 &nbsp;
 
@@ -284,13 +283,14 @@ bronx_vio_type =
   ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
-    title = "Frequency of Violation Type in Bronx in 2021", 
+    title = "Top 5 Parking Violation Types in Bronx (2021)", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
     axis.text.x = element_blank(),
     legend.text = element_text(size = 8),
-    legend.key.size = unit(.5,"line"))
+    legend.key.size = unit(.5,"line"),
+    legend.position = "right")
 bronx_vio_type
 ```
 
@@ -303,13 +303,14 @@ brooklyn_vio_type =
   ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
-    title = "Frequency of Violation Type in Brooklyn in 2021", 
+    title = "Top 5 Parking Violation Types in Brooklyn (2021)", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
     axis.text.x = element_blank(),
     legend.text = element_text(size = 8),
-    legend.key.size = unit(.5,"line"))
+    legend.key.size = unit(.5,"line"),
+    legend.position = "right")
 
 brooklyn_vio_type
 ```
@@ -323,13 +324,14 @@ manhattan_vio_type =
   ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
-    title = "Frequency of Violation Type in Manhattan in 2021", 
+    title = "Top 5 Parking Violation Types in Manhattan (2021)", 
     x = "Violation Type", 
     y = "Number of tickets") +
  theme(
     axis.text.x = element_blank(),
     legend.text = element_text(size = 8),
-    legend.key.size = unit(.5,"line"))
+    legend.key.size = unit(.5,"line"),
+    legend.position = "right")
 
 manhattan_vio_type
 ```
@@ -343,13 +345,14 @@ queens_vio_type =
   ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
-    title = "Frequency of Violation Type in Queens in 2021", 
+    title = "Top 5 Parking Violation Types in Queens (2021)", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
     axis.text.x = element_blank(),
     legend.text = element_text(size = 8),
-    legend.key.size = unit(.5,"line"))
+    legend.key.size = unit(.5,"line"),
+    legend.position = "right")
 
 queens_vio_type
 ```
@@ -363,13 +366,14 @@ si_vio_type =
   ggplot(aes(x = index, y = n, fill = violation)) + 
   geom_bar(stat = "identity") + 
   labs(
-    title = "Frequency of Violation Type in Staten Island in 2021", 
+    title = "Top 5 Parking Violation Types in Staten Island (2021)", 
     x = "Violation Type", 
     y = "Number of tickets") +
   theme(
     axis.text.x = element_blank(),
     legend.text = element_text(size = 8),
-    legend.key.size = unit(.5,"line"))
+    legend.key.size = unit(.5,"line"),
+    legend.position = "right")
 
 si_vio_type
 ```
@@ -454,9 +458,10 @@ Finally, we see here that the distribution of fire hydrant payment amounts is ab
 
 [Fine Amount](fines.html)
 
-### Violation Timeline {.tabset}
+### Violation over Time {.tabset}
 
 Now, we want to use visualization over time to find out some pattern of parking violation frequency in NY in 2021. We want to know how month, weekday and specific time of the day are associated with the parking violation counts.
+
 #### Monthly Ticket Totals by Borough
 
 ```{r, message=FALSE, warning=FALSE}
@@ -568,7 +573,7 @@ hydrant %>%
     title = "Frequency of Fire Hydrant Violations by Borough",
     x = "Borough",
     y = "Number of Violations"  ) +
-  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust=-0.25) +
+  geom_text(aes(label = n_obs), position = position_dodge(width=0.9), vjust = -0.25) +
   theme(legend.position = "none")
 ```
 
@@ -1149,9 +1154,9 @@ It is important to note that the above spatial analysis will only be as precise 
 
 ## Next Steps and Discussion 
 
-At first, We are interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one in 2021, as stated in the proposal. Therefore we investigated the boroughs that had the most violations, the borough paid the most in fines and other general topics. 
+At first, we were interested in seeing if any conclusions can be made about the frequency at which specific parking violations are given out and if there are any factors that may be associated to receiving one in 2021, as stated in the proposal. Therefore we investigated the boroughs that had the most violations, the borough paid the most in fines and other general topics. 
 
-Further, we narrowed down the range of the topic focus. We did research on the distribution of violations in other variables such as the dataset borough, date, vehicle type, nearby fire hydrants. The most curious factor was the fire hydrants. Were the number of parking violations related to fire hydrants the same across the five boroughs? Following the question, we decided to find the hydrants that seem to be ticketed the most commonly.
+After we began, we narrowed down the range of the topic focus. We did research on the distribution of violations in other variables such as the dataset borough, date, vehicle type, nearby fire hydrants. The most curious factor was the fire hydrants. Were the number of parking violations related to fire hydrants the same across the five boroughs? Following the question, we decided to find the hydrants that seem to be ticketed the most commonly.
 
 To start with, we wanted to build the mapping for the distribution of parking violation spots.  We exported the complete parking violation address from the Parking Violations Issued - Fiscal Year 2021 dataset. The package of tidygeocoder made getting data from geocoding services easy. We imported the address data and get the return of latitudes and longitudes via Google Api. Dropping the null value, we obtained the csv file containing latitudes and longitudes of parking violation address. Then we adopted the file to visualize geographical data on the map in [kepler](https://kepler.gl/). The shining points revealed the parking violation sites distribution.
 
@@ -1190,7 +1195,7 @@ There are also several limitations for our project. The major challenge would be
 
 ## Influence - Feasible Application
 
-Our project can make an impact on the community. To be more specific, if merging our findings of fire hydrants locations in NYC to [Google map](https://www.google.com/maps), and generating an alert when parking within the safe range (15 feet) of fire hydrants. It could benefit the drivers to follow the parking regulation and avoid getting fire hydrant violations tickets. 
+Our project can make an impact on the community. To be more specific, if merging our findings of fire hydrants locations in NYC to a commonly used geolocating system (such as GoogleMaps), and generating an alert when parking within the safe range (15 feet) of fire hydrants. It could benefit the drivers to follow the parking regulation and avoid getting fire hydrant violations tickets. 
 
 
 ## A Fun fact -- The Poorest Guy 

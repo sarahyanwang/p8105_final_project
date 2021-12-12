@@ -7,7 +7,7 @@ navbar:
       menu:
       - text: 'Violation Frequency'
         href: frequencyI.html
-      - text: 'Violation Timeline'
+      - text: 'Violation over Time'
         href: timeline-part.html
       - text: 'Fine Amount'
         href: fine_amount.html
@@ -25,6 +25,8 @@ navbar:
       href: hydrant_mapping.html
     - text: 'Project Report'
       href: final_report.html
+    - text: 'Screencast'
+      href: https://youtu.be/QbPegpn8rK4
     - text: 'References'
       href: references.html
     - icon: fa-github fa-lg
