@@ -241,7 +241,7 @@ hit_hydrants2 <- hit_hydrants1 %>% group_by(id) %>% summarise(num_hits = n()) %>
 isolated_hydrants <- inner_join(hydrant_actual, hit_hydrants2, by = c("unitid" = "id")) 
 ```
 
-We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. We will first reverse geocode the hydrant coordinates to allow the output to be more useful to the human user. We will use the `revgeo` function from the `revgeo` package and use Google's reverse geocode API to get the addresses. Since using Google's API is not exactly free, we will perform this once and save the addresses in a CSV file.
+We see that there are `r hit_hydrants2 %>% distinct(id)%>%nrow()` hydrants. We will first reverse geocode the hydrant coordinates to allow the output to be more useful to the human user. We will use the `revgeo` function from the `revgeo` package and use Google's reverse geocode API to get the addresses. Since using Google's API is not free, we will perform this once and save the addresses in a CSV file.
 
 ```{r, warning=FALSE, message=FALSE, eval=FALSE}
 
